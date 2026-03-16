@@ -1,5 +1,5 @@
 <script>
-  export let data;
+  const { data } = $props();
 </script>
 
 <main>

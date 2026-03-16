@@ -11,11 +11,16 @@ const client = new Client({
 });
 
 export const GET: RequestHandler = async () => {
-  await client.connect();
-  const res = await client.query('SELECT NOW()');
-  await client.end();
+  // Database code is present, but we're not connecting for now.
+  // await client.connect();
+  // const res = await client.query('SELECT NOW()');
+  // await client.end();
 
-  return new Response(JSON.stringify({ message: `The time is ${res.rows[0].now}` }), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+  // Simulate data as if it was fetched from the DB
+  const simulatedNow = new Date().toISOString();
+
+  return new Response(
+    JSON.stringify({ message: `The (simulated) time is ${simulatedNow}` }),
+    { headers: { 'Content-Type': 'application/json' } }
+  );
 };
