@@ -1,65 +1,76 @@
-# Svelte library
+# Title
+## P2 - A Larger Program Developed by a Group 
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+## Overview
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+### Authorization
+### Authorization in File Share Systems
 
-## Creating a project
+## User Manual
 
-If you're seeing this, you've probably already done this step. Congrats!
 
-```sh
-# create a new project in the current directory
-npx sv create
+### Getting Started
 
-# create a new project in my-app
-npx sv create my-app
-```
+#### Installation
 
-To recreate this project with the same configuration:
+#### System Requirements
 
-```sh
-# recreate this project
-npx sv@0.12.8 create --template library --types ts --add prettier eslint vitest="usages:unit,component" devtools-json --install npm vite-project
-```
+#### Initial Setup
 
-## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### How to Use
 
-```sh
-npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+#### Key Features
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
 
-## Building
+#### Troubleshooting
 
-To build your library:
+##### Issue 1: 
+  Description of the issue
+##### Soution: 
+  Steps to resolve the issue
 
-```sh
-npm pack
-```
 
-To create a production version of your showcase app:
 
-```sh
-npm run build
-```
+### FAQ
 
-You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
-## Publishing
+### Support
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
 
-To publish your library to [npm](https://www.npmjs.com):
 
-```sh
-npm publish
-```
+### Goal
+#### Knowledge
+The objective is that the student after the module possesses the necessary knowledge on:
+- Algorithmic concepts relevant to problem-solving of the project
+- Distributed solutions within computer networks relevant to the project’s problem-solving
+- Concepts, structures, and facilities in the programming language used
+- Testing of programs, including unit testing
+****
+#### Skills
+The objective is that the student after the module possesses the necessary skills in:
+- Defining and delimiting a problem within a given domain  
+- Designing a well-structured solution  
+- Implementing a larger, high-quality program  
+- Applying concepts and techniques from algorithms and computer networks relevant to the project  
+- Testing the program to ensure its correctness  
+- Using version control to manage parts of the program during the development process  
+- Understanding and explaining what project management is  
+****
+#### Competencies
+The objective is that the student after the module possesses the necessary competences in:
+- Defining a problem area and, within this area, formulating and defending a problem that can be solved using programming  
+- Developing a model that can be used in solving the chosen problem  
+- Completing the work to produce a runnable and demonstrable program  
+- Describing how the program solves a formulated problem within the context of the problem area  
+- Incorporating relevant usability and societal aspects of solutions within computer science and software engineering  
+- Describing, reflecting on, and analyzing the experiences gained from problem-oriented project work in a group  
+****
+#### Did we solve it?
+
+## VSC 
+
+## Team Members
+
