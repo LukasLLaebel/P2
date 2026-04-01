@@ -4,7 +4,7 @@ async function loadAuth() {
 
   createTable("users", data.users);
   createTable("roles", data.roles);
-  createTable("attributes", data.attibutes); // note spelling
+  createTable("attributes", data.attibutes);
   createTable("permissions", data.permissions);
   createTable("shares", data.shares);
 }
@@ -41,7 +41,7 @@ function createTable(title, items) {
 
       let value = item[h];
 
-      // handle arrays/objects nicely
+
       if (typeof value === "object") {
         value = JSON.stringify(value, null, 2);
       }

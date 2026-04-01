@@ -1,17 +1,16 @@
 const express = require("express");
-const fs = require("fs");
-
 const app = express();
+const path = require("path");
+
+// Import auth routes
+const authRoutes = require('./routes/auth.routes');
+
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.get("/auth", (req, res) => {
-  const freshAuth = JSON.parse(fs.readFileSync("auth.json", "utf-8"));
-  res.json(freshAuth);
-});
+// Mount the /auth endpoint
+app.use('/auth', authRoutes);
 
 app.listen(5173, () => {
   console.log("Running on http://localhost:5173");
 });
-
