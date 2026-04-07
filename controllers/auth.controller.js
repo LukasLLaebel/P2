@@ -1,6 +1,9 @@
-const authService = require('../services/auth.service');
+import authService from '../services/auth.service.js';
 
-exports.getAuth = (req, res) => {
-  const data = authService.getAuthInfo();
-  res.json(data);
+export default {
+  getAuth: (req, res) => {
+    const data = authService.getAuthInfo();
+    res.json(data);
+  }
 };
+

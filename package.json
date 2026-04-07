@@ -10,8 +10,12 @@
   "keywords": [],
   "author": "cs-26-sw-2-02@student.aau.dk",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "express": "^5.2.1"
+    "@fontsource/arbutus-slab": "^5.2.8",
+    "@fontsource/caprasimo": "^5.2.7",
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
   }
 }

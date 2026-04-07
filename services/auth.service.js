@@ -1,5 +1,8 @@
-const authModel = require('../models/auth.model');
+import authModel from '../models/auth.model.js';
 
-exports.getAuthInfo = () => {
-  return authModel.getAuth();
-}
+export default {
+  getAuthInfo: () => {
+    return authModel.getAuth();
+  }
+};
+

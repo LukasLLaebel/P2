@@ -1,27 +1,15 @@
+@import "@fontsource/arbutus-slab";
+
 :root {
   --jade-100: #E6E6E6;
   --jade-200: #BAC8B1;
   --jade-300: #7B9669;
   --jade-400: #6C8480;
   --jade-500: #404E3B;
-
-  --color-bg: var(--jade-100);
-  --color-surface: var(--jade-200);
-
-  --color-primary: var(--jade-300);
-  --color-secondary: var(--jade-400);
-  --color-accent: var(--jade-400);
-
-  --color-text: var(--jade-500);
-
 }
 
-
-
-
-
 body {
-  font-family: Arial;
+  font-family: "Arbutus Slab";
   padding: 20px;
 }
 
