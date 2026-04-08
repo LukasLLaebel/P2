@@ -16,10 +16,21 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/login.html'));
 });
 
+app.get('/all', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/all-files.html'));
+});
+
 app.get('/shared', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/shared_with_me.html'));
 });
 
+app.get('/owned', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/my-files.html'));
+});
+
+app.get('/roles', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/make-roles.html'));
+});
 
 
 
