@@ -6,11 +6,15 @@
   --jade-300: #7B9669;
   --jade-400: #6C8480;
   --jade-500: #404E3B;
+
+  --default-space: 20px;
 }
 
 /* Default styling */
 body {
   font-family: "Arbutus Slab";
+  background: var(--jade-100);
+
   margin: 0;
   height: 100vh;
 
@@ -19,24 +23,27 @@ body {
     "header header"
     "aside  main";
 
-  grid-template-rows: 66px 1fr;
+  /* header height */
+  grid-template-rows: 70px 1fr;
+  /* aside width */
   grid-template-columns: 210px 1fr;
 }
 
 header {
+  grid-area: header;
   display: flex;
   flex-direction: row;
-  grid-area: header;
   background-color: var(--jade-300);
   justify-content: flex-end;
   align-items: center;
-  gap: 20px;
-  padding-right: 20px;
+  gap: var(--default-space);
+  padding-right: var(--default-space);
 }
 
 aside {
   grid-area: aside;
   background-color: var(--jade-200);
+  padding-left: var(--default-space);
 }
 
 main {
@@ -44,10 +51,8 @@ main {
 }
 
 main .item-wrapper {
-  margin: 24px 100px auto 40px;
+  margin: var(--default-space) 100px auto 40px;
 }
-
-
 
 /* header setup */
 .title {
@@ -66,21 +71,30 @@ p {
   font-size: 10px;
 }
 
+.profile-pic {
+  display: flex;
+  border-radius: 50%;
+  border: 1px solid var(--jade-500);
+  background-color: var(--jade-100);
+  width: 64px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-/* testing */
-table {
-  border-collapse: collapse;
-  margin-bottom: 30px;
+.profile-pic img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background: #f4f4f4;
+.profile-pic i {
+  padding-top: 8px;
+  font-size: 64px;
+  border-radius: 50%;
+  color: var(--jade-500);
+  pointer-events: none;
 }

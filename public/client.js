@@ -20,7 +20,7 @@ function createTable(title, items) {
 
   const table = document.createElement("table");
 
-  // headers
+
   const headers = Object.keys(items[0]);
   const thead = document.createElement("tr");
 
@@ -32,7 +32,7 @@ function createTable(title, items) {
 
   table.appendChild(thead);
 
-  // rows
+
   items.forEach(item => {
     const tr = document.createElement("tr");
 
