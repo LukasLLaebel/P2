@@ -1,4 +1,4 @@
-@import "@fontsource/arbutus-slab";
+@import "./fonts/index.css";
 
 :root {
   --jade-100: #E6E6E6;
@@ -8,11 +8,66 @@
   --jade-500: #404E3B;
 }
 
+/* Default styling */
 body {
   font-family: "Arbutus Slab";
-  padding: 20px;
+  margin: 0;
+  height: 100vh;
+
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "aside  main";
+
+  grid-template-rows: 66px 1fr;
+  grid-template-columns: 210px 1fr;
 }
 
+header {
+  display: flex;
+  flex-direction: row;
+  grid-area: header;
+  background-color: var(--jade-300);
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  padding-right: 20px;
+}
+
+aside {
+  grid-area: aside;
+  background-color: var(--jade-200);
+}
+
+main {
+  grid-area: main;
+}
+
+main .item-wrapper {
+  margin: 24px 100px auto 40px;
+}
+
+
+
+/* header setup */
+.title {
+  font-size: 50px;
+}
+
+h1 {
+  font-size: 22px;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+p {
+  font-size: 10px;
+}
+
+
+/* testing */
 table {
   border-collapse: collapse;
   margin-bottom: 30px;
