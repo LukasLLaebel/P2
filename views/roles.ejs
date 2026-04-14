@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link href="/css/make-roles.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+  <header>
+    <h1>
+      <%= locals.user %>
+    </h1>
+    <div class="profile-pic">
+      <img src="./" alt="PP" onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'inline-block';
+          ">
+      <i class="fa-solid fa-user" style="display: none"></i>
+    </div>
+  </header>
+  <aside>
+    <%- include("./assets/navbar.ejs") %>
+  </aside>
+  <main>
+    <div class="item-wrapper">
+      <h1 class="title">Make Roles</h1>
+    </div>
+  </main>
+  <script src="./js/folder.buttons.js"></script>
+</body>
+
+</html>
