@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-  <link href="/css/make-roles.css" rel="stylesheet">
+  <link href="/css/roles.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
@@ -28,7 +28,25 @@
   </aside>
   <main>
     <div class="item-wrapper">
-      <h1 class="title">Make Roles</h1>
+      <h1 class="title">Roles for <%= locals.folder %>
+      </h1>
+      <div class="roles-btn-wrapper">
+        <h1>Create Role</h1>
+        <h1>Add Role</h1>
+      </div>
+      <div class="roles-wrapper">
+        <div class="role-01">
+          <h1>Admin</h1>
+          <div class="buttons">
+            <div class="users-wrapper">
+              <i class="fa-solid fa-user"></i>
+              <h2>3</h2>
+            </div>
+            <i class="fa-solid fa-pen-to-square edit"></i>
+            <i class="fa-solid fa-x cross"></i>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
   <script src="./js/folder.buttons.js"></script>

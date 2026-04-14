@@ -34,7 +34,7 @@ router.get('/owned', (req, res) => {
 });
 
 router.get('/roles', (req, res) => {
-  res.render('../views/roles.ejs', { user: "Jeff" });
+  res.render('../views/roles.ejs', { user: "Jeff", folder: "Folder 1" });
 });
 
 export default router;
