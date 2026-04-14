@@ -117,7 +117,13 @@ p {
   pointer-events: none;
 }
 
-.folder-01 {
+.folder-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--default-space);
+}
+
+.folder-wrapper>* {
   display: flex;
   background-color: white;
   padding: 26px 14px 26px 10px;
@@ -125,12 +131,13 @@ p {
   border-radius: 10px;
 }
 
-.folder-01 .btn-wrapper {
+.folder-wrapper>* .btn-wrapper {
   display: flex;
   gap: 15px;
 }
 
-/* Added this */
 .btn-wrapper h2 {
   cursor: pointer;
+  padding: 8px 25px;
+  border-radius: 20px;
 }
