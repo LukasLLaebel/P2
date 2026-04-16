@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link href="css/all-files.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+  <header>
+    <h1>Username</h1>
+    <div class="profile-pic">
+      <img src="./" alt="PP"
+        onerror=" this.style.display = 'none'; this.nextElementSibling.style.display = 'inline-block';">
+      <i class="fa-solid fa-user" style="display: none"></i>
+    </div>
+  </header>
+  <aside>
+    <%- include("./assets/navbar.ejs") %>
+  </aside>
+  <main>
+    <div class="item-wrapper">
+      <h1 class="title">All Files</h1>
+      <div class="folder-wrapper">
+        <div class="folder-01">
+          <h1>Folder 1</h1>
+          <div class="btn-wrapper">
+            <h2 style="background-color: #7b9669" data-action="owner">
+              asdasdfghfdsasafghjfgfdaSFGHGJHFS...
+            </h2>
+            <h2 style="background-color: #6c8480" data-action="colab-users">
+              Users
+            </h2>
+          </div>
+        </div>
+        <div class="folder-02">
+          <h1>Folder 2</h1>
+          <div class="btn-wrapper">
+            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
+            <h2 style="background-color: #6c8480" data-action="colab-users">
+              Users
+            </h2>
+          </div>
+        </div>
+        <div class="folder-03">
+          <h1>Folder 3</h1>
+          <div class="btn-wrapper">
+            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
+            <h2 style="background-color: #6c8480" data-action="colab-users">
+              Users
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="./js/folder.buttons.js"></script>
+</body>
+
+</html>
