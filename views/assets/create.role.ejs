@@ -1,0 +1,16 @@
+<form>
+  <label for="role">Role name:</label><br>
+  <input type="text" id="r-name" name="role" placeholder="role name ..."><br>
+
+  <label for="users">Add users:</label><br>
+  <input type="text" id="add-users" name="add-users" placeholder="username1, username2, ..."><br>
+
+  <label for="permissions">Permissions:</label><br>
+  <input list="permissions" id="permission" name="permission"><br>
+
+  <datalist id="permissions">
+    <option value="Everything"></option>
+    <option value="Read"></option>
+    <option value="Write"></option>
+  </datalist>
+</form>
