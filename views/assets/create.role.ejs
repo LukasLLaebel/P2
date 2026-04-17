@@ -1,3 +1,10 @@
+<style>
+	/* testing because elements cannot be seen */
+	h2 {
+		color: red;
+	}
+</style>
+
 <form id="roleForm">
 	<label for="role">Role name:</label><br>
 	<input type="text" id="r-name" name="role" placeholder="role name ..."><br>
@@ -19,36 +26,51 @@
 	</datalist>
 </form>
 
+<!-- Display users in h2 tags -->
+<div id="usersList"></div>
+
 <script>
-	document.getElementById('submitBtn').addEventListener('click', async (e) => {
-		e.preventDefault();
+	// Parse and display users
+	const allUsers = '<%= locals.allUsers %>';
+	const usersArray = allUsers.split(',').map(u => u.trim()).filter(u => u);
+	const usersListDiv = document.getElementById('usersList');
+	
+	usersArray.forEach(user => {
+		const h2 = document.createElement('h2');
+		h2.textContent = user;
+		usersListDiv.appendChild(h2);
+		});
 		
-		const formData = {
-			role: document.getElementById('r-name').value,
-			'add-users': document.getElementById('add-users').value.split(',').map(u => u.trim()),
-			permission: document.getElementById('permission').value.split(',').map(p => p.trim())
-			};
+		// Form submission
+		document.getElementById('submitBtn').addEventListener('click', async (e) => {
+			e.preventDefault();
 			
-			try {
-				const response = await fetch('/roles/create', {
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(formData)
-						});
-						
-						const data = await response.json();
-						
-						if (data.success) {
-							alert('Role created successfully!');
-							document.getElementById('roleForm').reset();
-							} else {
-								alert('Error: ' + data.message);
-							}
-							} catch (error) {
-								console.error('Error:', error);
-								alert('Failed to create role');
-							}
+			const formData = {
+				role: document.getElementById('r-name').value,
+				'add-users': document.getElementById('add-users').value.split(',').map(u => u.trim()),
+				permission: document.getElementById('permission').value.split(',').map(p => p.trim())
+				};
+				
+				try {
+					const response = await fetch('/roles/create', {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(formData)
 							});
+							
+							const data = await response.json();
+							
+							if (data.success) {
+								alert('Role created successfully!');
+								document.getElementById('roleForm').reset();
+								} else {
+									alert('Error: ' + data.message);
+								}
+								} catch (error) {
+									console.error('Error:', error);
+									alert('Failed to create role');
+								}
+								});
 </script>
