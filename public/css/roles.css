@@ -126,3 +126,65 @@ i {
   padding: 0;
   color: var(--jade-500);
 }
+
+.users-box {
+  width: 850px;
+  background-color: var(--jade-400);
+  margin-top: 8px;
+  padding: 0;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  color: var(--jade-100);
+}
+
+.active-user {
+  background-color: var(--jade-200);
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--jade-100);
+}
+
+.profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--jade-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-pic i {
+  font-size: 28px;
+  color: var(--jade-500);
+}
+
+.remove {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--jade-100);
+  color: var(--jade-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
