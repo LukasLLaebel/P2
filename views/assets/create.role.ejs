@@ -1,16 +1,9 @@
-<style>
-	/* testing because elements cannot be seen */
-	h2 {
-		color: red;
-	}
-</style>
-
 <form id="roleForm">
 	<label for="role">Role name:</label><br>
 	<input type="text" id="r-name" name="role" placeholder="role name ..."><br>
 
-	<label for="users">Add users:</label><br>
-	<input type="text" id="add-users" name="add-users" placeholder="username1, username2, ..."><br>
+	<h3>Give Role to Users:</h3>
+	<div id="usersList"></div>
 
 	<label for="permissions">Permissions:</label><br>
 	<input type="text" id="permission" name="permission" placeholder="read, write, delete"><br>
@@ -26,9 +19,6 @@
 	</datalist>
 </form>
 
-<!-- Display users in h2 tags -->
-<div id="usersList"></div>
-
 <script>
 	// Parse and display users
 	const allUsers = '<%= locals.allUsers %>';
@@ -36,41 +26,79 @@
 	const usersListDiv = document.getElementById('usersList');
 	
 	usersArray.forEach(user => {
+		const userItem = document.createElement('div');
+		userItem.className = 'user-item';
+		
 		const h2 = document.createElement('h2');
 		h2.textContent = user;
-		usersListDiv.appendChild(h2);
-		});
 		
-		// Form submission
-		document.getElementById('submitBtn').addEventListener('click', async (e) => {
-			e.preventDefault();
+		const toggleSwitch = document.createElement('label');
+		toggleSwitch.className = 'toggle-switch';
+		
+		const checkbox = document.createElement('input');
+		checkbox.type = 'checkbox';
+		checkbox.value = user;
+		checkbox.className = 'user-checkbox';
+		
+		const slider = document.createElement('span');
+		slider.className = 'toggle-slider';
+		
+		toggleSwitch.appendChild(checkbox);
+		toggleSwitch.appendChild(slider);
+		
+		h2.addEventListener('click', () => {
+			checkbox.checked = !checkbox.checked;
+			});
 			
-			const formData = {
-				role: document.getElementById('r-name').value,
-				'add-users': document.getElementById('add-users').value.split(',').map(u => u.trim()),
-				permission: document.getElementById('permission').value.split(',').map(p => p.trim())
-				};
+			userItem.appendChild(h2);
+			userItem.appendChild(toggleSwitch);
+			usersListDiv.appendChild(userItem);
+			});
+			
+			// Form submission
+			document.getElementById('submitBtn').addEventListener('click', async (e) => {
+				e.preventDefault();
 				
-				try {
-					const response = await fetch('/roles/create', {
-						method: 'PUT',
-						headers: {
-							'Content-Type': 'application/json'
-							},
-							body: JSON.stringify(formData)
-							});
-							
-							const data = await response.json();
-							
-							if (data.success) {
-								alert('Role created successfully!');
-								document.getElementById('roleForm').reset();
-								} else {
-									alert('Error: ' + data.message);
-								}
-								} catch (error) {
-									console.error('Error:', error);
-									alert('Failed to create role');
-								}
+				// Get checked users from the list
+				const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+				.map(checkbox => checkbox.value);
+				
+				// Validate that at least one user is selected
+				if (selectedUsers.length === 0) {
+					alert('Please select at least one user');
+					return;
+				}
+				
+				const formData = {
+					role: document.getElementById('r-name').value,
+					users: selectedUsers, // Users come from the toggles only
+					permissions: document.getElementById('permission').value.split(',').map(p => p.trim())
+					};
+					
+					try {
+						const response = await fetch('/roles/create', {
+							method: 'PUT',
+							headers: {
+								'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(formData)
 								});
+								
+								const data = await response.json();
+								
+								if (data.success) {
+									alert('Role created successfully!');
+									document.getElementById('roleForm').reset();
+									// Uncheck all users
+									document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+										checkbox.checked = false;
+										});
+										} else {
+											alert('Error: ' + data.message);
+										}
+										} catch (error) {
+											console.error('Error:', error);
+											alert('Failed to create role');
+										}
+										});
 </script>

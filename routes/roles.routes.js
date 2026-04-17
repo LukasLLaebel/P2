@@ -33,24 +33,25 @@ router.get('/', getAllUsers, (req, res) => {
 
 router.put('/create', (req, res) => {
   try {
-    const { role, 'add-users': addUsers, permission } = req.body;
+    const { role, users, permission } = req.body;
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    // Improvement make ID generation more random
+    // Improvement make ID generation random
     const maxRoleId = Math.max(...authData.roles.map(r => r.id), 0);
     const newRoleId = maxRoleId + 1;
 
     const newRole = {
       id: newRoleId,
       name: role,
-      permissions: permission
+      permissions: permission,
+      users: users || []
     };
 
     authData.roles.push(newRole);
 
-
-    // add share to user
+    // testing: 
+    console.log('Users assigned to role:', users);
 
     fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
 
@@ -69,6 +70,5 @@ router.put('/create', (req, res) => {
     });
   }
 });
-
 
 export default router;
