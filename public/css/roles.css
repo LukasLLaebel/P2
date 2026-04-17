@@ -128,10 +128,11 @@ i {
 }
 
 .users-box {
-  width: 850px;
+  width: 100%;
   background-color: var(--jade-400);
   margin-top: 8px;
   padding: 0;
+  margin: 10px 0;
 }
 
 .user {
