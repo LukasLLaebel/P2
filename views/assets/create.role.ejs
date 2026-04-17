@@ -1,16 +1,76 @@
-<form>
-  <label for="role">Role name:</label><br>
-  <input type="text" id="r-name" name="role" placeholder="role name ..."><br>
+<style>
+	/* testing because elements cannot be seen */
+	h2 {
+		color: red;
+	}
+</style>
 
-  <label for="users">Add users:</label><br>
-  <input type="text" id="add-users" name="add-users" placeholder="username1, username2, ..."><br>
+<form id="roleForm">
+	<label for="role">Role name:</label><br>
+	<input type="text" id="r-name" name="role" placeholder="role name ..."><br>
 
-  <label for="permissions">Permissions:</label><br>
-  <input list="permissions" id="permission" name="permission"><br>
+	<label for="users">Add users:</label><br>
+	<input type="text" id="add-users" name="add-users" placeholder="username1, username2, ..."><br>
 
-  <datalist id="permissions">
-    <option value="Everything"></option>
-    <option value="Read"></option>
-    <option value="Write"></option>
-  </datalist>
+	<label for="permissions">Permissions:</label><br>
+	<input type="text" id="permission" name="permission" placeholder="read, write, delete"><br>
+
+	<button type="button" id="submitBtn">Create</button>
+
+	<datalist id="permissions">
+		<option value="read"></option>
+		<option value="write"></option>
+		<option value="delete"></option>
+		<option value="share"></option>
+		<option value="comment"></option>
+	</datalist>
 </form>
+
+<!-- Display users in h2 tags -->
+<div id="usersList"></div>
+
+<script>
+	// Parse and display users
+	const allUsers = '<%= locals.allUsers %>';
+	const usersArray = allUsers.split(',').map(u => u.trim()).filter(u => u);
+	const usersListDiv = document.getElementById('usersList');
+	
+	usersArray.forEach(user => {
+		const h2 = document.createElement('h2');
+		h2.textContent = user;
+		usersListDiv.appendChild(h2);
+		});
+		
+		// Form submission
+		document.getElementById('submitBtn').addEventListener('click', async (e) => {
+			e.preventDefault();
+			
+			const formData = {
+				role: document.getElementById('r-name').value,
+				'add-users': document.getElementById('add-users').value.split(',').map(u => u.trim()),
+				permission: document.getElementById('permission').value.split(',').map(p => p.trim())
+				};
+				
+				try {
+					const response = await fetch('/roles/create', {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(formData)
+							});
+							
+							const data = await response.json();
+							
+							if (data.success) {
+								alert('Role created successfully!');
+								document.getElementById('roleForm').reset();
+								} else {
+									alert('Error: ' + data.message);
+								}
+								} catch (error) {
+									console.error('Error:', error);
+									alert('Failed to create role');
+								}
+								});
+</script>
