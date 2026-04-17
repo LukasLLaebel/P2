@@ -31,14 +31,17 @@
       <h1 class="title">Roles for <%= locals.folder %>
       </h1>
       <div class="roles-btn-wrapper">
-        <h1>Create Role</h1>
-        <h1>Add Role</h1>
+        <a href="/roles?view=create">
+          <h1>Create Role</h1>
+        </a>
+        <a href="/roles?view=display">
+          <h1>Add Role</h1>
+        </a>
       </div>
-
-      <% if(true){ %>
-        <%- include("./assets/display.roles.ejs") %>
-          <% } else{ %>
-            <%- include("./assets/create.role.ejs") %>
+      <% if(locals.currentView==='create' ) { %>
+        <%- include("./assets/create.role.ejs") %>
+          <% } else { %>
+            <%- include("./assets/display.roles.ejs") %>
               <% } %>
 <%- include("./assets/display-user.roles.ejs") %>
     </div>

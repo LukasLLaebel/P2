@@ -26,21 +26,29 @@
   margin-bottom: var(--default-space);
 }
 
-.roles-btn-wrapper>* {
+.roles-btn-wrapper a {
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 145px;
   height: 55px;
+  cursor: pointer;
 }
 
-.roles-btn-wrapper h1:first-child {
+.roles-btn-wrapper a:nth-child(1) {
   background-color: var(--jade-200);
+}
+
+.roles-btn-wrapper a:nth-child(1) h1 {
   color: var(--jade-500);
 }
 
-.roles-btn-wrapper h1:last-child {
+.roles-btn-wrapper a:nth-child(2) {
   background-color: var(--jade-500);
+}
+
+.roles-btn-wrapper a:nth-child(2) h1 {
   color: var(--jade-200);
 }
 
@@ -80,6 +88,7 @@
   width: 55px;
   height: 55px;
   background-color: var(--jade-100);
+  cursor: pointer;
 }
 
 i {

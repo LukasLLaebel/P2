@@ -34,7 +34,12 @@ router.get('/owned', (req, res) => {
 });
 
 router.get('/roles', (req, res) => {
-  res.render('../views/roles.ejs', { user: "Jeff", folder: "Folder 1" });
+  const view = req.query.view || 'display'; // 'display' or 'create'
+  res.render('../views/roles.ejs', {
+    user: "Jeff",
+    folder: "Folder 1",
+    currentView: view
+  });
 });
 
 export default router;
