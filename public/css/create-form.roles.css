@@ -1,0 +1,82 @@
+@import "../style.css";
+/*
+  --jade-100: #E6E6E6;
+  --jade-200: #BAC8B1;
+  --jade-300: #7B9669;
+  --jade-400: #6C8480;
+  --jade-500: #404E3B;
+*/
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.user-item:hover {
+  background-color: var(--jade-100);
+}
+
+.user-item h2 {
+  margin: 0;
+  flex: 1;
+  color: var(--jade-500);
+}
+
+/* Toggle/Slider checkbox styling */
+.user-item input[type="checkbox"] {
+  width: 50px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--jade-300);
+}
+
+/* Modern toggle switch style */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--jade-200);
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--jade-100);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked+.toggle-slider {
+  background-color: var(--jade-300);
+}
+
+input:checked+.toggle-slider:before {
+  transform: translateX(26px);
+}

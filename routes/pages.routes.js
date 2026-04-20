@@ -6,12 +6,11 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
+// middleware
 router.use((req, res, next) => {
   res.locals.currentPage = req.path;
   next();
 });
-
 
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login.html"));
@@ -33,8 +32,5 @@ router.get('/owned', (req, res) => {
   res.render('../views/my-files.ejs', { user: req.user });
 });
 
-router.get('/roles', (req, res) => {
-  res.render('../views/roles.ejs', { user: "Jeff", folder: "Folder 1" });
-});
 
 export default router;

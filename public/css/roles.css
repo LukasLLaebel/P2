@@ -26,21 +26,29 @@
   margin-bottom: var(--default-space);
 }
 
-.roles-btn-wrapper>* {
+.roles-btn-wrapper a {
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 145px;
   height: 55px;
+  cursor: pointer;
 }
 
-.roles-btn-wrapper h1:first-child {
+.roles-btn-wrapper a:nth-child(1) {
   background-color: var(--jade-200);
+}
+
+.roles-btn-wrapper a:nth-child(1) h1 {
   color: var(--jade-500);
 }
 
-.roles-btn-wrapper h1:last-child {
+.roles-btn-wrapper a:nth-child(2) {
   background-color: var(--jade-500);
+}
+
+.roles-btn-wrapper a:nth-child(2) h1 {
   color: var(--jade-200);
 }
 
@@ -80,6 +88,7 @@
   width: 55px;
   height: 55px;
   background-color: var(--jade-100);
+  cursor: pointer;
 }
 
 i {
@@ -116,4 +125,66 @@ i {
   margin: 0;
   padding: 0;
   color: var(--jade-500);
+}
+
+.users-box {
+  width: 100%;
+  background-color: var(--jade-400);
+  margin-top: 8px;
+  padding: 0;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  color: var(--jade-100);
+}
+
+.active-user {
+  background-color: var(--jade-200);
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--jade-100);
+}
+
+.user .profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--jade-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.user .profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user .profile-pic i {
+  font-size: 28px;
+  color: var(--jade-500);
+}
+
+.remove {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--jade-100);
+  color: var(--jade-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
 }
