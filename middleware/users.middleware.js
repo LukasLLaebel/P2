@@ -7,9 +7,9 @@ const __dirname = path.dirname(__filename);
 
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
-export function getAllUsers(req, res, next) {
+export async function getAllUsers(req, res, next) {
   try {
-    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+    const authData = JSON.parse(await fs.promises.readFile(DBFilePath, 'utf-8'));
     req.allUsers = authData.users.map(({ username }) => username);
     next();
   } catch (error) {
