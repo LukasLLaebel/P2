@@ -1,8 +1,8 @@
 
 
-function popUp() {
+function popUp(id) {
   document.getElementById("user-modal").showModal();
-  createUsers();
+  createUsers(id);
   document.querySelector(".overlay").style.display = "block";
 }
 
@@ -12,17 +12,17 @@ function closePopUp() {
 }
 
 
-async function loadUsers() {
-  const res = await fetch("/roles/users");
+async function loadUsers(id) {
+  const res = await fetch("/roles/usersFromFile/"+id);
   const users = await res.json();
 
   console.log(users);
   return users;
 }
 
-async function createUsers() {
+async function createUsers(id) {
   try {
-    const usersArray = await loadUsers();
+    const usersArray = await loadUsers(id);
     
     console.log("Users Array:", usersArray);
 
@@ -40,7 +40,7 @@ async function createUsers() {
       const btn = document.createElement('h2');
       btn.style.backgroundColor = "#7B9669";
       btn.setAttribute("data-action", "owner");
-      btn.textContent = user;
+      btn.textContent = user.username;
 
       btnWrapper.appendChild(btn);
       userElement.appendChild(btnWrapper);
@@ -70,9 +70,10 @@ async function createFiles() {
     
     filesArray.forEach(file => {
       const fileElement = document.createElement("div");
+      fileElement.setAttribute("id", file.id);
       fileElement.classList.add('file-item');
       const fileName = document.createElement('h1');
-      fileName.textContent = file;
+      fileName.textContent = file.name;
       
       const btnWrapper = document.createElement("div");
       btnWrapper.classList.add('btn-wrapper');
@@ -111,11 +112,13 @@ document.addEventListener("click", (e) => {
 
   if (action === "colab-users") {
     const modal = document.getElementById("user-modal");
+    const fileItem = e.target.closest(".file-item");
+    const id = fileItem?.id;
 
     if (modal.open) {
       closePopUp();
     } else {
-      popUp();
+      popUp(id);
     }
   }
 });

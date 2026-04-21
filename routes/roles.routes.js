@@ -40,7 +40,9 @@ router.get('/', getAllUsers, (req, res) => {
 
 function getAllFiles(req, res, next) {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
-  req.allFiles = authData.shares.map(({ name }) => name);
+  req.allFiles = authData.shares.map(
+    ({ name, id }) => ({ name, id })
+  )
   console.log(req.allFiles);
   next();
   return;
@@ -48,9 +50,31 @@ function getAllFiles(req, res, next) {
 
 router.get("/files", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const users = authData.shares.map(u => u.name);
+  const files = authData.shares.map(u => 
+    ({name: u.name, id: u.id})
+  );
 
-  res.json(users);
+  res.json(files);
+});
+
+function getUsersFromFile(req, res, next) {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+  req.getUsersFromFile = authData.shares.map(({ username }) => username);
+  console.log(req.getUsersFromFile);
+  next();
+  return;
+}
+
+router.get("/usersFromFile/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  
+  const filteredUsers = authData.users.filter(user => 
+    user.shares.some (share => share.id === id)
+  ); 
+
+  res.json(filteredUsers);
 });
 
 router.put('/create', (req, res) => {
