@@ -27,10 +27,11 @@
       <h1 class="title">All Files</h1>
       <div class="overlay" style="display: none;"></div>
       <dialog id="user-modal">
-        <p>This dialog was opened using an invoker command.</p>
-        <input type="search" id="user-search" name="q" />
-         <button>Search User</button>
-        <input type="search" id="add-user" name="p" style="display: none;" />
+        <div class="search-box">
+          <input class="search-input" type="search" id="user-search" placeholder="Search users..." name="q" />
+          <button class="search-btn">Search User</button>
+        </div> 
+        <input type="search" placeholder="Search users..." id="add-user" name="p" style="display: none;"/>
          <button style="display: none;">Add User</button>
         <div class="user-wrapper" id="userList">
           <div class="user-1" style="background-color: #BAC8B1;">
