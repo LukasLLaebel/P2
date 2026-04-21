@@ -21,6 +21,13 @@ function getAllUsers(req, res, next) {
   return;
 }
 
+router.get("/users", (req, res) => {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  const users = authData.users.map(u => u.username);
+
+  res.json(users);
+});
+
 router.get('/', getAllUsers, (req, res) => {
   const view = req.query.view || 'display';
   res.render('../views/roles.ejs', {
