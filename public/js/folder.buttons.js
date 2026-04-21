@@ -1,29 +1,4 @@
 
-async function loadUsers() {
-  const res = await fetch("/roles/users");
-  const users = await res.json();
-
-  console.log(users);
-  return users;
-}
-
-document.querySelectorAll('h2').forEach(tag => {
-  tag.addEventListener('click', () => {
-    const action = tag.dataset.action;
-
-    if (action === "owner") {
-      alert("Jeff clicked!");
-    }
-
-    if (action === "colab-users") {
-      if (document.getElementById("user-modal").open) {
-        closePopUp();
-        return;
-      }
-      popUp();
-    }
-  });
-});
 
 function popUp() {
   document.getElementById("user-modal").showModal();
@@ -37,7 +12,13 @@ function closePopUp() {
 }
 
 
+async function loadUsers() {
+  const res = await fetch("/roles/users");
+  const users = await res.json();
 
+  console.log(users);
+  return users;
+}
 
 async function createUsers() {
   try {
@@ -69,3 +50,72 @@ async function createUsers() {
     console.error("Error loading users:", error);
   }
 }  
+
+async function loadFiles() {
+  const res = await fetch("/roles/files");
+  const files = await res.json();
+
+  console.log(files);
+  return files;
+}
+
+async function createFiles() {
+  try {
+    const filesArray = await loadFiles();
+    
+    console.log("Files Array:", filesArray);
+
+    const container = document.getElementById("folderList");
+    container.innerHTML = "";
+    
+    filesArray.forEach(file => {
+      const fileElement = document.createElement("div");
+      fileElement.classList.add('file-item');
+      const fileName = document.createElement('h1');
+      fileName.textContent = file;
+      
+      const btnWrapper = document.createElement("div");
+      btnWrapper.classList.add('btn-wrapper');
+
+      const ownerBtn = document.createElement('h2');
+      ownerBtn.style.backgroundColor = "#404e3b";
+      ownerBtn.setAttribute("data-action", "owner");
+      ownerBtn.textContent = "You";
+
+      const usersBtn = document.createElement('h2');
+      usersBtn.style.backgroundColor = "#6c8480";
+      usersBtn.setAttribute("data-action", "colab-users");
+      usersBtn.textContent = "Users";
+
+      fileElement.appendChild(fileName);
+      btnWrapper.appendChild(ownerBtn);
+      btnWrapper.appendChild(usersBtn);
+      fileElement.appendChild(btnWrapper);
+      container.appendChild(fileElement);
+    });
+  } catch (error) {
+    console.error("Error loading files:", error);
+  }
+}  
+createFiles();
+
+document.addEventListener("click", (e) => {
+  const tag = e.target.closest("h2");
+  if (!tag) return;
+
+  const action = tag.dataset.action;
+
+  if (action === "owner") {
+    alert("Jeff clicked!");
+  }
+
+  if (action === "colab-users") {
+    const modal = document.getElementById("user-modal");
+
+    if (modal.open) {
+      closePopUp();
+    } else {
+      popUp();
+    }
+  }
+});

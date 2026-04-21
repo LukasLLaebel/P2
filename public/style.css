@@ -173,6 +173,10 @@ p {
   margin: 0;
 }
 
+.user-btn-wrapper {
+  cursor: pointer;
+}
+
 dialog {
   border: none;
   border-radius: 25px;

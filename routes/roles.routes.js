@@ -38,6 +38,21 @@ router.get('/', getAllUsers, (req, res) => {
   });
 });
 
+function getAllFiles(req, res, next) {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+  req.allFiles = authData.shares.map(({ name }) => name);
+  console.log(req.allFiles);
+  next();
+  return;
+}
+
+router.get("/files", (req, res) => {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  const users = authData.shares.map(u => u.name);
+
+  res.json(users);
+});
+
 router.put('/create', (req, res) => {
   try {
     const { role, users, permission } = req.body;
