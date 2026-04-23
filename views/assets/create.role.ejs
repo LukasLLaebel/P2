@@ -1,22 +1,14 @@
-<form id="roleForm">
+<form id="roleForm" action="/roles/create" method="POST">
 	<label for="role">Role name:</label><br>
 	<input type="text" id="r-name" name="role" placeholder="role name ..."><br>
 
 	<h3>Give Role to Users:</h3>
 	<div id="usersList"></div>
 
-	<label for="permissions">Permissions:</label><br>
-	<input type="text" id="permission" name="permission" placeholder="read, write, delete"><br>
+	<h3>Give Permissions to Role:</h3>
+	<div id="permissionList"></div>
 
 	<button type="button" id="submitBtn">Create</button>
-
-	<datalist id="permissions">
-		<option value="read"></option>
-		<option value="write"></option>
-		<option value="delete"></option>
-		<option value="share"></option>
-		<option value="comment"></option>
-	</datalist>
 </form>
 
 <script>
@@ -55,50 +47,99 @@
 			usersListDiv.appendChild(userItem);
 			});
 			
-			// Form submission
-			document.getElementById('submitBtn').addEventListener('click', async (e) => {
-				e.preventDefault();
+			// Parse and display permissions
+			const allPermissions = '<%= locals.allPermissions %>';
+			const permissionArray = allPermissions.split(',').map(p => p.trim()).filter(p => p);
+			const permissionListDiv = document.getElementById('permissionList');
+			
+			permissionArray.forEach(permission => {
+				const permissionItem = document.createElement('div');
+				permissionItem.className = 'permission-item';
 				
-				// Get checked users from the list
-				const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
-				.map(checkbox => checkbox.value);
+				const h2 = document.createElement('h2');
+				h2.textContent = permission;
 				
-				// Validate that at least one user is selected
-				if (selectedUsers.length === 0) {
-					alert('Please select at least one user');
-					return;
-				}
+				const toggleSwitch = document.createElement('label');
+				toggleSwitch.className = 'toggle-switch';
 				
-				const formData = {
-					role: document.getElementById('r-name').value,
-					users: selectedUsers, // Users come from the toggles only
-					permissions: document.getElementById('permission').value.split(',').map(p => p.trim())
-					};
+				const checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.value = permission;
+				checkbox.className = 'permission-checkbox';
+				
+				const slider = document.createElement('span');
+				slider.className = 'toggle-slider';
+				
+				toggleSwitch.appendChild(checkbox);
+				toggleSwitch.appendChild(slider);
+				
+				h2.addEventListener('click', () => {
+					checkbox.checked = !checkbox.checked;
+					});
 					
-					try {
-						const response = await fetch('/roles/create', {
-							method: 'PUT',
-							headers: {
-								'Content-Type': 'application/json'
-								},
-								body: JSON.stringify(formData)
-								});
-								
-								const data = await response.json();
-								
-								if (data.success) {
-									alert('Role created successfully!');
-									document.getElementById('roleForm').reset();
-									// Uncheck all users
-									document.querySelectorAll('.user-checkbox').forEach(checkbox => {
-										checkbox.checked = false;
+					permissionItem.appendChild(h2);
+					permissionItem.appendChild(toggleSwitch);
+					permissionListDiv.appendChild(permissionItem);
+					});
+					
+					// Form submission
+					document.getElementById('submitBtn').addEventListener('click', async (e) => {
+						e.preventDefault();
+						
+						// Get checked users from the list
+						const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+						.map(checkbox => checkbox.value);
+						
+						// Get checked permissions from the list
+						const selectedPermissions = Array.from(document.querySelectorAll('.permission-checkbox:checked'))
+						.map(checkbox => checkbox.value);
+						
+						// Validate that at least one user is selected
+						if (selectedUsers.length === 0) {
+							alert('Please select at least one user');
+							return;
+						}
+						
+						// Validate that at least one permission is selected
+						if (selectedPermissions.length === 0) {
+							alert('Please select at least one permission');
+							return;
+						}
+						
+						const formData = {
+							role: document.getElementById('r-name').value,
+							users: selectedUsers,
+							permission: selectedPermissions  // Changed from 'permissions' to 'permission' to match backend
+							};
+							
+							try {
+								const response = await fetch('/roles/create', {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/json'
+										},
+										body: JSON.stringify(formData)
 										});
-										} else {
-											alert('Error: ' + data.message);
-										}
-										} catch (error) {
-											console.error('Error:', error);
-											alert('Failed to create role');
-										}
-										});
+										
+										const data = await response.json();
+										
+										if (data.success) {
+											alert('Role created successfully!');
+											document.getElementById('roleForm').reset();
+											// Uncheck all users
+											document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+												checkbox.checked = false;
+												});
+												// Uncheck all permissions
+												document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+													checkbox.checked = false;
+													});
+													} else {
+														alert('Error: ' + data.message);
+													}
+													} catch (error) {
+														console.error('Error:', error);
+														alert('Failed to create role');
+													}
+													});
 </script>

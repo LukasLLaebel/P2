@@ -29,7 +29,7 @@
 
 /* Toggle/Slider checkbox styling */
 .user-item input[type="checkbox"] {
-  width: 50px;
+  width: auto;
   height: 24px;
   cursor: pointer;
   accent-color: var(--jade-300);
@@ -79,4 +79,33 @@ input:checked+.toggle-slider {
 
 input:checked+.toggle-slider:before {
   transform: translateX(26px);
+}
+
+
+
+.permission-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.permission-item:hover {
+  background-color: var(--jade-100);
+}
+
+.permission-item h2 {
+  margin: 0;
+  flex: 1;
+  color: var(--jade-500);
+}
+
+.permission-item input[type="checkbox"] {
+  width: auto;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--jade-300);
 }
