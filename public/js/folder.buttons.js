@@ -1,124 +1,146 @@
 
 
-function popUp(id) {
-  document.getElementById("user-modal").showModal();
-  createUsers(id);
-  document.querySelector(".overlay").style.display = "block";
-}
+  function popUp(id) {
+    document.getElementById("user-modal").showModal();
+    createUsers(id);
+    document.querySelector(".overlay").style.display = "block";
+  }
 
-function closePopUp() {
-  document.getElementById("user-modal").close();
-  document.querySelector(".overlay").style.display = "none"; 
-}
+  function closePopUp() {
+    document.getElementById("user-modal").close();
+    document.querySelector(".overlay").style.display = "none"; 
+  }
 
 
-async function loadUsers(id) {
-  const res = await fetch("/roles/usersFromFile/"+id);
-  const users = await res.json();
+  async function loadUsers(id) {
+    const res = await fetch("/roles/usersFromFile/"+id);
+    const users = await res.json();
 
-  console.log(users);
-  return users;
-}
+    console.log(users);
+    return users;
+  }
 
-async function createUsers(id) {
-  try {
-    const usersArray = await loadUsers(id);
-    
-    console.log("Users Array:", usersArray);
+  async function createUsers(id) {
+    try {
+      let usersArray = await loadUsers(id);
 
-    const container = document.getElementById("userList");
-    container.innerHTML = "";
-    
-    usersArray.forEach(user => {
-      const userElement = document.createElement("div");
-      userElement.classList.add('user-item');
-      userElement.style.backgroundColor = "#BAC8B1";
+      const searchValue = document.getElementById("user-search").value;
+      console.log("Raw search:", `"${searchValue}"`);
+
+      const search = searchValue.trim().toLowerCase();
+
+      const filteredUsers = usersArray.filter(user =>
+        user.username.trim().toLowerCase().includes(search)
+      );
+
+      usersArray = filteredUsers;
+
+
+      console.log("Users Array:", usersArray);
+
+      const container = document.getElementById("userList");
+      container.innerHTML = "";
       
-      const btnWrapper = document.createElement("div");
-      btnWrapper.classList.add('user-btn-wrapper');
+      usersArray.forEach(user => {
+        const userElement = document.createElement("div");
+        userElement.classList.add('user-item');
+        userElement.style.backgroundColor = "#BAC8B1";
+        
+        const btnWrapper = document.createElement("div");
+        btnWrapper.classList.add('user-btn-wrapper');
 
-      const btn = document.createElement('h2');
-      btn.style.backgroundColor = "#7B9669";
-      btn.setAttribute("data-action", "owner");
-      btn.textContent = user.username;
+        const btn = document.createElement('h2');
+        btn.style.backgroundColor = "#7B9669";
+        btn.setAttribute("data-action", "owner");
+        btn.textContent = user.username;
 
-      btnWrapper.appendChild(btn);
-      userElement.appendChild(btnWrapper);
-      container.appendChild(userElement);
-    });
-  } catch (error) {
-    console.error("Error loading users:", error);
+        btnWrapper.appendChild(btn);
+        userElement.appendChild(btnWrapper);
+        container.appendChild(userElement);
+      });
+    } catch (error) {
+      console.error("Error loading users:", error);
+    }
+  }  
+
+  async function loadFiles() {
+    const res = await fetch("/roles/files");
+    const files = await res.json();
+
+    console.log(files);
+    return files;
   }
-}  
 
-async function loadFiles() {
-  const res = await fetch("/roles/files");
-  const files = await res.json();
-
-  console.log(files);
-  return files;
-}
-
-async function createFiles() {
-  try {
-    const filesArray = await loadFiles();
-    
-    console.log("Files Array:", filesArray);
-
-    const container = document.getElementById("folderList");
-    container.innerHTML = "";
-    
-    filesArray.forEach(file => {
-      const fileElement = document.createElement("div");
-      fileElement.setAttribute("id", file.id);
-      fileElement.classList.add('file-item');
-      const fileName = document.createElement('h1');
-      fileName.textContent = file.name;
+  async function createFiles() {
+    try {
+      const filesArray = await loadFiles();
       
-      const btnWrapper = document.createElement("div");
-      btnWrapper.classList.add('btn-wrapper');
+      console.log("Files Array:", filesArray);
 
-      const ownerBtn = document.createElement('h2');
-      ownerBtn.style.backgroundColor = "#404e3b";
-      ownerBtn.setAttribute("data-action", "owner");
-      ownerBtn.textContent = "You";
+      const container = document.getElementById("folderList");
+      container.innerHTML = "";
+      
+      filesArray.forEach(file => {
+        const fileElement = document.createElement("div");
+        fileElement.setAttribute("id", file.id);
+        fileElement.classList.add('file-item');
+        const fileName = document.createElement('h1');
+        fileName.textContent = file.name;
+        
+        const btnWrapper = document.createElement("div");
+        btnWrapper.classList.add('btn-wrapper');
 
-      const usersBtn = document.createElement('h2');
-      usersBtn.style.backgroundColor = "#6c8480";
-      usersBtn.setAttribute("data-action", "colab-users");
-      usersBtn.textContent = "Users";
+        const ownerBtn = document.createElement('h2');
+        ownerBtn.style.backgroundColor = "#404e3b";
+        ownerBtn.setAttribute("data-action", "owner");
+        ownerBtn.textContent = "You";
 
-      fileElement.appendChild(fileName);
-      btnWrapper.appendChild(ownerBtn);
-      btnWrapper.appendChild(usersBtn);
-      fileElement.appendChild(btnWrapper);
-      container.appendChild(fileElement);
-    });
-  } catch (error) {
-    console.error("Error loading files:", error);
-  }
-}  
-createFiles();
+        const usersBtn = document.createElement('h2');
+        usersBtn.style.backgroundColor = "#6c8480";
+        usersBtn.setAttribute("data-action", "colab-users");
+        usersBtn.textContent = "Users";
 
-document.addEventListener("click", (e) => {
-  const tag = e.target.closest("h2");
-  if (!tag) return;
+        fileElement.appendChild(fileName);
+        btnWrapper.appendChild(ownerBtn);
+        btnWrapper.appendChild(usersBtn);
+        fileElement.appendChild(btnWrapper);
+        container.appendChild(fileElement);
+      });
+    } catch (error) {
+      console.error("Error loading files:", error);
+    }
+  }  
+  createFiles();
 
-  const action = tag.dataset.action;
+  document.addEventListener("click", (e) => {
+    const tag = e.target.closest("h2");
+    if (!tag) return;
 
-  if (action === "owner") {
-    alert("Jeff clicked!");
-  }
+    const action = tag.dataset.action;
 
-  if (action === "colab-users") {
-    const modal = document.getElementById("user-modal");
-    const fileItem = e.target.closest(".file-item");
-    const id = fileItem?.id;
+    if (action === "owner") {
+      alert("Jeff clicked!");
+    }
 
-    if (modal.open) {
-      closePopUp();
-    } else {
+    if (action === "colab-users") {
+      const modal = document.getElementById("user-modal");
+      const fileItem = e.target.closest(".file-item");
+      const id = fileItem?.id;
+      modal.setAttribute("idd", id);
+
+      if (modal.open) {
+        closePopUp();
+      } else {
+        popUp(id);
+      }
+    }
+    if (action === "user-search"){
+      const modal = document.getElementById("user-modal");
+      const fileItem = e.target.closest("user-modal");
+      const id = modal.getAttribute("idd");
+
+      console.log(id)
+
       popUp(id);
     }
-  }
-});
+  });
