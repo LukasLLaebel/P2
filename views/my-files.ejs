@@ -15,8 +15,10 @@
   <header>
     <h1>Username</h1>
     <div class="profile-pic">
-      <img src="./" alt="PP"
-        onerror=" this.style.display = 'none'; this.nextElementSibling.style.display = 'inline-block';">
+      <img src="./" alt="PP" onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'inline-block';
+          ">
       <i class="fa-solid fa-user" style="display: none"></i>
     </div>
   </header>
@@ -29,7 +31,7 @@
       <div class="folder-wrapper">
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
-            <div id="<%= folder.id %>" class="folder-<%= String(index + 1).padStart(2, '0') %> file-item">
+            <div class="folder-<%= String(index + 1).padStart(2, '0') %>">
               <h1>
                 <%= folder.name %>
               </h1>
@@ -50,7 +52,7 @@
                   <% } %>
       </div>
   </main>
-  <script type="module" src="/js/folder.buttons.js"></script>
+  <script src="./js/folder.buttons.js"></script>
 </body>
 
 </html>
