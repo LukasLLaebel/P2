@@ -174,8 +174,14 @@ p {
   margin: 0;
 }
 
-.user-btn-wrapper {
+.user-btn-wrapper h2 {
   cursor: pointer;
+}
+
+.user-btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 dialog {

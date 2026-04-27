@@ -49,12 +49,20 @@
         const btnWrapper = document.createElement("div");
         btnWrapper.classList.add('user-btn-wrapper');
 
-        const btn = document.createElement('h2');
-        btn.style.backgroundColor = "#7B9669";
-        btn.setAttribute("data-action", "owner");
-        btn.textContent = user.username;
+        const userBtn = document.createElement('h2');
+        userBtn.style.backgroundColor = "#7B9669";
+        userBtn.setAttribute("data-action", "owner");
+        userBtn.textContent = user.username;
 
-        btnWrapper.appendChild(btn);
+        const remBtn = document.createElement('h2');
+        remBtn.style.backgroundColor = "#7B9669";
+        remBtn.setAttribute("data-action", "rem-user");
+        remBtn.setAttribute("data-user", user.username);
+        remBtn.textContent = "Remove";
+
+        
+        btnWrapper.appendChild(userBtn);
+        btnWrapper.appendChild(remBtn);
         userElement.appendChild(btnWrapper);
         container.appendChild(userElement);
       });
@@ -139,8 +147,6 @@
       const fileItem = e.target.closest("user-modal");
       const id = modal.getAttribute("idd");
 
-      console.log(id)
-
       popUp(id);
     }
 
@@ -178,7 +184,48 @@
       } catch (error) {
         console.error('Error:', error);
         alert('Failed to share share');
-      }             
+      }
+      
+      popUp(id);
+    }
+
+    if (action === "rem-user"){
+      const modal = document.getElementById("user-modal");
+      const fileItem = e.target.closest("user-modal");
+      const id = Number(modal.getAttribute("idd"));
+      console.log("ID in add user: "+id);
+      const user = e.target.closest("h2").getAttribute("data-user");
+
+      console.log("ShareID "+id)
+      console.log("User "+user)
+
+      const formData = {
+        username: user,
+        shareId: id,
+      };
+        
+      try {
+        const response = await fetch('/shares/userrem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('Share removed from user successfully!');
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to remove share from user');
+      }
+      
+      popUp(id);
     }
   });
   

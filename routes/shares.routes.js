@@ -57,17 +57,12 @@ router.get("/usersFromFile/:id", (req, res) => {
 
 router.post('/useradd', (req, res) => {
   try {
-    const id = Number(req.params.id);
-
     const { username, shareId } = req.body;
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    const shareName = "Folder Placeholder";
-
     // Find the share
     const share = authData.shares.find(s => s.id === shareId);
-    console.log("Share "+share.name);
     if (!share) {
       return res.status(404).json({
         success: false,
@@ -75,13 +70,18 @@ router.post('/useradd', (req, res) => {
       });
     }
 
-    console.log("Username "+username);
     const user = authData.users.find(u => u.username === username);
-    console.log("Share "+share.name);
-    if (!share) {
+    if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Share not found'
+        message: 'User not found'
+      });
+    }
+
+    if (user.shares.some(s => s.id === shareId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already has this share'
       });
     }
 
@@ -91,7 +91,6 @@ router.post('/useradd', (req, res) => {
       name: share.name,
       roles: []
     };
-    console.log("User "+user.username);
     user.shares.push(newShared);
 
     fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
@@ -107,6 +106,49 @@ router.post('/useradd', (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error sharing share',
+      error: error.message
+    });
+  }
+});
+
+router.post('/userrem', (req, res) => {
+  try {
+    const { username, shareId } = req.body;
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    // Find the share
+    const share = authData.shares.find(s => s.id === shareId);
+    if (!share) {
+      return res.status(404).json({
+        success: false,
+        message: 'Share not found'
+      });
+    }
+
+    const user = authData.users.find(u => u.username === username);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    user.shares = user.shares.filter(s => s.id !== shareId);
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Share removed successfully from user',
+      share: share
+    });
+
+  } catch (error) {
+    console.error('Error removing share from user:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error removing share',
       error: error.message
     });
   }
