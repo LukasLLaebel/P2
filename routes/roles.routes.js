@@ -27,7 +27,8 @@ router.get('/', getAllUsers, (req, res) => {
     user: "Jeff",
     allUsers: req.allUsers,
     folder: "Folder 1",
-    currentView: view
+    currentView: view,
+    rolepressed: true
   });
 });
 

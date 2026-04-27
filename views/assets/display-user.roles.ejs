@@ -1,4 +1,4 @@
-<div class="users-box">
+<div class="users-box hidden">
 
   <div class="user active-user">
     <div class="profile-pic">
@@ -28,4 +28,41 @@
     <div class="name">Laura</div>
   </div>
 
+</div>
+<div class="popup-overlay hidden" id="addUserPopup">
+  <div class="popup-box">
+    <button class="close-popup" type="button">X</button>
+
+    <h2>Add User</h2>
+
+    <label for="username">Username</label>
+    <input id="username" type="text" placeholder="Write username">
+
+    <button class="popup-action-btn" type="button">Add</button>
+  </div>
+</div>
+
+<div class="popup-overlay hidden" id="editRolePopup">
+  <div class="popup-box">
+    <button class="close-popup" type="button">X</button>
+
+    <h2>Edit Role</h2>
+
+    <label for="roleName">Role name</label>
+    <input id="roleName" type="text" value="Admin">
+
+    <button class="popup-action-btn" type="button">Save</button>
+  </div>
+</div>
+
+<div class="popup-overlay hidden" id="leaveRolePopup">
+  <div class="popup-box">
+    <button class="close-popup" type="button">X</button>
+
+    <h2>Leave Role</h2>
+
+    <p>Are you sure you want to leave this role?</p>
+
+    <button class="popup-action-btn" type="button">Yes, leave</button>
+  </div>
 </div>

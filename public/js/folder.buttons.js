@@ -6,7 +6,7 @@ document.querySelectorAll('h2').forEach(tag => {
       alert("Jeff clicked!");
     }
 
-    if (action === "colab-users") {
+    if (action === "collab-users") {
       alert("Users clicked!");
     }
   });

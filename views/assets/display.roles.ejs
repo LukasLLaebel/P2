@@ -1,15 +1,24 @@
 <div class="roles-wrapper">
-  <div class="role-01">
+  <div class="role-header">
     <h1>Admin</h1>
+
     <div class="buttons">
-      <div class="users-wrapper">
+      <button class="show-users-btn users-wrapper" type="button">
         <i class="fa-solid fa-user"></i>
         <h2>3</h2>
-      </div>
-      <i class="fa-solid fa-pen-to-square edit"></i>
-      <i class="fa-solid fa-x cross"></i>
+      </button>
+
+      <button class="add-user-btn" type="button">
+        <i class="fa-solid fa-user-plus"></i>
+      </button>
+
+      <button class="edit-btn" type="button">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
+
+      <button class="leave-btn cross" type="button">
+        <i class="fa-solid fa-x"></i>
+      </button>
     </div>
   </div>
 </div>
-
-<%- include("./display-user.roles.ejs") %>
