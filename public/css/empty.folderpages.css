@@ -1,0 +1,63 @@
+@import "../style.css";
+/*
+  --jade-100: #E6E6E6;
+  --jade-200: #BAC8B1;
+  --jade-300: #7B9669;
+  --jade-400: #6C8480;
+  --jade-500: #404E3B;
+*/
+
+.empty-state-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: var(--jade-200);
+  border-radius: 16px;
+  width: 33%;
+  align-self: center;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, var(--jade-200) 0%, var(--jade-300) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  color: var(--jade-500);
+}
+
+.empty-title {
+  color: var(--jade-500);
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.empty-action-btn {
+  font-family: "Arbutus Slab";
+  background-color: var(--jade-500);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.empty-action-btn h1 {
+  margin: 0;
+  padding: 15px 22px;
+  color: var(--jade-200);
+}
+
+.empty-action-btn:hover {
+  background-color: var(--jade-300);
+}
