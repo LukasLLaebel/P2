@@ -1,6 +1,10 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import { syncUserFolders } from "../services/users.service.js";
+import { getAllUsers } from "../middleware/users.middleware.js";
+import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
+
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -16,10 +20,11 @@ router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login.html"));
 });
 
-router.get('/all', (req, res) => {
+router.get('/all', getAllUsers, syncUserFolders, (req, res) => {
   res.render('../views/all-files.ejs', {
     user: req.user
   });
+
 });
 
 router.get("/shared", (req, res) => {
@@ -28,8 +33,12 @@ router.get("/shared", (req, res) => {
   });
 });
 
-router.get('/owned', (req, res) => {
-  res.render('../views/my-files.ejs', { user: req.user });
+router.get('/owned', getFoldersForUser, (req, res) => {
+  res.render('../views/my-files.ejs', {
+    user: req.user,
+    userFolders: req.userFolders,
+    currentUser: req.currentUser
+  });
 });
 
 

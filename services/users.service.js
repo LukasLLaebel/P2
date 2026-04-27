@@ -17,6 +17,6 @@ export async function syncUserFolders(req, res, next) {
     next();
   } catch (error) {
     console.error('Error syncing user folders:', error);
-    //res.status(500).json({ error: 'Failed to sync user folders' });
+    res.status(500).json({ error: 'Failed to sync user folders' });
   }
 }
