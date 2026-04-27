@@ -1,26 +1,35 @@
-<form id="roleForm">
-	<label for="role">Role name:</label><br>
-	<input type="text" id="r-name" name="role" placeholder="role name ..."><br>
+<div class="role-container">
+	<form id="roleForm">
 
-	<h3>Give Role to Users:</h3>
-	<div id="usersList"></div>
+		<div class="card">
+			<h2>Role Information</h2>
+			<input type="text" id="r-name" name="role" placeholder="Enter role name...">
+		</div>
 
-	<label for="permissions">Permissions:</label><br>
-	<input type="text" id="permission" name="permission" placeholder="read, write, delete"><br>
+		<div class="card">
+			<div class="card-header">
+				<h2>Assign Users</h2>
+				<p>Select who gets this role</p>
+			</div>
+			<div id="usersList" class="list"></div>
+		</div>
 
-	<button type="button" id="submitBtn">Create</button>
+		<div class="card">
+			<div class="card-header">
+				<h2>Permissions</h2>
+				<p>Control what this role can do</p>
+			</div>
+			<div id="permissionList" class="list"></div>
+		</div>
 
-	<datalist id="permissions">
-		<option value="read"></option>
-		<option value="write"></option>
-		<option value="delete"></option>
-		<option value="share"></option>
-		<option value="comment"></option>
-	</datalist>
-</form>
+		<div class="submit-wrapper">
+			<button type="button" id="submitBtn">Create Role</button>
+		</div>
+	</form>
+</div>
 
 <script>
-	// Parse and display users
+
 	const allUsers = '<%= locals.allUsers %>';
 	const usersArray = allUsers.split(',').map(u => u.trim()).filter(u => u);
 	const usersListDiv = document.getElementById('usersList');
@@ -46,59 +55,126 @@
 		toggleSwitch.appendChild(checkbox);
 		toggleSwitch.appendChild(slider);
 		
-		h2.addEventListener('click', () => {
-			checkbox.checked = !checkbox.checked;
+		userItem.addEventListener('click', (e) => {
+			if (e.target.tagName !== 'INPUT') {
+				checkbox.checked = !checkbox.checked;
+				checkbox.dispatchEvent(new Event('change'));
+			}
 			});
 			
-			userItem.appendChild(h2);
-			userItem.appendChild(toggleSwitch);
-			usersListDiv.appendChild(userItem);
-			});
-			
-			// Form submission
-			document.getElementById('submitBtn').addEventListener('click', async (e) => {
-				e.preventDefault();
+			checkbox.addEventListener('change', () => {
+				userItem.classList.toggle('active', checkbox.checked);
+				});
 				
-				// Get checked users from the list
-				const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
-				.map(checkbox => checkbox.value);
+				userItem.appendChild(h2);
+				userItem.appendChild(toggleSwitch);
+				usersListDiv.appendChild(userItem);
+				});
 				
-				// Validate that at least one user is selected
-				if (selectedUsers.length === 0) {
-					alert('Please select at least one user');
-					return;
-				}
+				const allPermissions = '<%= locals.allPermissions %>';
+				const permissionArray = allPermissions.split(',').map(p => p.trim()).filter(p => p);
+				const permissionListDiv = document.getElementById('permissionList');
 				
-				const formData = {
-					role: document.getElementById('r-name').value,
-					users: selectedUsers, // Users come from the toggles only
-					permissions: document.getElementById('permission').value.split(',').map(p => p.trim())
-					};
+				permissionArray.forEach(permission => {
+					const permissionItem = document.createElement('div');
+					permissionItem.className = 'permission-item';
 					
-					try {
-						const response = await fetch('/roles/create', {
-							method: 'PUT',
-							headers: {
-								'Content-Type': 'application/json'
-								},
-								body: JSON.stringify(formData)
-								});
+					const h2 = document.createElement('h2');
+					h2.textContent = permission;
+					
+					const toggleSwitch = document.createElement('label');
+					toggleSwitch.className = 'toggle-switch';
+					
+					const checkbox = document.createElement('input');
+					checkbox.type = 'checkbox';
+					checkbox.value = permission;
+					checkbox.className = 'permission-checkbox';
+					
+					const slider = document.createElement('span');
+					slider.className = 'toggle-slider';
+					
+					toggleSwitch.appendChild(checkbox);
+					toggleSwitch.appendChild(slider);
+					
+					permissionItem.addEventListener('click', (e) => {
+						if (e.target.tagName !== 'INPUT') {
+							checkbox.checked = !checkbox.checked;
+							checkbox.dispatchEvent(new Event('change'));
+						}
+						});
+						
+						checkbox.addEventListener('change', () => {
+							permissionItem.classList.toggle('active', checkbox.checked);
+							});
+							
+							permissionItem.appendChild(h2);
+							permissionItem.appendChild(toggleSwitch);
+							permissionListDiv.appendChild(permissionItem);
+							});
+							
+							document.getElementById('submitBtn').addEventListener('click', async (e) => {
+								e.preventDefault();
 								
-								const data = await response.json();
+								const roleInput = document.getElementById('r-name');
+								const roleValue = roleInput.value.trim();
 								
-								if (data.success) {
-									alert('Role created successfully!');
-									document.getElementById('roleForm').reset();
-									// Uncheck all users
-									document.querySelectorAll('.user-checkbox').forEach(checkbox => {
-										checkbox.checked = false;
-										});
-										} else {
-											alert('Error: ' + data.message);
-										}
-										} catch (error) {
-											console.error('Error:', error);
-											alert('Failed to create role');
-										}
-										});
+								// 🔥 ROLE VALIDATION
+								if (!roleValue) {
+									roleInput.classList.add('error');
+									roleInput.focus();
+									return;
+									} else {
+										roleInput.classList.remove('error');
+									}
+									
+									const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+									.map(cb => cb.value);
+									
+									const selectedPermissions = Array.from(document.querySelectorAll('.permission-checkbox:checked'))
+									.map(cb => cb.value);
+									
+									if (selectedUsers.length === 0) {
+										alert('Please select at least one user');
+										return;
+									}
+									
+									if (selectedPermissions.length === 0) {
+										alert('Please select at least one permission');
+										return;
+									}
+									
+									const formData = {
+										role: roleValue,
+										users: selectedUsers,
+										permission: selectedPermissions
+										};
+										
+										try {
+											const response = await fetch('/roles/create', {
+												method: 'POST',
+												headers: {'Content-Type': 'application/json'},
+												body: JSON.stringify(formData)
+												});
+												
+												const data = await response.json();
+												
+												if (data.success) {
+													alert('Role created successfully!');
+													document.getElementById('roleForm').reset();
+													
+													// reset UI state
+													document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+													document.querySelectorAll('.permission-checkbox').forEach(cb => cb.checked = false);
+													document.querySelectorAll('.user-item, .permission-item')
+													.forEach(el => el.classList.remove('active'));
+													
+													} else {
+														alert('Error: ' + data.message);
+													}
+													
+													} catch (error) {
+														console.error(error);
+														alert('Failed to create role');
+													}
+													});
 </script>
