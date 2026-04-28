@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-  <link href="css/all-files.css" rel="stylesheet">
+  <link href="./css/my-files.css" rel="stylesheet">
+  <link href="./css/empty.folderpages.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
@@ -25,67 +26,43 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
-      <div class="overlay" style="display: none;"></div>
-      <dialog id="user-modal">
-        <div class="search-wrapper">
-          <div class="search-box">
-            <input class="search-input" type="search" id="user-search" placeholder="Search users..."/>
-            <div class="search-btn-wrapper">
-              <h2 class="search-btn" data-action="user-search">Search User</h2>
+      <div class="folder-wrapper">
+        <% let test=false %>
+          <% if (test) { %>
+            <div class="folder-01">
+              <h1>Folder 1</h1>
+              <div class="btn-wrapper">
+                <h2 style="background-color: #7b9669" data-action="owner">
+                  asdasdfghfdsasafghjfgfdaSFGHGJHFS...
+                </h2>
+                <h2 style="background-color: #6c8480" data-action="colab-users">
+                  Users
+                </h2>
+              </div>
             </div>
-          </div> 
-          <div class="search-box">
-            <input class="search-input" type="search" id="user-add" placeholder="Add user..."/>
-            <div class="search-btn-wrapper">
-              <h2 class="search-btn" data-action="user-add">Add User</h2>
+            <div class="folder-02">
+              <h1>Folder 2</h1>
+              <div class="btn-wrapper">
+                <h2 style="background-color: #404e3b" data-action="owner">You</h2>
+                <h2 style="background-color: #6c8480" data-action="colab-users">
+                  Users
+                </h2>
+              </div>
             </div>
-          </div>  
-        </div>  
-        <div class="user-wrapper" id="userList">
-          <div class="user-1" style="background-color: #BAC8B1;">
-            <div class="user-btn-wrapper">
-              <h2 style="background-color: #7B9669" data-action="owner">User1</h2>
+            <div class="folder-03">
+              <h1>Folder 3</h1>
+              <div class="btn-wrapper">
+                <h2 style="background-color: #404e3b" data-action="owner">You</h2>
+                <h2 style="background-color: #6c8480" data-action="colab-users">
+                  Users
+                </h2>
+              </div>
             </div>
-          </div>
-        </div> 
-        <div class="btn-wrapper">
-          <h2 style="background-color: #7b9669" data-action="colab-users">
-            Close
-          </h2>
-        </div>
-      </dialog>
-      <div class="folder-wrapper" id="folderList">
-
-        <div class="folder-01">
-          <h1>Folder 1</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #7b9669" data-action="owner">
-              asdasdfghfdsasafghjfgfdaSFGHGJHFS...
-            </h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
-        <div class="folder-02">
-          <h1>Folder 2</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
-        <div class="folder-03">
-          <h1>Folder 3</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
       </div>
+      <% } else { %>
+        <%- include("./assets/empty.folderpages.ejs") %>
+          <% } %>
+
     </div>
   </main>
   <script type="module" src="/js/folder.buttons.js"></script>
