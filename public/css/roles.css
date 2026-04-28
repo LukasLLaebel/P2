@@ -89,6 +89,7 @@
   height: 55px;
   background-color: var(--jade-100);
   cursor: pointer;
+  border-radius: 8px;
 }
 
 i {
@@ -106,6 +107,13 @@ i {
 .cross {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
+
+  display: grid;
+  place-items: center;
+
+  line-height: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .users-wrapper {
@@ -132,6 +140,8 @@ i {
   background-color: var(--jade-400);
   margin-top: 8px;
   padding: 0;
+  border-radius: 8px; 
+  overflow: hidden; 
 }
 
 .user {
@@ -187,4 +197,151 @@ i {
   justify-content: center;
   font-size: 14px;
   font-weight: bold;
+}
+
+.role-01 {
+  width: 100%;
+  background-color: var(--jade-400);
+  border: 2px solid var(--jade-400);
+  border-radius: 8px 8px 0 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.role-01 h1 {
+  margin: 0;
+  padding: 14px 18px;
+
+  background-color: var(--jade-100);
+  color: var(--jade-500);
+  font-size: 24px;
+}
+
+.role-01 .buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 8px;
+}
+
+.role-01 .buttons button {
+  width: 56px;
+  height: 56px;
+
+  background-color: var(--jade-100);
+  border: 2px solid var(--jade-500);
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  padding: 0;
+}
+
+.role-01 .users-wrapper {
+  position: relative;
+}
+
+.role-01 .users-wrapper h2 {
+  position: absolute;
+  top: 2px;
+  right: 7px;
+
+  margin: 0;
+  padding: 0;
+
+  font-size: 16px;
+  color: var(--jade-500);
+}
+
+.role-01 .buttons button i {
+  font-size: 32px;
+  color: var(--jade-500);
+}
+
+.hidden {
+  display: none !important;
+}
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+.popup-box {
+  width: 360px;
+
+  background-color: var(--jade-100);
+  border: 2px solid var(--jade-500);
+  border-radius: 12px;
+
+  padding: 24px;
+  position: relative;
+}
+
+.popup-box h2 {
+  margin-top: 0;
+  color: var(--jade-500);
+}
+
+.popup-box label,
+.popup-box p {
+  color: var(--jade-500);
+  font-size: 18px;
+}
+
+.popup-box input {
+  box-sizing: border-box;
+  width: 100%;
+  
+  padding: 10px;
+  margin: 10px 0 16px 0;
+
+  border: 2px solid var(--jade-500);
+  border-radius: 8px;
+
+  font-size: 16px;
+}
+
+.close-popup {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: none;
+  border: none;
+
+  color: var(--jade-500);
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.popup-action-btn {
+  padding: 10px 16px;
+
+  background-color: var(--jade-500);
+  color: var(--jade-100);
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
 }

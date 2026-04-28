@@ -21,8 +21,48 @@ router.get('/', getAllUsers, getAllPermissions, (req, res) => {
     allPermissions: req.allPermissions,
     allUsers: req.allUsers,
     folder: "Folder 1",
-    currentView: view
+    currentView: view,
+    rolepressed: true
   });
+});
+
+function getAllFiles(req, res, next) {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+  req.allFiles = authData.shares.map(
+    ({ name, id }) => ({ name, id })
+  )
+  console.log(req.allFiles);
+  next();
+  return;
+}
+
+router.get("/files", (req, res) => {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  const files = authData.shares.map(u => 
+    ({name: u.name, id: u.id})
+  );
+
+  res.json(files);
+});
+
+function getUsersFromFile(req, res, next) {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+  req.getUsersFromFile = authData.shares.map(({ username }) => username);
+  console.log(req.getUsersFromFile);
+  next();
+  return;
+}
+
+router.get("/usersFromFile/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  
+  const filteredUsers = authData.users.filter(user => 
+    user.shares.some (share => share.id === id)
+  ); 
+
+  res.json(filteredUsers);
 });
 
 router.post('/create', (req, res) => {
