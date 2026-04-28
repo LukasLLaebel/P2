@@ -29,7 +29,7 @@
       <div class="folder-wrapper">
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
-            <div class="folder-<%= String(index + 1).padStart(2, '0') %>">
+            <div id="<%= folder.id %>" class="folder-<%= String(index + 1).padStart(2, '0') %> file-item">
               <h1>
                 <%= folder.name %>
               </h1>
