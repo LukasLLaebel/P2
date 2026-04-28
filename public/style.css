@@ -161,7 +161,7 @@ p {
   align-items: center;
 }
 
-.user-wrapper > * {
+.user-wrapper>* {
   display: flex;
   padding: 5px;
   border-radius: 15px;
