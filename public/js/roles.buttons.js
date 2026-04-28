@@ -2,22 +2,22 @@ function loadRolesButtons() {
   const showUserBtn = document.querySelector(".show-users-btn");
   const addUserBtn = document.querySelector(".add-user-btn");
   const editBtn = document.querySelector(".edit-btn");
-  const leaveBtn = document.querySelector(".leave-btn");
+  const deleteBtn = document.querySelector(".delete-btn");
 
   const usersBox = document.querySelector(".users-box");
 
   const addUserPopup = document.querySelector("#addUserPopup");
   const editRolePopup = document.querySelector("#editRolePopup");
-  const leaveRolePopup = document.querySelector("#leaveRolePopup");
+  const deleteRolePopup = document.querySelector("#deleteRolePopup");
 
   console.log("showUserBtn:", showUserBtn);
   console.log("addUserBtn:", addUserBtn);
   console.log("editBtn:", editBtn);
-  console.log("leaveBtn:", leaveBtn);
+  console.log("deleteBtn:", deleteBtn);
 
   console.log("addUserPopup:", addUserPopup);
   console.log("editRolePopup:", editRolePopup);
-  console.log("leaveRolePopup:", leaveRolePopup);
+  console.log("deleteRolePopup:", deleteRolePopup);
 
   if (showUserBtn && usersBox) {
     showUserBtn.addEventListener("click", () => {
@@ -44,13 +44,13 @@ function loadRolesButtons() {
     console.log("Edit button or popup missing");
   }
 
-  if (leaveBtn && leaveRolePopup) {
-    leaveBtn.addEventListener("click", () => {
-      console.log("Leave clicked");
-      leaveRolePopup.classList.remove("hidden");
+  if (deleteBtn && deleteRolePopup) {
+    deleteBtn.addEventListener("click", () => {
+      console.log("Delete clicked");
+      deleteRolePopup.classList.remove("hidden");
     });
   } else {
-    console.log("Leave button or popup missing");
+    console.log("Delete button or popup missing");
   }
 
   const closePopupButtons = document.querySelectorAll(".close-popup");
