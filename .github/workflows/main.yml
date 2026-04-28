@@ -14,10 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
+      
       - run: npm install
 
+      - run: npm run test
+              
       - run: |
           npm run start &
-          sleep 3
+          npx wait-on http://localhost:3000 --timeout 30000
           curl http://localhost:3000 || exit 1
