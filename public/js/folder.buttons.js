@@ -40,6 +40,9 @@
 
       const container = document.getElementById("userList");
       container.innerHTML = "";
+
+      const res = await fetch("/shares/getFolderOwner/"+id);
+      const owner = await res.json();
       
       usersArray.forEach(user => {
         const userElement = document.createElement("div");
@@ -55,14 +58,19 @@
         userBtn.textContent = user.username;
 
         const remBtn = document.createElement('h2');
-        remBtn.style.backgroundColor = "#7B9669";
-        remBtn.setAttribute("data-action", "rem-user");
-        remBtn.setAttribute("data-user", user.username);
-        remBtn.textContent = "Remove";
-
+        console.log(user.username)
+        console.log(owner.username)
+        if (user.username != owner.username) {
+          remBtn.style.backgroundColor = "#7B9669";
+          remBtn.setAttribute("data-action", "rem-user");
+          remBtn.setAttribute("data-user", user.username);
+          remBtn.textContent = "Remove";
+        }
         
         btnWrapper.appendChild(userBtn);
-        btnWrapper.appendChild(remBtn);
+        if (user.username != owner.username) {
+          btnWrapper.appendChild(remBtn);
+        }  
         userElement.appendChild(btnWrapper);
         container.appendChild(userElement);
       });
@@ -99,18 +107,24 @@
         btnWrapper.classList.add('btn-wrapper');
 
         const ownerBtn = document.createElement('h2');
-        ownerBtn.style.backgroundColor = "#404e3b";
+        ownerBtn.style.backgroundColor = "#7B9669";
         ownerBtn.setAttribute("data-action", "owner");
         ownerBtn.textContent = "You";
 
         const usersBtn = document.createElement('h2');
-        usersBtn.style.backgroundColor = "#6c8480";
+        usersBtn.style.backgroundColor = "#6C8480";
         usersBtn.setAttribute("data-action", "colab-users");
         usersBtn.textContent = "Users";
+        
+        const rolesBtn = document.createElement('h2');
+        rolesBtn.style.backgroundColor = "#404E3B";
+        rolesBtn.setAttribute("data-action", "show-roles");
+        rolesBtn.textContent = "Roles";
 
         fileElement.appendChild(fileName);
         btnWrapper.appendChild(ownerBtn);
         btnWrapper.appendChild(usersBtn);
+        btnWrapper.appendChild(rolesBtn);
         fileElement.appendChild(btnWrapper);
         container.appendChild(fileElement);
       });
