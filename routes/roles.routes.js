@@ -29,6 +29,14 @@ router.post('/create', (req, res) => {
   try {
     const { role, users, permission } = req.body;
 
+    // validate role
+    if (!role || role.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Role name cannot be empty'
+      });
+    }
+
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
     // static!
