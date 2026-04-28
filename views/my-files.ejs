@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-  <link href="./css/my-files.css" rel="stylesheet">
+  <link href="css/all-files.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
@@ -14,10 +14,8 @@
   <header>
     <h1>Username</h1>
     <div class="profile-pic">
-      <img src="./" alt="PP" onerror="
-            this.style.display = 'none';
-            this.nextElementSibling.style.display = 'inline-block';
-          ">
+      <img src="./" alt="PP"
+        onerror=" this.style.display = 'none'; this.nextElementSibling.style.display = 'inline-block';">
       <i class="fa-solid fa-user" style="display: none"></i>
     </div>
   </header>
@@ -27,7 +25,37 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
-      <div class="folder-wrapper">
+      <div class="overlay" style="display: none;"></div>
+      <dialog id="user-modal">
+        <div class="search-wrapper">
+          <div class="search-box">
+            <input class="search-input" type="search" id="user-search" placeholder="Search users..."/>
+            <div class="search-btn-wrapper">
+              <h2 class="search-btn" data-action="user-search">Search User</h2>
+            </div>
+          </div> 
+          <div class="search-box">
+            <input class="search-input" type="search" id="user-add" placeholder="Add user..."/>
+            <div class="search-btn-wrapper">
+              <h2 class="search-btn" data-action="user-add">Add User</h2>
+            </div>
+          </div>  
+        </div>  
+        <div class="user-wrapper" id="userList">
+          <div class="user-1" style="background-color: #BAC8B1;">
+            <div class="user-btn-wrapper">
+              <h2 style="background-color: #7B9669" data-action="owner">User1</h2>
+            </div>
+          </div>
+        </div> 
+        <div class="btn-wrapper">
+          <h2 style="background-color: #7b9669" data-action="colab-users">
+            Close
+          </h2>
+        </div>
+      </dialog>
+      <div class="folder-wrapper" id="folderList">
+
         <div class="folder-01">
           <h1>Folder 1</h1>
           <div class="btn-wrapper">
@@ -60,7 +88,7 @@
       </div>
     </div>
   </main>
-  <script src="./js/folder.buttons.js"></script>
+  <script type="module" src="/js/folder.buttons.js"></script>
 </body>
 
 </html>

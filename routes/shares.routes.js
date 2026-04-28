@@ -54,6 +54,25 @@ router.get("/usersFromFile/:id", (req, res) => {
   res.json(filteredUsers);
 });
 
+function getFolderOwner(req, res, next) {
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+  req.getUsersFromFile = authData.shares.map(({ username }) => username);
+  console.log(req.getUsersFromFile);
+  next();
+  return;
+}
+
+router.get("/getFolderOwner/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  
+  const share = authData.shares.find(s => s.id === id);
+  const owner = authData.users.find(user => user.username === share.owner);
+
+  res.json(owner);
+});
+
 
 router.post('/useradd', (req, res) => {
   try {
