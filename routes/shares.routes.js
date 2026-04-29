@@ -27,8 +27,8 @@ function getAllFiles(req, res, next) {
 
 router.get("/files", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const files = authData.shares.map(u => 
-    ({name: u.name, id: u.id})
+  const files = authData.shares.map(u =>
+    ({ name: u.name, id: u.id })
   );
 
   res.json(files);
@@ -46,10 +46,10 @@ router.get("/usersFromFile/:id", (req, res) => {
   const id = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  
-  const filteredUsers = authData.users.filter(user => 
-    user.shares.some (share => share.id === id)
-  ); 
+
+  const filteredUsers = authData.users.filter(user =>
+    user.shares.some(share => share.id === id)
+  );
 
   res.json(filteredUsers);
 });
@@ -66,7 +66,7 @@ router.get("/getFolderOwner/:id", (req, res) => {
   const id = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  
+
   const share = authData.shares.find(s => s.id === id);
   const owner = authData.users.find(user => user.username === share.owner);
 
