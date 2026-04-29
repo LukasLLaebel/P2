@@ -20,6 +20,13 @@ router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login.html"));
 });
 
+router.get('/files', (req, res) => {
+  res.render('../views/files.ejs', {
+    user: req.user
+  });
+
+});
+
 router.get('/all', getAllUsers, syncUserFolders, (req, res) => {
   res.render('../views/all-files.ejs', {
     user: req.user
