@@ -118,7 +118,6 @@
 								const roleInput = document.getElementById('r-name');
 								const roleValue = roleInput.value.trim();
 								
-								// 🔥 ROLE VALIDATION
 								if (!roleValue) {
 									roleInput.classList.add('error');
 									roleInput.focus();
@@ -162,7 +161,6 @@
 													alert('Role created successfully!');
 													document.getElementById('roleForm').reset();
 													
-													// reset UI state
 													document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
 													document.querySelectorAll('.permission-checkbox').forEach(cb => cb.checked = false);
 													document.querySelectorAll('.user-item, .permission-item')

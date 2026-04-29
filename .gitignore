@@ -5,6 +5,7 @@ node_modules
 .vercel
 .netlify
 .wrangler
+/coverage
 /.svelte-kit
 /build
 
