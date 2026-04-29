@@ -1,13 +1,4 @@
 
-const button = document.getElementById("addFolderBtn");
-const wrapper = document.getElementById("folderWrapper");
-button.addEventListener("click", () => {
-  const newFolder = document.createElement("div");
-  newFolder.innerHTML = "<h1>Folder 4</h1>";
-  wrapper.appendChild(NewFolder);
-
-});
-
   function popUp(id) {
     document.getElementById("user-modal").showModal();
     createUsers(id);
