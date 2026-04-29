@@ -97,6 +97,10 @@
       container.innerHTML = "";
       
       filesArray.forEach(file => {
+        //<a href="/files?filder=${file.id}"</a>
+        const filesLink = document.createElement("a");
+        filesLink.href = `/files?folder=${file.id}`;
+
         const fileElement = document.createElement("div");
         fileElement.setAttribute("id", file.id);
         fileElement.classList.add('file-item');
@@ -121,12 +125,14 @@
         rolesBtn.setAttribute("data-action", "show-roles");
         rolesBtn.textContent = "Roles";
 
-        fileElement.appendChild(fileName);
+        filesLink.appendChild(fileName);
+        fileElement.appendChild(filesLink);
         btnWrapper.appendChild(ownerBtn);
         btnWrapper.appendChild(usersBtn);
         btnWrapper.appendChild(rolesBtn);
         fileElement.appendChild(btnWrapper);
         container.appendChild(fileElement);
+
       });
     } catch (error) {
       console.error("Error loading files:", error);
