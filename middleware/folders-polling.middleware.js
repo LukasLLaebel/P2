@@ -9,9 +9,8 @@ const DBFilePath = path.join(__dirname, '../db/auth.json');
 
 export async function getFoldersForUser(req, res, next) {
   try {
-    const username = "jeff";
+    const username = req.session?.user?.username;
 
-    // Read the database file
     const dbData = fs.readFileSync(DBFilePath, 'utf-8');
     const database = JSON.parse(dbData);
 
@@ -37,7 +36,6 @@ export async function getFoldersForUser(req, res, next) {
       };
     });
 
-    // Attach folders info to the request object for use in next middleware/routes
     req.userFolders = userFolders;
     req.currentUser = username;
 
