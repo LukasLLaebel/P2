@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { syncUserFolders } from "../services/users.service.js";
 import { getAllUsers } from "../middleware/users.middleware.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
-
+import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -13,33 +13,46 @@ const __dirname = path.dirname(__filename);
 // middleware
 router.use((req, res, next) => {
   res.locals.currentPage = req.path;
+  res.locals.user = req.session?.user;
   next();
 });
 
 router.get("/", (req, res) => {
-  res.render('../views/login.ejs');
+  if (req.session?.user) {
+    return res.redirect('/all');
+  }
+  res.render('login');
 });
 
-router.get('/all', getAllUsers, syncUserFolders, (req, res) => {
-  res.render('../views/all-files.ejs', {
-    user: req.user
+router.post("/login", authenticateUser, (req, res) => {
+  res.redirect('/all');
+});
+
+router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
+  res.render('all-files', {
+    user: req.session.user
   });
-
 });
 
-router.get("/shared", (req, res) => {
-  res.render('../views/shared-with-me.ejs', {
-    user: req.user
+
+router.get("/shared", requireAuth, (req, res) => {
+  res.render('shared-with-me', {
+    user: req.session.user
   });
 });
 
-router.get('/owned', getFoldersForUser, (req, res) => {
-  res.render('../views/my-files.ejs', {
-    user: req.user,
+
+router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
+  res.render('my-files', {
+    user: req.session.user,
     userFolders: req.userFolders,
     currentUser: req.currentUser
   });
 });
 
+
+router.get('/logout', (req, res) => {
+  logout(req, res);
+});
 
 export default router;
