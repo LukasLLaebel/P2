@@ -62,6 +62,12 @@
   border-radius: 10px;
 }
 
+.roles-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--default-space);
+}
+
 .roles-wrapper h1 {
   background-color: var(--jade-100);
   padding: 0 10px;

@@ -125,11 +125,16 @@
         rolesBtn.setAttribute("data-action", "show-roles");
         rolesBtn.textContent = "Roles";
 
+        //<a href="/roles?folder=${file.id}"</a>
+        const rolesLink = document.createElement("a");
+        rolesLink.href = `/roles?folder=${file.id}`;
+
         filesLink.appendChild(fileName);
         fileElement.appendChild(filesLink);
         btnWrapper.appendChild(ownerBtn);
         btnWrapper.appendChild(usersBtn);
-        btnWrapper.appendChild(rolesBtn);
+        rolesLink.appendChild(rolesBtn);
+        btnWrapper.appendChild(rolesLink);
         fileElement.appendChild(btnWrapper);
         container.appendChild(fileElement);
 

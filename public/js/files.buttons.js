@@ -22,9 +22,6 @@
       container.innerHTML = "";
       
       filesArray.forEach(file => {
-        const filesLink = document.createElement("a");
-        filesLink.href = `/files?folder=${file.id}`;
-
         const fileElement = document.createElement("div");
         fileElement.setAttribute("id", file.id);
         fileElement.classList.add('file-item');
@@ -49,8 +46,7 @@
         rolesBtn.setAttribute("data-action", "show-roles");
         rolesBtn.textContent = "Upload";
 
-        filesLink.appendChild(fileName);
-        fileElement.appendChild(filesLink);
+        fileElement.appendChild(fileName);
         btnWrapper.appendChild(ownerBtn);
         btnWrapper.appendChild(usersBtn);
         btnWrapper.appendChild(rolesBtn);

@@ -108,5 +108,16 @@ router.post('/create', (req, res) => {
   }
 });
 
+
+router.get("/getRolesFromFolder/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  
+  const roles = authData.shares.find(share => share.id === id)?.roles;
+
+  res.json(roles);
+});
+
 export default router;
 
