@@ -10,14 +10,13 @@ const __dirname = path.dirname(__filename);
 
 app.set('view engine', 'ejs');
 
-// ⭐ ADD SESSION MIDDLEWARE (BEFORE ROUTES)
 app.use(session({
-  secret: 'your-secret-key-change-this-in-production', // Change this to a random string
+  secret: 'vitterligt-genetisk-overlegen', // SALT 
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: false,        // Set to true if using HTTPS
-    maxAge: 1000 * 60 * 60 * 24, // 24 hours in milliseconds
+    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true        // Prevents client-side JS from accessing the cookie
   }
 }));
