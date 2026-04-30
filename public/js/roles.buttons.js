@@ -10,6 +10,14 @@ function loadRolesButtons() {
   const editRolePopup = document.querySelector("#editRolePopup");
   const deleteRolePopup = document.querySelector("#deleteRolePopup");
 
+  const roleTitle = document.querySelector(".role-title");
+  const roleTitleInput = document.querySelector("#roleTitleInput");
+  const saveRoleTitleBtn = document.querySelector("#saveRoleTitleBtn");
+
+  console.log("Role Title:", roleTitle);
+  console.log("Role Title Input:", roleTitleInput);
+  console.log("Save Role Title Button:", saveRoleTitleBtn);
+
   console.log("showUserBtn:", showUserBtn);
   console.log("addUserBtn:", addUserBtn);
   console.log("editBtn:", editBtn);
@@ -35,13 +43,28 @@ function loadRolesButtons() {
     console.log("Add User button or popup missing");
   }
 
-  if (editBtn && editRolePopup) {
+  if (editBtn && editRolePopup && roleTitle && roleTitleInput) {
     editBtn.addEventListener("click", () => {
       console.log("Edit clicked");
+
+      roleTitleInput.value = roleTitle.textContent.trim();
+
       editRolePopup.classList.remove("hidden");
     });
   } else {
-    console.log("Edit button or popup missing");
+    console.log("Edit button, popup, role title, or input missing");
+  }
+
+  if (saveRoleTitleBtn && roleTitle && roleTitleInput && editRolePopup) {
+    saveRoleTitleBtn.addEventListener("click", () => {
+      console.log("Save role title clicked");
+
+      roleTitle.textContent = roleTitleInput.value.trim();
+
+      editRolePopup.classList.add("hidden");
+    });
+  } else {
+    console.log("Save role title button, role title, input, or popup missing");
   }
 
   if (deleteBtn && deleteRolePopup) {
