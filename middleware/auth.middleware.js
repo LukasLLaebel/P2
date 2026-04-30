@@ -29,7 +29,6 @@ export async function authenticateUser(req, res, next) {
       });
     }
 
-
     req.session.user = user;
 
     next();
