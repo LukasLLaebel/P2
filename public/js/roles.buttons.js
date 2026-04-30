@@ -78,7 +78,7 @@ function loadRolesButtons() {
 
   const closePopupButtons = document.querySelectorAll(".close-popup");
 
-  closePopupButtons.forEach((button) => {
+  closePopupButtons.forEach((button) =>{ 
     button.addEventListener("click", () => {
       button.closest(".popup-overlay").classList.add("hidden");
     });
