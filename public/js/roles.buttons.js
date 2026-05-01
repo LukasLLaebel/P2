@@ -1,57 +1,67 @@
 function loadRolesButtons() {
-  const showUserBtn = document.querySelector(".show-users-btn");
-  const addUserBtn = document.querySelector(".add-user-btn");
-  const editBtn = document.querySelector(".edit-btn");
-  const leaveBtn = document.querySelector(".leave-btn");
+  const showUserBtns = document.querySelectorAll(".show-users-btn");
+  const addUserBtns = document.querySelectorAll(".add-user-btn");
+  const editBtns = document.querySelectorAll(".edit-btn");
+  const leaveBtns = document.querySelectorAll(".delete-btn");
 
-  const usersBox = document.querySelector(".users-box");
+  const usersBox = document.querySelectorAll(".users-box");
 
   const addUserPopup = document.querySelector("#addUserPopup");
   const editRolePopup = document.querySelector("#editRolePopup");
-  const leaveRolePopup = document.querySelector("#leaveRolePopup");
+  const leaveRolePopup = document.querySelector("#deleteRolePopup");
 
-  console.log("showUserBtn:", showUserBtn);
-  console.log("addUserBtn:", addUserBtn);
-  console.log("editBtn:", editBtn);
-  console.log("leaveBtn:", leaveBtn);
+  console.log("showUserBtn:", showUserBtns);
+  console.log("addUserBtn:", addUserBtns);
+  console.log("editBtn:", editBtns);
+  console.log("leaveBtn:", leaveBtns);
 
   console.log("addUserPopup:", addUserPopup);
   console.log("editRolePopup:", editRolePopup);
   console.log("leaveRolePopup:", leaveRolePopup);
 
-  if (showUserBtn && usersBox) {
-    showUserBtn.addEventListener("click", () => {
+  if (addUserPopup) {
+    addUserBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        console.log("Add user clicked");
+        addUserPopup.classList.remove("hidden");
+      });
+    });
+  } else {
+    console.log("Add User popup missing");
+  }
+
+  if (editRolePopup) {
+    editBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        console.log("Edit clicked");
+        editRolePopup.classList.remove("hidden");
+      });
+    });
+  } else {
+    console.log("Edit popup missing");
+  }
+
+  if (leaveRolePopup) {
+    leaveBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        console.log("Leave clicked");
+        leaveRolePopup.classList.remove("hidden");
+      });
+    });
+  } else {
+    console.log("Leave popup missing");
+  }
+
+
+  showUserBtns.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
       console.log("Show users clicked");
-      usersBox.classList.toggle("hidden");
-    });
-  }
 
-  if (addUserBtn && addUserPopup) {
-    addUserBtn.addEventListener("click", () => {
-      console.log("Add user clicked");
-      addUserPopup.classList.remove("hidden");
+      if (usersBox[index]) {
+        usersBox[index].classList.toggle("hidden");
+      }
     });
-  } else {
-    console.log("Add User button or popup missing");
-  }
-
-  if (editBtn && editRolePopup) {
-    editBtn.addEventListener("click", () => {
-      console.log("Edit clicked");
-      editRolePopup.classList.remove("hidden");
-    });
-  } else {
-    console.log("Edit button or popup missing");
-  }
-
-  if (leaveBtn && leaveRolePopup) {
-    leaveBtn.addEventListener("click", () => {
-      console.log("Leave clicked");
-      leaveRolePopup.classList.remove("hidden");
-    });
-  } else {
-    console.log("Leave button or popup missing");
-  }
+  });
 
   const closePopupButtons = document.querySelectorAll(".close-popup");
 
@@ -61,7 +71,6 @@ function loadRolesButtons() {
     });
   });
 }
-createRoles(new URLSearchParams(document.location.search).get("folder"));
 
 async function loadRoles(id) {
   //rollerne ligger måske et fucked up sted
@@ -70,6 +79,57 @@ async function loadRoles(id) {
 
   console.log(files);
   return files;
+}
+
+function createUser(name, isActive = false) {
+  const user = document.createElement("div");
+  user.classList.add("user");
+
+  if (isActive) {
+    user.classList.add("active-user");
+  }
+
+  const profilePic = document.createElement("div");
+  profilePic.classList.add("profile-pic");
+
+  const img = document.createElement("img");
+  img.src = "./";
+  img.alt = "PP";
+
+  img.onerror = function () {
+    this.style.display = "none";
+    this.nextElementSibling.style.display = "inline-block";
+  };
+
+  const icon = document.createElement("i");
+  icon.classList.add("fa-solid", "fa-user");
+  icon.style.display = "none";
+
+  profilePic.appendChild(img);
+  profilePic.appendChild(icon);
+
+  const nameDiv = document.createElement("div");
+  nameDiv.classList.add("name");
+  nameDiv.textContent = name;
+
+  user.appendChild(profilePic);
+  user.appendChild(nameDiv);
+
+  const remove = document.createElement("div");
+  remove.classList.add("remove");
+  remove.textContent = "X";
+  user.appendChild(remove);
+
+  return user;
+}
+
+async function loadUsers(id) {
+  const res = await fetch(`/roles/getUsersWithRole/${id}`);
+  const users = await res.json();
+
+  console.log(users);
+  return users;
+  
 }
 
 async function createRoles(id) {
@@ -84,13 +144,16 @@ async function createRoles(id) {
     console.log("Roles Array:", rolesArray);
 
     const container = document.querySelector(".roles-wrapper");
-    //container.innerHTML = "";
+    container.innerHTML = "";
     
-    rolesArray.forEach(role => {
+    for (const role of rolesArray) {
       const roleElement = document.createElement("div");
       roleElement.classList.add('role-header');
       const roleName = document.createElement('h1');
       roleName.textContent = role.name;
+
+      const usersBox = document.createElement("div");
+      usersBox.classList.add("users-box", "hidden");
 
       const btnWrapper = document.createElement("div");
       btnWrapper.classList.add('buttons');
@@ -126,19 +189,34 @@ async function createRoles(id) {
       deleteIcon.classList.add('fa-solid','fa-x');
       deleteBtn.appendChild(deleteIcon);
 
-      roleElement.appendChild(roleName);
+      const usersArray = await loadUsers(role.id);
+      usersArray.forEach(user => {
+        usersBox.appendChild(createUser(user.username));
+      })
+
+      const topRow = document.createElement("div");
+      topRow.classList.add("role-top");
+
+      topRow.appendChild(roleName);
+      topRow.appendChild(btnWrapper);
+
+      roleElement.appendChild(topRow);
+      roleElement.appendChild(usersBox);
       btnWrapper.appendChild(showUsersBtn);
       btnWrapper.appendChild(addUserBtn);
       btnWrapper.appendChild(editBtn);
       btnWrapper.appendChild(deleteBtn);
-      roleElement.appendChild(btnWrapper);
       container.appendChild(roleElement);
-    });
+    };
   } catch (error) {
     console.error("Error loading files:", error);
   }
-
-  document.addEventListener("DOMContentLoaded", loadRolesButtons);
 }  
 
-document.addEventListener("DOMContentLoaded", loadRolesButtons);
+document.addEventListener("DOMContentLoaded", async () => {
+  await createRoles(
+    new URLSearchParams(document.location.search).get("folder")
+  );
+
+  loadRolesButtons();
+});

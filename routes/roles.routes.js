@@ -119,5 +119,15 @@ router.get("/getRolesFromFolder/:id", (req, res) => {
   res.json(roles);
 });
 
+router.get("/getUsersWithRole/:id", (req, res) => {
+  const roleId = Number(req.params.id);
+
+  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
+  
+  const users = authData.users.filter(user => user.shares.some(share => share.roles.some(role => role === roleId)));
+
+  res.json(users);
+});
+
 export default router;
 
