@@ -12,7 +12,7 @@ export async function authenticateUser(req, res, next) {
     const { username } = req.body;
 
     if (!username || username.trim() === '') {
-      return res.status(400).render('login-error', {
+      return res.status(400).render('assets/login-error', {
         errorMessage: 'Username is required'
       });
     }
@@ -24,17 +24,25 @@ export async function authenticateUser(req, res, next) {
     const user = authData.users.find(u => u.username.toLowerCase() === username.toLowerCase());
 
     if (!user) {
-      return res.status(404).render('assets/login-error', {
-        errorMessage: `User "${username}" not found. Please try again or register.`
+      return res.status(401).render('assets/login-error', {
+        errorMessage: `User "${username}" not found. Please try again`
       });
     }
 
-    req.session.user = user;
-
-    next();
+    // preventing session fixation
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Error regenerating session during authentication:', err);
+        return res.status(500).render('assets/login-error', {
+          errorMessage: 'An error occurred during authentication. Please try again.'
+        });
+      }
+      req.session.user = user;
+      next();
+    });
   } catch (error) {
     console.error('Error authenticating user:', error);
-    res.status(500).render('login-error', {
+    res.status(500).render('assets/login-error', {
       errorMessage: 'An error occurred during authentication. Please try again.'
     });
   }

@@ -51,7 +51,7 @@ router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
 });
 
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   logout(req, res);
 });
 
