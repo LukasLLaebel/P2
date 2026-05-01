@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -13,17 +14,17 @@ router.use(express.json());
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
 // 
-router.get('/', (req, res) => {
+router.get('/', requireAuth, (req, res) => {
     const view = req.query.view || 'display';
 
     res.render('../views/my-files.ejs', {
-      user: "Jeff",
+      user: req.session?.user?.username,
       folder: authData.shares,
       currentView: view
     });
   });
 
-router.post('/create', (req, res) => {
+router.post('/create', requireAuth, (req, res) => {
     try {
       const { folder } = req.body;
   
@@ -46,15 +47,16 @@ router.post('/create', (req, res) => {
     const maxShareId = Math.max(...authData.shares.map(s => s.id), 0);
     const newShareId = maxShareId + 1;
 
-    const users = ["jeff"];
+    const owner = req.session?.user?.username;
+    const users = [owner];
 
     // Create new share
     const newShare = {
       id: newShareId,
       name: folder.trim(),
-      path: `./home/jeff/${folder.trim()}`,
-      owner: "jeff",
-      users: users,
+      path: `./home/${owner}/${folder.trim()}`,
+      owner: owner,
+      users: [owner],
       files: []
     };
 
@@ -74,7 +76,7 @@ router.post('/create', (req, res) => {
           userShare = {
             id: newShareId,
             name: folder.trim(),
-            owner: "jeff"
+            owner: owner
           };
           user.shares.push(userShare);
         }
