@@ -20,14 +20,14 @@ router.get('/', getAllUsers, getAllPermissions, (req, res) => {
     user: "Jeff",
     allPermissions: req.allPermissions,
     allUsers: req.allUsers,
-    folder: "Folder 1",
+    folder: req.query.folder,
     currentView: view
   });
 });
 
 router.post('/create', (req, res) => {
   try {
-    const { role, users, permission } = req.body;
+    const { role, users, permission, folder } = req.body;
 
     // validate role
     if (!role || role.trim() === '') {
@@ -40,7 +40,7 @@ router.post('/create', (req, res) => {
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
     // static!
-    const shareId = 1;
+    const shareId = Number(folder);
     const shareName = "Folder 1";
 
     // Find the share
@@ -53,7 +53,7 @@ router.post('/create', (req, res) => {
     }
 
     // Generate new role ID
-    const maxRoleId = Math.max(...authData.roles.map(r => r.id), 0);
+    const maxRoleId = Math.max(...share.roles.map(r => r.id), 0);
     const newRoleId = maxRoleId + 1;
 
     // Create new role with permissions
@@ -63,7 +63,7 @@ router.post('/create', (req, res) => {
       permissions: permission || []
     };
 
-    authData.roles.push(newRole);
+    share.roles.push(newRole);
 
     // Process each user
     if (users && Array.isArray(users)) {
@@ -129,5 +129,125 @@ router.get("/getUsersWithRole/:id", (req, res) => {
   res.json(users);
 });
 
-export default router;
+router.post("/assignRoleToUser", (req, res) => {
+  try {
+    const { role, user, shareId } = req.body;
 
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    authData.users.find(u => u.username === user).shares.find(s => s.id === shareId).roles.push(authData.shares.find(s => s.id === shareId).roles.find(r => r.name === role).id);
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Role assigned successfully',
+      role: role
+    });
+
+  } catch (error) {
+    console.error('Error assigning role:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error assigning role',
+      error: error.message
+    });
+  }
+});
+
+router.post("/editRoleName", (req, res) => {
+  try {
+    const { role, shareId, newRoleName } = req.body;
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    authData.shares.find(s => s.id === shareId).roles.find(r => r.name === role).name = newRoleName;
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Role edited successfully',
+      role: role
+    });
+
+  } catch (error) {
+    console.error('Error editing role:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error editing role',
+      error: error.message
+    });
+  }
+});
+
+router.post("/removeRoleFromUser/:id", (req, res) => {
+  try {
+    const { roleId, user } = req.body;
+    const shareId = Number(req.params.id);
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    const userObject = authData.users.find(u => u.username === user);
+    if (!userObject) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    //denne share er specifikt sharen til useren og ikke sharen generelt
+    const share = userObject.shares.find(s => s.id === shareId);
+    if (!share) {
+      return res.status(404).json({ success: false, message: "Share not found" });
+    }
+
+    share.roles = share.roles.filter(r => Number(r) !== Number(roleId));
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Role removed successfully',
+      role: roleId
+    });
+
+  } catch (error) {
+    console.error('Error assigning role:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error removing role',
+      error: error.message
+    });
+  }
+});
+
+router.post("/deleteRole", (req, res) => {
+  try {
+    const { roleId, shareId } = req.body;
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    const share = authData.shares.find(s => s.id === Number(shareId));
+    if (!share) {
+      return res.status(404).json({ success: false, message: "Share not found" });
+    }
+
+    share.roles = share.roles.filter(r => r.id !== Number(roleId));
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'Role deleted successfully',
+      role: roleId
+    });
+
+  } catch (error) {
+    console.error('Error deleting role:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting role',
+      error: error.message
+    });
+  }
+});
+
+export default router;

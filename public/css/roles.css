@@ -206,7 +206,8 @@ i {
   color: var(--jade-500);
 }
 
-.remove {
+.remove-btn {
+  cursor: pointer;
   margin-left: auto;
   width: 26px;
   height: 26px;
