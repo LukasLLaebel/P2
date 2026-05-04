@@ -19,7 +19,6 @@ router.get("/", (req, res) => {
     return res.redirect('/all');
   }
   res.render('login');
-<<<<<<< rolesExpansion
 });
 
 router.post("/login", authenticateUser, (req, res) => {
@@ -31,36 +30,22 @@ router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
     user: req.session.user
   });
 });
-
 
 router.get('/files', (req, res) => {
   res.render('../views/files.ejs', {
     user: req.session.user
   });
-=======
 });
 
 router.post("/login", authenticateUser, (req, res) => {
   res.redirect('/all');
 });
->>>>>>> main
 
-router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
-  res.render('all-files', {
-    user: req.session.user
-  });
-});
-
-<<<<<<< rolesExpansion
-=======
-
->>>>>>> main
 router.get("/shared", requireAuth, (req, res) => {
   res.render('shared-with-me', {
     user: req.session.user
   });
 });
-
 
 router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
   res.render('my-files', {
