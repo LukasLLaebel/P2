@@ -84,6 +84,7 @@ async function loadRolesButtons() {
         const role = btn.closest(".role-header").querySelector(".role-top h1").textContent;
         editRolePopup.setAttribute("data-role", role);
         editRolePopup.classList.remove("hidden");
+        editRolePopup.querySelector("#edit-role-name-bar").value = role;
       });
     });
   } else {

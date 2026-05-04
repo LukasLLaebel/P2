@@ -34,7 +34,7 @@ router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
 
 router.get('/files', (req, res) => {
   res.render('../views/files.ejs', {
-    user: req.user
+    user: req.session.user
   });
 
 });
