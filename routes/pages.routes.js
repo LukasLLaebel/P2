@@ -1,14 +1,11 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import { syncUserFolders } from "../services/users.service.js";
 import { getAllUsers } from "../middleware/users.middleware.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
 import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // middleware
 router.use((req, res, next) => {
@@ -34,13 +31,21 @@ router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
   });
 });
 
+router.get('/files', (req, res) => {
+  res.render('../views/files.ejs', {
+    user: req.session.user
+  });
+});
+
+router.post("/login", authenticateUser, (req, res) => {
+  res.redirect('/all');
+});
 
 router.get("/shared", requireAuth, (req, res) => {
   res.render('shared-with-me', {
     user: req.session.user
   });
 });
-
 
 router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
   res.render('my-files', {

@@ -1,95 +1,20 @@
 
-
-  function popUp(id) {
-    document.getElementById("user-modal").showModal();
-    createUsers(id);
-    document.querySelector(".overlay").style.display = "block";
-  }
-
-  function closePopUp() {
-    document.getElementById("user-modal").close();
-    document.querySelector(".overlay").style.display = "none"; 
-  }
-
-
-  async function loadUsers(id) {
-    const res = await fetch("/shares/usersFromFile/"+id);
-    const users = await res.json();
-
-    console.log(users);
-    return users;
-  }
-
-  async function createUsers(id) {
-    try {
-      let usersArray = await loadUsers(id);
-
-      const searchValue = document.getElementById("user-search").value;
-      console.log("Raw search:", `"${searchValue}"`);
-
-      const search = searchValue.trim().toLowerCase();
-
-      const filteredUsers = usersArray.filter(user =>
-        user.username.trim().toLowerCase().includes(search)
-      );
-
-      usersArray = filteredUsers;
-
-
-      console.log("Users Array:", usersArray);
-
-      const container = document.getElementById("userList");
-      container.innerHTML = "";
-
-      const res = await fetch("/shares/getFolderOwner/"+id);
-      const owner = await res.json();
-      
-      usersArray.forEach(user => {
-        const userElement = document.createElement("div");
-        userElement.classList.add('user-item');
-        userElement.style.backgroundColor = "#BAC8B1";
-        
-        const btnWrapper = document.createElement("div");
-        btnWrapper.classList.add('user-btn-wrapper');
-
-        const userBtn = document.createElement('h2');
-        userBtn.style.backgroundColor = "#7B9669";
-        userBtn.setAttribute("data-action", "owner");
-        userBtn.textContent = user.username;
-
-        const remBtn = document.createElement('h2');
-        console.log(user.username)
-        console.log(owner.username)
-        if (user.username != owner.username) {
-          remBtn.style.backgroundColor = "#7B9669";
-          remBtn.setAttribute("data-action", "rem-user");
-          remBtn.setAttribute("data-user", user.username);
-          remBtn.textContent = "Remove";
-        }
-        
-        btnWrapper.appendChild(userBtn);
-        if (user.username != owner.username) {
-          btnWrapper.appendChild(remBtn);
-        }  
-        userElement.appendChild(btnWrapper);
-        container.appendChild(userElement);
-      });
-    } catch (error) {
-      console.error("Error loading users:", error);
-    }
-  }  
-
-  async function loadFiles() {
-    const res = await fetch("/shares/files");
+  async function loadFiles(id) {
+    const res = await fetch(`/files/getAllFiles/${id}`);
     const files = await res.json();
 
     console.log(files);
     return files;
   }
 
-  async function createFiles() {
+  async function createFiles(id) {
     try {
-      const filesArray = await loadFiles();
+      const title = document.querySelector(".title");
+      const res = await fetch(`/files/getFolder/${id}`);
+      const folder = await res.json();
+      title.textContent = `${folder.name}`;
+
+      const filesArray = await loadFiles(id);
       
       console.log("Files Array:", filesArray);
 
@@ -97,15 +22,11 @@
       container.innerHTML = "";
       
       filesArray.forEach(file => {
-        //<a href="/files?filder=${file.id}"</a>
-        const filesLink = document.createElement("a");
-        filesLink.href = `/files?folder=${file.id}`;
-
         const fileElement = document.createElement("div");
         fileElement.setAttribute("id", file.id);
         fileElement.classList.add('file-item');
         const fileName = document.createElement('h1');
-        fileName.textContent = file.name;
+        fileName.textContent = file;
         
         const btnWrapper = document.createElement("div");
         btnWrapper.classList.add('btn-wrapper');
@@ -113,28 +34,22 @@
         const ownerBtn = document.createElement('h2');
         ownerBtn.style.backgroundColor = "#7B9669";
         ownerBtn.setAttribute("data-action", "owner");
-        ownerBtn.textContent = "You";
+        ownerBtn.textContent = "Edit";
 
         const usersBtn = document.createElement('h2');
         usersBtn.style.backgroundColor = "#6C8480";
         usersBtn.setAttribute("data-action", "colab-users");
-        usersBtn.textContent = "Users";
+        usersBtn.textContent = "Download";
         
         const rolesBtn = document.createElement('h2');
         rolesBtn.style.backgroundColor = "#404E3B";
         rolesBtn.setAttribute("data-action", "show-roles");
-        rolesBtn.textContent = "Roles";
+        rolesBtn.textContent = "Upload";
 
-        //<a href="/roles?folder=${file.id}"</a>
-        const rolesLink = document.createElement("a");
-        rolesLink.href = `/roles?folder=${file.id}`;
-
-        filesLink.appendChild(fileName);
-        fileElement.appendChild(filesLink);
+        fileElement.appendChild(fileName);
         btnWrapper.appendChild(ownerBtn);
         btnWrapper.appendChild(usersBtn);
-        rolesLink.appendChild(rolesBtn);
-        btnWrapper.appendChild(rolesLink);
+        btnWrapper.appendChild(rolesBtn);
         fileElement.appendChild(btnWrapper);
         container.appendChild(fileElement);
 
@@ -143,7 +58,7 @@
       console.error("Error loading files:", error);
     }
   }  
-  createFiles();
+  createFiles(new URLSearchParams(document.location.search).get("folder"));
 
   document.addEventListener("click", async (e) => {
     const tag = e.target.closest("h2");
