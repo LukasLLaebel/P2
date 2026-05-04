@@ -1,7 +1,7 @@
 // Adds a new folder and prompts for name
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("addFolderBtn");
-  btn.addEventListener("click", async () => {
+  const buttons = document.querySelectorAll(".create-folder-btn");
+  const handleCreateFolder = async () => {
     const folderName = prompt("Enter folder name:");
     if (!folderName) return;
 
@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const folderWrapper = document.querySelector(".folder-wrapper");
 
+      const emptyState = document.querySelector(".empty-state-container");
+      if (emptyState) emptyState.remove();
+
       const newFolder = document.createElement("div");
       newFolder.classList.add("folder-new");
 
@@ -32,10 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-    folderWrapper.insertBefore(newFolder, btn);
+    folderWrapper.appendChild(newFolder);
   
   } catch (error) {
     console.error(error);
     alert('Failed to create folder');
   }
-  })});
+};
+
+buttons.forEach(btn => {
+  btn.addEventListener("click", handleCreateFolder);
+});
+});
