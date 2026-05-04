@@ -34,13 +34,6 @@ const mockAuthData = {
       ]
     }
   ],
-  roles: [
-    {
-      id: 1,
-      name: 'admin',
-      permissions: ['read', 'write', 'delete']
-    }
-  ],
   permissions: [
     { id: 1, name: 'read' },
     { id: 2, name: 'write' },
@@ -51,7 +44,10 @@ const mockAuthData = {
       id: 1,
       name: 'Folder 1',
       path: './home/lukas/Folder 1',
-      users: ['Lukas', 'Jeff']
+      owner: 'Lukas',
+      users: ['Lukas', 'Jeff'],
+      files: [],
+      roles: []
     }
   ]
 };
@@ -95,7 +91,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'editor',
       users: ['Lukas', 'Jeff'],
-      permission: ['read', 'write']
+      permission: ['read', 'write'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -114,8 +111,9 @@ describe('Roles Router - POST /create', () => {
     expect(response.body.role.permissions).toEqual(['read', 'write']);
 
     const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
-    expect(updatedAuthData.roles.length).toBeGreaterThan(1); // More than just 'admin'
-    expect(updatedAuthData.roles).toContainEqual(
+    const share = updatedAuthData.shares.find(s => s.id === 1);
+    expect(share.roles.length).toBeGreaterThan(0);
+    expect(share.roles).toContainEqual(
       expect.objectContaining({ name: 'editor' })
     );
   });
@@ -125,7 +123,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'moderator',
       users: ['Lukas'],
-      permission: ['read', 'delete']
+      permission: ['read', 'delete'],
+      folder: 1
     };
 
     await request(app)
@@ -146,7 +145,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'viewer',
       users: ['NonExistentUser'],
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -162,7 +162,8 @@ describe('Roles Router - POST /create', () => {
   test('should fail if role name is missing or empty', async () => {
     const roleData = {
       users: ['Lukas'],
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -178,7 +179,8 @@ describe('Roles Router - POST /create', () => {
   test('should handle missing users array gracefully', async () => {
     const roleData = {
       role: 'test-role',
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -195,13 +197,15 @@ describe('Roles Router - POST /create', () => {
     const roleData1 = {
       role: 'role1',
       users: ['Lukas'],
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     const roleData2 = {
       role: 'role2',
       users: ['Jeff'],
-      permission: ['write']
+      permission: ['write'],
+      folder: 1
     };
 
     const response1 = await request(app)
@@ -214,8 +218,8 @@ describe('Roles Router - POST /create', () => {
       .send(roleData2)
       .expect(200);
 
-    expect(response1.body.role.id).toBe(2);
-    expect(response2.body.role.id).toBe(3);
+    expect(response1.body.role.id).toBe(1);
+    expect(response2.body.role.id).toBe(2);
     expect(response2.body.role.id).toBeGreaterThan(response1.body.role.id);
   });
 
@@ -229,7 +233,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'orphan-role',
       users: ['Lukas'],
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -246,7 +251,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'no-perms-role',
       users: ['Lukas'],
-      permission: []
+      permission: [],
+      folder: 1
     };
 
     const response = await request(app)
@@ -263,7 +269,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'new-role',
       users: ['Lukas'],
-      permission: ['read']
+      permission: ['read'],
+      folder: 1
     };
 
     await request(app)
@@ -283,7 +290,8 @@ describe('Roles Router - POST /create', () => {
     const roleData = {
       role: 'powerful-role',
       users: ['Jeff'],
-      permission: ['read', 'write', 'delete']
+      permission: ['read', 'write', 'delete'],
+      folder: 1
     };
 
     const response = await request(app)
@@ -297,4 +305,3 @@ describe('Roles Router - POST /create', () => {
     expect(response.body.role.permissions).toContain('delete');
   });
 });
-
