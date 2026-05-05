@@ -52,21 +52,42 @@
   color: var(--jade-200);
 }
 
-.roles-wrapper>* {
+.roles-wrapper > * {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--jade-400);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.role-top {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  min-height: 60px;
+  padding: 0 2px;
+}
+
+.role-header > div:first-child {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--jade-400);
   height: 60px;
   padding: 0 2px;
-  border-radius: 10px;
 }
 
-.roles-wrapper h1 {
+.roles-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--default-space);
+}
+
+.role-top h1 {
   background-color: var(--jade-100);
   padding: 0 10px;
   height: 55px;
-  align-content: center;
+  display: flex;
+  align-items: center;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
@@ -185,7 +206,8 @@ i {
   color: var(--jade-500);
 }
 
-.remove {
+.remove-btn {
+  cursor: pointer;
   margin-left: auto;
   width: 26px;
   height: 26px;
@@ -344,4 +366,10 @@ i {
 
 .hidden {
   display: none !important;
+}
+
+.role-header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }

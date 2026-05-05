@@ -131,6 +131,9 @@
 									
 									const selectedPermissions = Array.from(document.querySelectorAll('.permission-checkbox:checked'))
 									.map(cb => cb.value);
+
+									const roleFolder = new URLSearchParams(document.location.search).get("folder");
+									console.log("roleFolder: "+roleFolder)
 									
 									if (selectedUsers.length === 0) {
 										alert('Please select at least one user');
@@ -145,7 +148,8 @@
 									const formData = {
 										role: roleValue,
 										users: selectedUsers,
-										permission: selectedPermissions
+										permission: selectedPermissions,
+										folder: roleFolder
 										};
 										
 										try {
