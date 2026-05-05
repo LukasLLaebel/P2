@@ -27,9 +27,8 @@ function getAllFiles(req, res, next) {
 
 router.get("/files", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const files = authData.shares.map(u =>
-    ({ name: u.name, id: u.id })
-  );
+
+  const files = authData.users.find(u => u.username === req.session.user.username)?.shares.map(s =>({ name: s.name, id: s.id, owner: s.owner }));
 
   res.json(files);
 });

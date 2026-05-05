@@ -89,6 +89,9 @@
 
   async function createFiles() {
     try {
+      const currentUser = window.currentUser;
+      console.log(currentUser);
+
       const filesArray = await loadFiles();
       
       console.log("Files Array:", filesArray);
@@ -111,9 +114,14 @@
         btnWrapper.classList.add('btn-wrapper');
 
         const ownerBtn = document.createElement('h2');
-        ownerBtn.style.backgroundColor = "#7B9669";
         ownerBtn.setAttribute("data-action", "owner");
-        ownerBtn.textContent = "You";
+        if (file.owner === currentUser.username) {
+          ownerBtn.style.backgroundColor = "#BAC8B1";
+          ownerBtn.textContent = "You";
+        } else {
+          ownerBtn.textContent = file.owner;
+          ownerBtn.style.backgroundColor = "#7B9669";
+        }
 
         const usersBtn = document.createElement('h2');
         usersBtn.style.backgroundColor = "#6C8480";

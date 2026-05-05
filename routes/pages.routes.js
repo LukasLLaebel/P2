@@ -25,9 +25,10 @@ router.post("/login", authenticateUser, (req, res) => {
   res.redirect('/all');
 });
 
-router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
+router.get('/all', requireAuth, getAllUsers, syncUserFolders, getFoldersForUser, (req, res) => {
   res.render('all-files', {
-    user: req.session.user
+    user: req.session.user,
+    userFolders: req.userFolders
   });
 });
 
