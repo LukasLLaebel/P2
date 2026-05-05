@@ -2,8 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { getAllUsers } from "../middleware/users.middleware.js";
-import { getAllPermissions } from "../middleware/permissions.middleware.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +24,7 @@ function getAllFilesFromFolder(req, res, next) {
   return;
 }
 
-router.get("/getAllFiles/:id", (req, res) => {
+router.get("/getAllFiles/:id", requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
   const files = authData.shares.find(share => share.id === id)?.files;

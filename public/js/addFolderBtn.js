@@ -8,17 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("/folders/create", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({folder: folderName})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder: folderName })
       });
 
       const data = await response.json();
-      
+
       if (!data.success) {
         alert('Error: ' + data.message);
         return;
       }
-      
+
       const folderWrapper = document.querySelector(".folder-wrapper");
 
       const emptyState = document.querySelector(".empty-state-container");
@@ -34,16 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 style="background-color: #6c8480">Users (${data.folder.users.length})</h2>
         </div>
       `;
-    const addBtn = folderWrapper.querySelector(".create-folder-btn");
-    folderWrapper.insertBefore(newFolder, addBtn);
-  
-  } catch (error) {
-    console.error(error);
-    alert('Failed to create folder');
-  }
-};
+      const addBtn = folderWrapper.querySelector(".create-folder-btn");
+      folderWrapper.insertBefore(newFolder, addBtn);
 
-buttons.forEach(btn => {
-  btn.addEventListener("click", handleCreateFolder);
-});
+    } catch (error) {
+      console.error(error);
+      alert('Failed to create folder');
+    }
+  };
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", handleCreateFolder);
+  });
 });
