@@ -13,9 +13,11 @@ router.use(express.json());
 
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
-// 
+// Loads My Files page with all folders for the authenticated user
 router.get('/', requireAuth, (req, res) => {
     const view = req.query.view || 'display';
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8')); 
 
     res.render('../views/my-files.ejs', {
       user: req.session?.user?.username,
@@ -24,11 +26,12 @@ router.get('/', requireAuth, (req, res) => {
     });
   });
 
-router.post('/create', requireAuth, (req, res) => {
+// Creates the new folder
+router.post('/create', (req, res) => {
     try {
       const { folder } = req.body;
   
-      // validate folder
+      // Validates input name
       if (!folder || folder.trim() === "") {
         return res.status(400).json({
           success: false,
@@ -38,19 +41,20 @@ router.post('/create', requireAuth, (req, res) => {
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    // Check shares exists
+    // Checks that "shares" exists
     if(!authData.shares) {
       authData.shares = [];
     }
 
-    // Generate new share ID
+    // Generates new "shares" ID
     const maxShareId = Math.max(...authData.shares.map(s => s.id), 0);
     const newShareId = maxShareId + 1;
 
+    // Defines owner as current authenticated user
     const owner = req.session?.user?.username;
     const users = [owner];
 
-    // Create new share
+    // Creates new folder
     const newShare = {
       id: newShareId,
       name: folder.trim(),
@@ -62,7 +66,7 @@ router.post('/create', requireAuth, (req, res) => {
 
     authData.shares.push(newShare);
     
-    // Process each user
+    // Adds folder to the user in auth.json
     if (users && Array.isArray(users)) {
       users.forEach(username => {
         if (!newShare.users.includes(username)) {

@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 style="background-color: #6c8480">Users (${data.folder.users.length})</h2>
         </div>
       `;
-
-    folderWrapper.appendChild(newFolder);
+    const addBtn = folderWrapper.querySelector(".create-folder-btn");
+    folderWrapper.insertBefore(newFolder, addBtn);
   
   } catch (error) {
     console.error(error);
