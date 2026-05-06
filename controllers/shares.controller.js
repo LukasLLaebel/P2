@@ -1,0 +1,68 @@
+import { SharesService } from "../services/shares.service.js";
+
+export const getFiles = (req, res) => {
+  try {
+    const files = SharesService.getAllShareFiles();
+    res.json(files);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUsersFromFile = (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const users = SharesService.getUsersByShareId(id);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getFolderOwner = (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const owner = SharesService.getFolderOwner(id);
+    res.json(owner || null);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+export const addUser = (req, res) => {
+  try {
+    const { username, shareId } = req.body;
+    const newShared = SharesService.addUserToShare(username, shareId);
+
+    res.json({
+      success: true,
+      message: 'Share assigned successfully to user',
+      share: newShared
+    });
+  } catch (error) {
+    const status = error.message.includes("not found") ? 404 : 400;
+    res.status(status).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+export const removeUser = (req, res) => {
+  try {
+    const { username, shareId } = req.body;
+    const share = SharesService.removeUserFromShare(username, shareId);
+
+    res.json({
+      success: true,
+      message: 'Share removed successfully from user',
+      share: share
+    });
+  } catch (error) {
+    const status = error.message.includes("not found") ? 404 : 400;
+    res.status(status).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
