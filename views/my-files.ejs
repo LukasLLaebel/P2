@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-  <link href="./css/my-files.css" rel="stylesheet">
+  <link href="./css/all-files.css" rel="stylesheet">
   <link href="./css/empty.folderpages.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -13,7 +13,9 @@
 
 <body>
   <header>
-    <h1>Username</h1>
+    <h1>
+      <%= user.username %>
+    </h1>
     <div class="profile-pic">
       <img src="./" alt="PP" onerror="
             this.style.display = 'none';
@@ -28,6 +30,7 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
+<<<<<<< HEAD
       <div class="folder-search-wrapper">
       <input 
       id="folderSearch"
@@ -36,6 +39,9 @@
       >
       </div>
       <div class="folder-wrapper">
+=======
+      <div class="folder-wrapper <%= (!userFolders || userFolders.length === 0) ? 'is-empty' : '' %>">
+>>>>>>> 054d4cdc19ce5ba7625be965b1f7b4253ff859db
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
             <div class="folder-<%= String(index + 1).padStart(2, '0') %>">
@@ -54,12 +60,15 @@
               </div>
             </div>
             <% }); %>
+            <div class="add-folder-btn create-folder-btn">
+              <h1>+ New Folder</h1>
+            </div>
               <% } else { %>
                 <%- include("./assets/empty.folderpages.ejs") %>
                   <% } %>
       </div>
   </main>
-  <script src="./js/folder.buttons.js"></script>
+  <script src="/js/addFolderBtn.js"></script>
 </body>
 
 </html>
