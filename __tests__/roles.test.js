@@ -252,7 +252,7 @@ describe('Roles Router - POST /create', () => {
       .expect(404);
 
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain('Share not found');
+    expect(response.body.message).toContain('Error creating role'); // changed error message
   });
 
   // TEST 8

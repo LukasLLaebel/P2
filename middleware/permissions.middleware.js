@@ -10,7 +10,7 @@ const DBFilePath = path.join(__dirname, '../db/auth.json');
 export function getAllPermissions(req, res, next) {
   try {
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
-    req.allPermissions = authData.permissions.map(({ name }) => name); // Changed from req.allUsers
+    req.allPermissions = authData.permissions.map(({ name }) => name);
     next();
   } catch (error) {
     console.error('Error reading permissions:', error);

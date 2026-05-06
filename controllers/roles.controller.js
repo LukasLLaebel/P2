@@ -1,14 +1,17 @@
 import * as rolesService from "../services/roles.service.js";
 import * as usersService from "../services/users.service.js";
+import { getAllPermissions } from "../services/permissions.service.js";
 
 export const renderRolesPage = async (req, res) => { // Make sure this is async
   try {
     const users = await usersService.getAllUsers();
+    const permissions = await getAllPermissions();
+
     const view = req.query.view || 'display';
 
     res.render('../views/roles.ejs', {
       user: req.session.user,
-      allPermissions: req.allPermissions,
+      allPermissions: permissions,
       allUsers: users,
       folder: req.query.folder,
       currentView: view
