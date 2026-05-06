@@ -2,8 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { getAllUsers } from "../middleware/users.middleware.js";
-import { getAllPermissions } from "../middleware/permissions.middleware.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -41,7 +40,7 @@ function getUsersFromFile(req, res, next) {
   return;
 }
 
-router.get("/usersFromFile/:id", (req, res) => {
+router.get("/usersFromFile/:id", requireAuth, (req, res) => {
   const id = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
@@ -73,7 +72,7 @@ router.get("/getFolderOwner/:id", (req, res) => {
 });
 
 
-router.post('/useradd', (req, res) => {
+router.post('/useradd', requireAuth, (req, res) => {
   try {
     const { username, shareId } = req.body;
 
@@ -129,7 +128,7 @@ router.post('/useradd', (req, res) => {
   }
 });
 
-router.post('/userrem', (req, res) => {
+router.post('/userrem', requireAuth, (req, res) => {
   try {
     const { username, shareId } = req.body;
 
