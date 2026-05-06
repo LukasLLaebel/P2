@@ -30,6 +30,7 @@ export const SharesService = {
     const user = data.users.find(u => u.username === username);
     if (!user) throw new Error("User not found");
 
+    // Keeps going until finds share (iterative)
     if (user.shares.some(s => s.id === shareId)) {
       throw new Error("User already has this share");
     }

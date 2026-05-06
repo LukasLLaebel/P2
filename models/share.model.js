@@ -1,3 +1,14 @@
+/**
+ *
+ *  Takes all data from the database
+ *  used by SHARES Service and FILES Service 
+ *  
+ *  - GetAllData: Reads the entire auth.json file and returns it as a JavaScript object.
+ *  - SaveAllData: Takes a JavaScript object and writes it back to the auth.json file in a formatted manner.
+ *  - findShareById: Searches for a share with a specific ID within the shares array and returns it if found.
+ *
+ **/
+
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
