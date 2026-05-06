@@ -1,5 +1,6 @@
 import { FilesService } from "../services/files.service.js";
 
+// gets files from ID 
 export const getFiles = (req, res) => {
   try {
     const id = Number(req.params.id);

@@ -1,14 +1,22 @@
 import * as rolesService from "../services/roles.service.js";
+import * as usersService from "../services/users.service.js";
 
-export const renderRolesPage = (req, res) => {
-  const view = req.query.view || 'display';
-  res.render('../views/roles.ejs', {
-    user: req.session.user,
-    allPermissions: req.allPermissions,
-    allUsers: req.allUsers,
-    folder: req.query.folder,
-    currentView: view
-  });
+export const renderRolesPage = async (req, res) => { // Make sure this is async
+  try {
+    const users = await usersService.getAllUsers();
+    const view = req.query.view || 'display';
+
+    res.render('../views/roles.ejs', {
+      user: req.session.user,
+      allPermissions: req.allPermissions,
+      allUsers: users,
+      folder: req.query.folder,
+      currentView: view
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const createRole = (req, res) => {

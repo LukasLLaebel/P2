@@ -1,5 +1,4 @@
 import express from "express";
-import { getAllUsers } from "../middleware/users.middleware.js";
 import { getAllPermissions } from "../middleware/permissions.middleware.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import { validateRoleCreation } from "../middleware/valid-roles.middleware.js";
@@ -11,7 +10,7 @@ router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
 // main roles route '/roles'
-router.get('/', requireAuth, getAllUsers, getAllPermissions, rolesController.renderRolesPage);
+router.get('/', requireAuth, getAllPermissions, rolesController.renderRolesPage); // <-- it is needed here
 
 router.post('/create', requireAuth, validateRoleCreation, rolesController.createRole);
 router.get('/getRolesFromFolder/:id', requireAuth, rolesController.getRolesFromFolder);

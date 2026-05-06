@@ -1,6 +1,6 @@
 import { SharesService } from "../services/shares.service.js";
 
-export const getFiles = (req, res) => {
+export const getAllFiles = (req, res) => {
   try {
     const files = SharesService.getAllShareFiles();
     res.json(files);

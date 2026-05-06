@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
-router.get("/files", SharesController.getFiles);
+router.get("/files", requireAuth, SharesController.getAllFiles);
 router.get("/usersFromFile/:id", requireAuth, SharesController.getUsersFromFile);
 router.get("/getFolderOwner/:id", SharesController.getFolderOwner);
 

@@ -1,3 +1,5 @@
+import { ShareModel } from "../models/share.model.js";
+
 import fs from "fs";
 import path from "path";
 
@@ -19,4 +21,9 @@ export async function syncUserFolders(req, res, next) {
     console.error('Error syncing user folders:', error);
     res.status(500).json({ error: 'Failed to sync user folders' });
   }
+}
+
+export const getAllUsers = async () => {
+  const data = ShareModel.getAllData();
+  return data.users.map(({ username }) => username);
 }
