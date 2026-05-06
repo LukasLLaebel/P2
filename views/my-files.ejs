@@ -28,6 +28,13 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
+      <div class="folder-search-wrapper">
+      <input 
+      id="folderSearch"
+      type="search"
+      placeholder="Search folders..."
+      >
+      </div>
       <div class="folder-wrapper">
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>

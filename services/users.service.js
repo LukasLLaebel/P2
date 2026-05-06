@@ -20,3 +20,18 @@ export async function syncUserFolders(req, res, next) {
     res.status(500).json({ error: 'Failed to sync user folders' });
   }
 }
+export function searchFolders(folders, searchText) {
+  if (!folders || folders.length === 0) {
+    return [];
+  }
+
+  if (!searchText || searchText.trim() === "") {
+    return folders;
+  }
+
+  const query = searchText.toLowerCase().trim();
+
+  return folders.filter((folder) => {
+    return folder.name.toLowerCase().includes(query);
+  });
+}

@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { syncUserFolders } from "../services/users.service.js";
+import { syncUserFolders, searchFolders } from "../services/users.service.js";
 import { getAllUsers } from "../middleware/users.middleware.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
 
@@ -40,6 +40,14 @@ router.get('/owned', getFoldersForUser, (req, res) => {
     currentUser: req.currentUser
   });
 });
+router.get("/folders/search", getFoldersForUser, (req, res) => {
+  const searchText = req.query.q;
 
+  const searchedFolders = searchFolders(req.userFolders, searchText);
+
+  res.json({
+    folders: searchedFolders,
+  });
+});
 
 export default router;

@@ -6,3 +6,26 @@
   --jade-400: #6C8480;
   --jade-500: #404E3B;
 */
+.folder-search-wrapper {
+  width: 100%;
+  margin: 20px 0;
+}
+
+#folderSearch {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px;
+
+  border: 2px solid #404e3b;
+  border-radius: 8px;
+
+  font-size: 18px;
+}
+
+#folderSearch:focus {
+  outline: none;
+  border-color: #6c8480;
+}
+.folder-wrapper {
+  margin-top: 24px;
+}
