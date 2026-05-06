@@ -27,7 +27,7 @@ router.get('/', requireAuth, getAllUsers, getAllPermissions, (req, res) => {
   });
 });
 
-router.post('/create', (req, res) => {
+router.post('/create', requireAuth, (req, res) => {
   try {
     const { role, users, permission, folder } = req.body;
 
