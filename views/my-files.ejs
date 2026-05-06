@@ -30,18 +30,14 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
-<<<<<<< HEAD
       <div class="folder-search-wrapper">
-      <input 
+      <input
       id="folderSearch"
       type="search"
       placeholder="Search folders..."
       >
       </div>
-      <div class="folder-wrapper">
-=======
       <div class="folder-wrapper <%= (!userFolders || userFolders.length === 0) ? 'is-empty' : '' %>">
->>>>>>> 054d4cdc19ce5ba7625be965b1f7b4253ff859db
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
             <div class="folder-<%= String(index + 1).padStart(2, '0') %>">
