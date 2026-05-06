@@ -31,14 +31,11 @@ router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
   });
 });
 
-router.get('/files', (req, res) => {
+
+router.get('/files', requireAuth, (req, res) => {
   res.render('../views/files.ejs', {
     user: req.session.user
   });
-});
-
-router.post("/login", authenticateUser, (req, res) => {
-  res.redirect('/all');
 });
 
 router.get("/shared", requireAuth, (req, res) => {
