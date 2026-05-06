@@ -6,6 +6,8 @@ export default {
     'middleware/**/*.js',
     '!node_modules/**'
   ],
-  testMatch: ['**/__tests__/**/*.test.js']
+  testMatch: ['**/__tests__/**/*.test.js'],
+
+  maxWorkers: 1
 };
 
