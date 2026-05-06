@@ -3,8 +3,6 @@ import { ShareModel } from "../models/share.model.js";
 import fs from "fs";
 import path from "path";
 
-
-
 export const getAllUsers = async () => {
   const data = ShareModel.getAllData();
   return data.users.map(({ username }) => username);
