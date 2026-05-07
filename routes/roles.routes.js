@@ -4,11 +4,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import { getAllUsers } from "../middleware/users.middleware.js";
 import { getAllPermissions } from "../middleware/permissions.middleware.js";
-<<<<<<< HEAD
-import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
-=======
 import { requireAuth } from "../middleware/auth.middleware.js";
->>>>>>> main
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -19,13 +15,8 @@ router.use(express.json());
 
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
-<<<<<<< HEAD
-// main roles route /roles
-router.get('/', getAllUsers, getAllPermissions, (req, res) => {
-=======
 // main roles route '/roles'
 router.get('/', requireAuth, getAllUsers, getAllPermissions, (req, res) => {
->>>>>>> main
   const view = req.query.view || 'display';
   res.render('../views/roles.ejs', {
     user: req.session.user,

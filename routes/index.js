@@ -2,11 +2,8 @@ import express from "express";
 import pageRoutes from "./pages.routes.js";
 import rolesRoutes from "./roles.routes.js";
 import sharesRoutes from "./shares.routes.js";
-<<<<<<< HEAD
 import folderRoutes from "./folder.routes.js";
-=======
 import filesRoutes from "./files.routes.js";
->>>>>>> main
 
 const router = express.Router();
 

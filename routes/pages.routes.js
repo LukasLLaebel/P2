@@ -31,18 +31,11 @@ router.get('/all', requireAuth, getAllUsers, syncUserFolders, (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-=======
 router.get('/files', (req, res) => {
   res.render('../views/files.ejs', {
     user: req.session.user
   });
 });
-
-router.post("/login", authenticateUser, (req, res) => {
-  res.redirect('/all');
-});
->>>>>>> main
 
 router.get("/shared", requireAuth, (req, res) => {
   res.render('shared-with-me', {
@@ -50,10 +43,6 @@ router.get("/shared", requireAuth, (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
   res.render('my-files', {
     user: req.session.user,

@@ -27,7 +27,7 @@ router.get('/', requireAuth, (req, res) => {
   });
 
 // Creates the new folder
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
     try {
       const { folder } = req.body;
   
@@ -65,6 +65,13 @@ router.post('/create', (req, res) => {
     };
 
     authData.shares.push(newShare);
+
+    // Adds folder to filesystem
+    const sharesPath = path.join(process.cwd(), 'shares');
+    const userFolderPath = path.join(sharesPath, owner);
+    const newFolderPath = path.join(userFolderPath, folder.trim());
+    await fs.promises.mkdir(userFolderPath, { recursive: true });
+    await fs.promises.mkdir(newFolderPath, { recursive: true });
     
     // Adds folder to the user in auth.json
     if (users && Array.isArray(users)) {
