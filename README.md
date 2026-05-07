@@ -1,4 +1,4 @@
-# Title
+# File Sharing system 
 ## P2 - A Larger Program Developed by a Group 
 
 ## Overview
@@ -8,15 +8,48 @@
 
 ## User Manual
 
-
 ### Getting Started
-
+The system uses node.js and express.js
 #### Installation
+Before you can start using this product, you need to have node and npm (node package manager) installed.
+You can install this on the official website or your AUR if you use linux.
+When installed you can check if it works by checking the version. 
+Go to the command line and type:
+```
+```
+```bash
+  node -v
+  npm -v
+``` 
+```
+```
 
-#### System Requirements
+This should print the version of the systems.
 
-#### Initial Setup
+##### Download project
+Go to this project and download ether using SSH or HTTPS
+```bash
+  git clone https://github.com/LukasLLaebel/P2.git
+```
 
+##### Install dependencies
+The project uses node therefore an package file with all dependencies will help in the installation.
+You can use one of these commands to install all that is needed. Look in [PACKAGE FILE](https://github.com/LukasLLaebel/P2/blob/main/package.json)
+```bash 
+npm install 
+npm i 
+```
+
+##### Initial Setup
+When everything is installed and working run the server.
+
+The server runs using express and runs on localhost:3000 also know as the loopback address at port 3000.
+Sometimes you would see localhost as 127.0.0.1 (IPv4) or ::1 (IPv6)
+
+To start the server run this command in the terminal:
+```bash
+node server.js
+```
 
 ### How to Use
 
