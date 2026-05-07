@@ -51,41 +51,50 @@ const mockAuthData = {
     }
   ]
 };
+function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
+  return (req, res, next) => {
+    // If your code expects req.user:
+    req.user = user;
 
-// setup
+    // If your code expects req.session.user:
+    req.session = req.session || {};
+    req.session.user = user;
+
+    // If your code expects something else (example):
+    req.isAuthenticated = () => true;
+
+    next();
+  };
+}
+
 describe('Roles Router - POST /create', () => {
   let app;
   let testDBPath;
 
-  // make requirements
   beforeEach(() => {
     app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use('/roles', rolesRouter);
 
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
 
     testDBPath = path.join(__dirname, '../db/auth.json');
     const backupPath = path.join(__dirname, '../db/auth.backup.json');
 
-    if (fs.existsSync(testDBPath)) {
-      fs.copyFileSync(testDBPath, backupPath);
-    }
-
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
     fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
   });
 
-  // Restore changes
   afterEach(() => {
     const realDBPath = path.join(__dirname, '../db/auth.json');
     const backupPath = path.join(__dirname, '../db/auth.backup.json');
 
     if (fs.existsSync(backupPath)) {
       fs.copyFileSync(backupPath, realDBPath);
-      fs.unlinkSync(backupPath); // Delete backup
+      fs.unlinkSync(backupPath);
     }
   });
-
   // TEST 1 
   test('should create a role successfully with valid users and permissions', async () => {
     const roleData = {

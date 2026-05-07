@@ -2,8 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { getAllUsers } from "../middleware/users.middleware.js";
-import { getAllPermissions } from "../middleware/permissions.middleware.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -27,9 +26,22 @@ function getAllFiles(req, res, next) {
 
 router.get("/files", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const files = authData.shares.map(u =>
-    ({ name: u.name, id: u.id })
-  );
+
+  const user = authData.users.find(u => u.username === req.session.user.username);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const files = user?.shares.map(s =>({ name: s.name, id: s.id, owner: s.owner }));
+  if (!files) {
+    return res.status(200).json({
+      success: true,
+      message: 'No files found for user'
+    });
+  }
 
   res.json(files);
 });
@@ -42,7 +54,7 @@ function getUsersFromFile(req, res, next) {
   return;
 }
 
-router.get("/usersFromFile/:id", (req, res) => {
+router.get("/usersFromFile/:id", requireAuth, (req, res) => {
   const id = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
@@ -68,13 +80,26 @@ router.get("/getFolderOwner/:id", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
 
   const share = authData.shares.find(s => s.id === id);
+  if (!share) {
+    return res.status(404).json({
+      success: false,
+      message: 'Share not found'
+    });
+  }
+
   const owner = authData.users.find(user => user.username === share.owner);
+  if (!owner) {
+    return res.status(404).json({
+      success: false,
+      message: 'Owner not found'
+    });
+  }
 
   res.json(owner);
 });
 
 
-router.post('/useradd', (req, res) => {
+router.post('/useradd', requireAuth, (req, res) => {
   try {
     const { username, shareId } = req.body;
 
@@ -130,7 +155,7 @@ router.post('/useradd', (req, res) => {
   }
 });
 
-router.post('/userrem', (req, res) => {
+router.post('/userrem', requireAuth, (req, res) => {
   try {
     const { username, shareId } = req.body;
 
