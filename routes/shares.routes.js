@@ -26,9 +26,22 @@ function getAllFiles(req, res, next) {
 
 router.get("/files", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const files = authData.shares.map(u =>
-    ({ name: u.name, id: u.id })
-  );
+
+  const user = authData.users.find(u => u.username === req.session.user.username);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const files = user?.shares.map(s =>({ name: s.name, id: s.id, owner: s.owner }));
+  if (!files) {
+    return res.status(200).json({
+      success: true,
+      message: 'No files found for user'
+    });
+  }
 
   res.json(files);
 });
@@ -67,7 +80,20 @@ router.get("/getFolderOwner/:id", (req, res) => {
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
 
   const share = authData.shares.find(s => s.id === id);
+  if (!share) {
+    return res.status(404).json({
+      success: false,
+      message: 'Share not found'
+    });
+  }
+
   const owner = authData.users.find(user => user.username === share.owner);
+  if (!owner) {
+    return res.status(404).json({
+      success: false,
+      message: 'Owner not found'
+    });
+  }
 
   res.json(owner);
 });
