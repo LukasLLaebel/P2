@@ -32,6 +32,6 @@ export function searchFolders(folders, searchText) {
   const query = searchText.toLowerCase().trim();
 
   return folders.filter((folder) => {
-    return folder.name.toLowerCase().includes(query);
+    return folder.name?.toLowerCase().includes(query);
   });
 }

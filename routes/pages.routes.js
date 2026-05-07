@@ -53,7 +53,7 @@ router.get('/owned', requireAuth, getFoldersForUser, (req, res) => {
     currentUser: req.currentUser
   });
 });
-router.get("/folders/search", getFoldersForUser, (req, res) => {
+router.get("/folders/search", requireAuth, getFoldersForUser, (req, res) => {
   const searchText = req.query.q;
 
   const searchedFolders = searchFolders(req.userFolders, searchText);
