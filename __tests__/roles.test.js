@@ -30,6 +30,11 @@ const mockAuthData = {
           id: 1,
           name: 'Folder 1',
           roles: []
+        },
+        {
+          id: 2,
+          name: 'Folder 2',
+          roles: [2]
         }
       ]
     }
@@ -46,6 +51,42 @@ const mockAuthData = {
       path: './home/lukas/Folder 1',
       owner: 'Lukas',
       users: ['Lukas', 'Jeff'],
+      files: [],
+      roles: []
+    },
+    {
+      id: 2,
+      name: 'Folder 2',
+      path: './home/lukas/Folder 2',
+      owner: 'Lukas',
+      users: ['Lukas'],
+      files: [],
+      roles: [{
+          "id": 1,
+          "name": "admin",
+          "permissions": [
+            "read",
+            "write",
+            "delete",
+            "share",
+            "comment"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "member",
+          "permissions": [
+            "read",
+            "write"
+          ]
+        }]
+    },
+    {
+      id: 3,
+      name: 'Folder 3',
+      path: './home/lukas/Folder 3',
+      owner: 'Lukas',
+      users: ['Lukas'],
       files: [],
       roles: []
     }
@@ -314,3 +355,169 @@ describe('Roles Router - POST /create', () => {
     expect(response.body.role.permissions).toContain('delete');
   });
 });
+
+
+describe('Roles Router - POST /assignRoleToUser', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+  // TEST 1 
+  test('Should successfully assign a role to a user', async () => {
+    const roleData = {
+      role: 'admin',
+      user: 'Jeff',
+      shareId: 2
+    };
+
+    const response = await request(app)
+      .post('/roles/assignRoleToUser')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe('admin');
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const roles = updatedAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === roleData.shareId).roles;
+    expect(roles.length).toBeGreaterThan(0);
+    expect(roles).toEqual(
+      expect.arrayContaining([1])
+    );
+  });
+});  
+
+describe('Roles Router - POST /editRoleName', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+  // TEST 1 
+  test('Should successfully edit a role name', async () => {
+    const roleData = {
+      role: 'admin',
+      shareId: 2,
+      newRoleName: 'superadmin'
+    };
+
+    const response = await request(app)
+      .post('/roles/editRoleName')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe('admin');
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const role = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles.find(r => r.id === 1);
+    expect(role.name).toBe('superadmin');
+  });
+});  
+
+
+describe('Roles Router - POST /removeRoleFromUser', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+  // TEST 1 
+  test('Should successfully remove a role from a user', async () => {
+    const roleData = {
+      roleId: 2,
+      user: 'Jeff'
+    };
+
+    const response = await request(app)
+      .post('/roles/removeRoleFromUser/2')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe(2);
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const roles = updatedAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
+    expect(roles).not.toEqual(expect.arrayContaining([2]));
+  });
+});  

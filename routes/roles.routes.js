@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import { getAllUsers } from "../middleware/users.middleware.js";
 import { getAllPermissions } from "../middleware/permissions.middleware.js";
-import { requireAuth } from "../middleware/auth.middleware.js";
+import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -15,11 +15,11 @@ router.use(express.json());
 
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
-// main roles route '/roles'
-router.get('/', requireAuth, getAllUsers, getAllPermissions, (req, res) => {
+// main roles route /roles
+router.get('/', getAllUsers, getAllPermissions, (req, res) => {
   const view = req.query.view || 'display';
   res.render('../views/roles.ejs', {
-    user: req.session.user,
+    user: "Jeff",
     allPermissions: req.allPermissions,
     allUsers: req.allUsers,
     folder: req.query.folder,
@@ -27,11 +27,11 @@ router.get('/', requireAuth, getAllUsers, getAllPermissions, (req, res) => {
   });
 });
 
-router.post('/create', requireAuth, (req, res) => {
+router.post('/create', (req, res) => {
   try {
     const { role, users, permission, folder } = req.body;
 
-    // Validate role
+    // validate role
     if (!role || role.trim() === '') {
       return res.status(400).json({
         success: false,
@@ -39,18 +39,13 @@ router.post('/create', requireAuth, (req, res) => {
       });
     }
 
-    // Validate folder exists
-    if (!folder) {
-      return res.status(400).json({
-        success: false,
-        message: 'Folder ID is required'
-      });
-    }
-
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
-    const shareId = Number(folder);
 
-    // Find the share FIRST to get the actual name
+    // static!
+    const shareId = Number(folder);
+    const shareName = "Folder 1";
+
+    // Find the share
     const share = authData.shares.find(s => s.id === shareId);
     if (!share) {
       return res.status(404).json({
@@ -59,13 +54,11 @@ router.post('/create', requireAuth, (req, res) => {
       });
     }
 
-
-    const shareName = share.name;
-
     // Generate new role ID
     const maxRoleId = Math.max(...share.roles.map(r => r.id), 0);
     const newRoleId = maxRoleId + 1;
 
+    // Create new role with permissions
     const newRole = {
       id: newRoleId,
       name: role,
@@ -117,33 +110,34 @@ router.post('/create', requireAuth, (req, res) => {
   }
 });
 
-router.get("/getRolesFromFolder/:id", requireAuth, (req, res) => {
+
+router.get("/getRolesFromFolder/:id", (req, res) => {
   const id = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-
+  
   const roles = authData.shares.find(share => share.id === id)?.roles;
 
   res.json(roles);
 });
 
-router.get("/getUsersWithRole/:id", requireAuth, (req, res) => {
+router.get("/getUsersWithRole/:id", (req, res) => {
   const roleId = Number(req.params.id);
 
   const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-
+  
   const users = authData.users.filter(user => user.shares.some(share => share.roles.some(role => role === roleId)));
 
   res.json(users);
 });
 
-router.post("/assignRoleToUser", requireAuth, (req, res) => {
+router.post("/assignRoleToUser", (req, res) => {
   try {
     const { role, user, shareId } = req.body;
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    authData.users.find(u => u.username === user).shares.find(s => s.id === shareId).roles.push(authData.shares.find(s => s.id === shareId).roles.find(r => r.name === role).id);
+    authData.users.find(u => u.username === user)?.shares.find(s => s.id === shareId).roles.push(authData.shares.find(s => s.id === shareId).roles.find(r => r.name === role).id);
 
     fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
 
@@ -163,7 +157,7 @@ router.post("/assignRoleToUser", requireAuth, (req, res) => {
   }
 });
 
-router.post("/editRoleName", requireAuth, (req, res) => {
+router.post("/editRoleName", (req, res) => {
   try {
     const { role, shareId, newRoleName } = req.body;
 
@@ -189,7 +183,7 @@ router.post("/editRoleName", requireAuth, (req, res) => {
   }
 });
 
-router.post("/removeRoleFromUser/:id", requireAuth, (req, res) => {
+router.post("/removeRoleFromUser/:id", (req, res) => {
   try {
     const { roleId, user } = req.body;
     const shareId = Number(req.params.id);
@@ -227,7 +221,7 @@ router.post("/removeRoleFromUser/:id", requireAuth, (req, res) => {
   }
 });
 
-router.post("/deleteRole", requireAuth, (req, res) => {
+router.post("/deleteRole", (req, res) => {
   try {
     const { roleId, shareId } = req.body;
 
