@@ -2,10 +2,13 @@ import { SharesService } from "../services/shares.service.js";
 
 export const getAllFiles = (req, res) => {
   try {
-    const files = SharesService.getAllShareFiles();
+    const username = req.session.user.username;
+
+    const files = SharesService.getAllShareFiles(username);
     res.json(files);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const status = error.message.includes("not found") ? 404 : 500;
+    res.status(status).json({ success: false, message: error.message });
   }
 };
 

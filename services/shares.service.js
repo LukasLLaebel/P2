@@ -1,9 +1,11 @@
 import { ShareModel } from "../models/share.model.js";
 
 export const SharesService = {
-  getAllShareFiles: () => {
+  getAllShareFiles: (username) => {
     const data = ShareModel.getAllData();
-    return data.shares.map(u => ({ name: u.name, id: u.id }));
+    const user = data.users.find(u => u.username === username);
+    if (!user) throw new Error("User not found");
+    return user.shares.map(s => ({ name: s.name, id: s.id, owner: s.owner }));
   },
 
   getUsersByShareId: (shareId) => {
@@ -17,7 +19,7 @@ export const SharesService = {
     const data = ShareModel.getAllData();
     const share = data.shares.find(s => s.id === shareId);
     if (!share) throw new Error("Share not found");
-
+    if (!owner) throw new Error("Owner not found");
     return data.users.find(user => user.username === share.owner);
   },
 
