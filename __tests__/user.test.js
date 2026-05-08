@@ -5,72 +5,29 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import sharesRouter from '../routes/shares.routes.js';
 
+import { mockSignedIn, MockDB } from './utils.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create a mock auth.json for testing
-const mockAuthData = {
-  users: [
-    {
-      id: 1,
-      username: 'Lukas',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 2,
-      username: 'Jeff',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 3,
-      username: 'Nadia',
-      shares: []
-    }
-  ],
-  permissions: [
-    { id: 1, name: 'read' },
-    { id: 2, name: 'write' },
-    { id: 3, name: 'delete' }
-  ],
-  shares: [
-    {
-      id: 1,
-      name: 'Folder 1',
-      path: './home/lukas/Folder 1',
-      owner: 'Lukas',
-      users: ['Lukas', 'Jeff'],
-      files: [],
-      roles: []
-    }
-  ]
-};
-function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
-  return (req, res, next) => {
-    // If your code expects req.user:
-    req.user = user;
+const db = new MockDB(
+  ['Lukas', 'Jeff', 'Nadia'],
+  ['read', 'write', 'delete'],
+  ['Folder 1'],
+  []
+);
 
-    // If your code expects req.session.user:
-    req.session = req.session || {};
-    req.session.user = user;
+db.initialize();
 
-    // If your code expects something else (example):
-    req.isAuthenticated = () => true;
+db.setShareOwner('Folder 1', 'Lukas');
 
-    next();
-  };
-}
+db.assignUserToShare('Jeff', 'Folder 1');
+
+const mockAuthData = db.getData();
+
+
+
+
 
 describe('Shares Router - POST /useradd', () => {
   let app;

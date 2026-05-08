@@ -5,108 +5,43 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import rolesRouter from '../routes/roles.routes.js';
 
+import { mockSignedIn, MockDB } from './utils.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create a mock auth.json for testing
-const mockAuthData = {
-  users: [
-    {
-      id: 1,
-      username: 'Lukas',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 2,
-      username: 'Jeff',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        },
-        {
-          id: 2,
-          name: 'Folder 2',
-          roles: [2]
-        }
-      ]
-    }
-  ],
-  permissions: [
-    { id: 1, name: 'read' },
-    { id: 2, name: 'write' },
-    { id: 3, name: 'delete' }
-  ],
-  shares: [
-    {
-      id: 1,
-      name: 'Folder 1',
-      path: './home/lukas/Folder 1',
-      owner: 'Lukas',
-      users: ['Lukas', 'Jeff'],
-      files: [],
-      roles: []
-    },
-    {
-      id: 2,
-      name: 'Folder 2',
-      path: './home/lukas/Folder 2',
-      owner: 'Lukas',
-      users: ['Lukas'],
-      files: [],
-      roles: [{
-          "id": 1,
-          "name": "admin",
-          "permissions": [
-            "read",
-            "write",
-            "delete",
-            "share",
-            "comment"
-          ]
-        },
-        {
-          "id": 2,
-          "name": "member",
-          "permissions": [
-            "read",
-            "write"
-          ]
-        }]
-    },
-    {
-      id: 3,
-      name: 'Folder 3',
-      path: './home/lukas/Folder 3',
-      owner: 'Lukas',
-      users: ['Lukas'],
-      files: [],
-      roles: []
-    }
-  ]
-};
-function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
-  return (req, res, next) => {
-    // If your code expects req.user:
-    req.user = user;
 
-    // If your code expects req.session.user:
-    req.session = req.session || {};
-    req.session.user = user;
+const db = new MockDB(
+  ['Lukas', 'Jeff', 'Nadia', 'Laura'],
+  ['read', 'write', 'delete'],
+  ['Folder 1', 'Folder 2', 'Folder 3', 'Folder 4'],
+  ['admin', 'member']
+);
 
-    // If your code expects something else (example):
-    req.isAuthenticated = () => true;
+db.initialize();
 
-    next();
-  };
-}
+db.assignPermissionsToRole('admin', ['read', 'write', 'delete', 'share', 'comment']);
+db.assignPermissionsToRole('member', ['read', 'write']);
+
+db.setShareOwner('Folder 1', 'Lukas');
+db.setShareOwner('Folder 2', 'Lukas');
+db.setShareOwner('Folder 3', 'Lukas');
+db.setShareOwner('Folder 4', 'Jeff');
+
+db.assignRoleToShare('Folder 2', 'admin');
+db.assignRoleToShare('Folder 2', 'member');
+
+db.assignUserToShare('Jeff', 'Folder 1');
+db.assignUserToShare('Jeff', 'Folder 2', [2]);
+db.assignUserToShare('Laura', 'Folder 1', [2]);
+
+// if needed remove user here we remove jeff
+const folder2 = db.shares.find(s => s.name === 'Folder 2');
+folder2.users = folder2.users.filter(u => u !== 'Jeff');
+
+const mockAuthData = db.getData();
+//console.log(JSON.stringify(mockAuthData, null, 2));
+
 
 describe('Roles Router - POST /create', () => {
   let app;
@@ -412,7 +347,7 @@ describe('Roles Router - POST /assignRoleToUser', () => {
       expect.arrayContaining([1])
     );
   });
-});  
+});
 
 describe('Roles Router - POST /editRoleName', () => {
   let app;
@@ -466,7 +401,7 @@ describe('Roles Router - POST /editRoleName', () => {
     const role = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles.find(r => r.id === 1);
     expect(role.name).toBe('superadmin');
   });
-});  
+});
 
 
 describe('Roles Router - POST /removeRoleFromUser', () => {
