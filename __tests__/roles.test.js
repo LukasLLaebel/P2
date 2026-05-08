@@ -227,6 +227,7 @@ describe('Roles Router - POST /create', () => {
 
     expect(response.body.success).toBe(false);
     expect(response.body.message).toContain('Error creating role');
+
   });
 
   // TEST 8
