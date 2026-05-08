@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rolesRouter from '../routes/roles.routes.js';
-import e from 'express';
 
 import { mockSignedIn, MockDB } from './utils.js';
 
@@ -41,8 +40,6 @@ const folder2 = db.shares.find(s => s.name === 'Folder 2');
 folder2.users = folder2.users.filter(u => u !== 'Jeff');
 
 const mockAuthData = db.getData();
-//console.log(JSON.stringify(mockAuthData, null, 2));
-
 
 describe('Roles Router - POST /create', () => {
   let app;
@@ -72,6 +69,7 @@ describe('Roles Router - POST /create', () => {
       fs.unlinkSync(backupPath);
     }
   });
+
   // TEST 1 
   test('should create a role successfully with valid users and permissions', async () => {
     const roleData = {
@@ -211,7 +209,6 @@ describe('Roles Router - POST /create', () => {
 
   // TEST 7
   test('should return 404 if share does not exist', async () => {
-
     const modifiedData = JSON.parse(JSON.stringify(mockAuthData));
     modifiedData.shares = [];
     fs.writeFileSync(testDBPath, JSON.stringify(modifiedData, null, 2));
@@ -229,7 +226,7 @@ describe('Roles Router - POST /create', () => {
       .expect(404);
 
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain('Error creating role'); // changed error message
+    expect(response.body.message).toContain('Error creating role'); 
   });
 
   // TEST 8
@@ -321,7 +318,7 @@ describe('Roles Router - POST /assignRoleToUser', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully assign a role to a user', async () => {
     const roleData = {
       role: 'admin',
@@ -348,7 +345,6 @@ describe('Roles Router - POST /assignRoleToUser', () => {
       expect.arrayContaining([1])
     );
   });
-});
 
   test('Should fail if user does not exist', async () => {
     const roleData = {
@@ -463,7 +459,7 @@ describe('Roles Router - POST /editRoleName', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully edit a role name', async () => {
     const roleData = {
       role: 'admin',
@@ -487,7 +483,6 @@ describe('Roles Router - POST /editRoleName', () => {
     const role = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles.find(r => r.id === 1);
     expect(role.name).toBe('superadmin');
   });
-});
 
   test('Should fail if share does not exist', async () => {
     const roleData = {
@@ -561,7 +556,7 @@ describe('Roles Router - POST /removeRoleFromUser', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully remove a role from a user', async () => {
     const roleData = {
       roleId: 2,
@@ -584,7 +579,6 @@ describe('Roles Router - POST /removeRoleFromUser', () => {
     const roles = updatedAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
     expect(roles).not.toEqual(expect.arrayContaining([2]));
   });
-});  
 
   test('Should fail if user does not exist', async () => {
     const roleData = {
@@ -680,7 +674,7 @@ describe('Roles Router - POST /deleteRole', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully delete a role from a share', async () => {
     const roleData = {
       roleId: 2,
