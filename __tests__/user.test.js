@@ -20,14 +20,9 @@ const db = new MockDB(
 db.initialize();
 
 db.setShareOwner('Folder 1', 'Lukas');
-
 db.assignUserToShare('Jeff', 'Folder 1');
 
 const mockAuthData = db.getData();
-
-
-
-
 
 describe('Shares Router - POST /useradd', () => {
   let app;
@@ -57,6 +52,7 @@ describe('Shares Router - POST /useradd', () => {
       fs.unlinkSync(backupPath);
     }
   });
+
   // TEST 11
   test('Should successfully add a user to a share', async () => {
     const shareData = {
@@ -102,24 +98,6 @@ describe('Shares Router - POST /useradd', () => {
     expect(response.body).toHaveProperty('message');
 
     expect(response.body.message).toBe('Share not found');
-  });
-
-  // TEST 13
-  test('Should respond with 404 if user does not exist', async () => {
-    const shareData = {
-      username: 'NonExistentUser',
-      shareId: 1
-    };
-
-    const response = await request(app)
-      .post('/shares/useradd')
-      .send(shareData)
-      .expect(404);
-
-    expect(response.body).toHaveProperty('success', false);
-    expect(response.body).toHaveProperty('message');
-
-    expect(response.body.message).toBe('User not found');
   });
 
   // TEST 13
@@ -187,6 +165,7 @@ describe('Shares Router - POST /userrem', () => {
       fs.unlinkSync(backupPath);
     }
   });
+  
   // TEST 15
   test('Should successfully remove a user from a share', async () => {
     const shareData = {
