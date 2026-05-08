@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rolesRouter from '../routes/roles.routes.js';
+import e from 'express';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,7 +89,17 @@ const mockAuthData = {
       owner: 'Lukas',
       users: ['Lukas'],
       files: [],
-      roles: []
+      roles: [{
+          "id": 1,
+          "name": "admin",
+          "permissions": [
+            "read",
+            "write",
+            "delete",
+            "share",
+            "comment"
+          ]
+        }]
     }
   ]
 };
@@ -412,6 +423,90 @@ describe('Roles Router - POST /assignRoleToUser', () => {
       expect.arrayContaining([1])
     );
   });
+
+  test('Should fail if user does not exist', async () => {
+    const roleData = {
+      role: 'admin',
+      user: 'NonExistentUser',
+      shareId: 2
+    };
+
+    const response = await request(app)
+      .post('/roles/assignRoleToUser')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error assigning role');
+    expect(response.body.error).toBe('User not found');
+  });
+
+  test('Should fail if share does not exist', async () => {
+    const roleData = {
+      role: 'admin',
+      user: 'Jeff',
+      shareId: 69420
+    };
+
+    const response = await request(app)
+      .post('/roles/assignRoleToUser')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error assigning role');
+    expect(response.body.error).toBe('Share not found');
+  });
+
+  test('Should fail if user share does not exist', async () => {
+    const roleData = {
+      role: 'admin',
+      user: 'Jeff',
+      shareId: 3
+    };
+
+    const response = await request(app)
+      .post('/roles/assignRoleToUser')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error assigning role');
+    expect(response.body.error).toBe('User share not found');
+  });
+
+  test('Should fail if role does not exist', async () => {
+    const roleData = {
+      role: 'NonExistentRole',
+      user: 'Jeff',
+      shareId: 2
+    };
+
+    const response = await request(app)
+      .post('/roles/assignRoleToUser')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error assigning role');
+    expect(response.body.error).toBe('Role not found');
+  });
 });  
 
 describe('Roles Router - POST /editRoleName', () => {
@@ -465,6 +560,48 @@ describe('Roles Router - POST /editRoleName', () => {
     const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
     const role = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles.find(r => r.id === 1);
     expect(role.name).toBe('superadmin');
+  });
+
+  test('Should fail if share does not exist', async () => {
+    const roleData = {
+      role: 'admin',
+      shareId: 69420,
+      newRoleName: 'superadmin'
+    };
+
+    const response = await request(app)
+      .post('/roles/editRoleName')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error editing role');
+    expect(response.body.error).toBe('Share not found');
+  });
+
+  test('Should fail if role does not exist', async () => {
+    const roleData = {
+      role: 'NonExistentRole',
+      shareId: 2,
+      newRoleName: 'NonExistentRoleNewName'
+    };
+
+    const response = await request(app)
+      .post('/roles/editRoleName')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error editing role');
+    expect(response.body.error).toBe('Role not found');
   });
 });  
 
@@ -520,4 +657,167 @@ describe('Roles Router - POST /removeRoleFromUser', () => {
     const roles = updatedAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
     expect(roles).not.toEqual(expect.arrayContaining([2]));
   });
+
+  test('Should fail if user does not exist', async () => {
+    const roleData = {
+      roleId: 2,
+      user: 'NonExistentUser'
+    };
+
+    const response = await request(app)
+      .post('/roles/removeRoleFromUser/2')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error removing role');
+    expect(response.body.error).toBe('User not found');
+  });
+
+  test('Should fail if share does not exist', async () => {
+    const roleData = {
+      roleId: 1,
+      user: 'Jeff'
+    };
+
+    const response = await request(app)
+      .post('/roles/removeRoleFromUser/69420')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error removing role');
+    expect(response.body.error).toBe('Share not found');
+  });
+
+  test('Should fail gracefully if role does not exist', async () => {
+    const roleData = {
+      roleId: 69420,
+      user: 'Jeff'
+    };
+
+    const response = await request(app)
+      .post('/roles/removeRoleFromUser/2')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe(69420);
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const updatedRoles = updatedAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
+
+    const oldRoles = mockAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
+    expect(updatedRoles).toEqual(oldRoles);
+  });
 });  
+
+describe('Roles Router - POST /deleteRole', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+  // TEST 1 
+  test('Should successfully delete a role from a share', async () => {
+    const roleData = {
+      roleId: 2,
+      shareId: 2
+    };
+
+    const response = await request(app)
+      .post('/roles/deleteRole')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe(2);
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const roles = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles;
+    expect(roles).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: 2 })]));
+  });
+
+  test('Should fail if share does not exist', async () => {
+    const roleData = {
+      roleId: 2,
+      shareId: 69420
+    };
+
+    const response = await request(app)
+      .post('/roles/deleteRole')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.message).toBe('Error deleting role');
+    expect(response.body.error).toBe('Share not found');
+  });
+
+  test('Should fail gracefully if role does not exist', async () => {
+    const roleData = {
+      roleId: 69420,
+      shareId: 2
+    };
+
+    const response = await request(app)
+      .post('/roles/deleteRole')
+      .send(roleData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('success', true);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('role');
+
+    expect(response.body.role).toBe(69420);
+
+    const updatedAuthData = JSON.parse(fs.readFileSync(testDBPath, 'utf-8'));
+    const updatedRoles = updatedAuthData.shares.find(s => s.id === roleData.shareId).roles;
+
+    const oldRoles = mockAuthData.shares.find(s => s.id === roleData.shareId).roles;
+    expect(updatedRoles).toEqual(oldRoles);
+  });
+}); 

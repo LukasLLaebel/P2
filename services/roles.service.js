@@ -53,25 +53,40 @@ export const getUsersWithRole = (roleId) => {
 
 export const assignRoleToUser = (roleName, username, shareId) => {
   const authData = ShareModel.getAllData();
-  const user = authData.users.find(u => u.username === username);
-  const userShare = user.shares.find(s => s.id === shareId);
-  const share = authData.shares.find(s => s.id === shareId);
 
-  const roleObj = share.roles.find(r => r.name === roleName);
-  userShare.roles.push(roleObj.id);
+  const user = authData.users.find(u => u.username === username);
+  if (!user) throw new Error("User not found");
+
+  const share = authData.shares.find(s => s.id === shareId);
+  if (!share) throw new Error("Share not found");
+
+  const userShare = user.shares.find(s => s.id === shareId);
+  if (!userShare) throw new Error("User share not found");
+
+  const role = share.roles.find(r => r.name === roleName);
+  if (!role) throw new Error("Role not found");
+
+  userShare.roles.push(role.id);
 
   ShareModel.saveAllData(authData);
 };
 
 export const editRoleName = (oldRoleName, newRoleName, shareId) => {
   const authData = ShareModel.getAllData();
-  const role = authData.shares.find(s => s.id === shareId).roles.find(r => r.name === oldRoleName);
+
+  const share = authData.shares.find(s => s.id === shareId);
+  if (!share) throw new Error("Share not found");
+
+  const role = share.roles.find(r => r.name === oldRoleName);
+  if (!role) throw new Error("Role not found");
+
   role.name = newRoleName;
   ShareModel.saveAllData(authData);
 };
 
 export const removeRoleFromUser = (roleId, username, shareId) => {
   const authData = ShareModel.getAllData();
+
   const user = authData.users.find(u => u.username === username);
   if (!user) throw new Error("User not found");
 
@@ -84,6 +99,7 @@ export const removeRoleFromUser = (roleId, username, shareId) => {
 
 export const deleteRole = (roleId, shareId) => {
   const authData = ShareModel.getAllData();
+
   const share = authData.shares.find(s => s.id === shareId);
   if (!share) throw new Error("Share not found");
 
