@@ -98,10 +98,9 @@
       </form>
       <% } %>
   </main>
-
-
+  <script>window.currentUser = <% - JSON.stringify(user || null) %>;</script>
   <script type="module" src="/js/folder.buttons.js"></script>
-  <script>window.currentUser = <%- JSON.stringify(user || null) %>;</script>
+
 </body>
 
 </html>

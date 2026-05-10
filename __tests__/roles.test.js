@@ -4,120 +4,42 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rolesRouter from '../routes/roles.routes.js';
-import e from 'express';
+
+import { mockSignedIn, MockDB } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create a mock auth.json for testing
-const mockAuthData = {
-  users: [
-    {
-      id: 1,
-      username: 'Lukas',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 2,
-      username: 'Jeff',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        },
-        {
-          id: 2,
-          name: 'Folder 2',
-          roles: [2]
-        }
-      ]
-    }
-  ],
-  permissions: [
-    { id: 1, name: 'read' },
-    { id: 2, name: 'write' },
-    { id: 3, name: 'delete' }
-  ],
-  shares: [
-    {
-      id: 1,
-      name: 'Folder 1',
-      path: './home/lukas/Folder 1',
-      owner: 'Lukas',
-      users: ['Lukas', 'Jeff'],
-      files: [],
-      roles: []
-    },
-    {
-      id: 2,
-      name: 'Folder 2',
-      path: './home/lukas/Folder 2',
-      owner: 'Lukas',
-      users: ['Lukas'],
-      files: [],
-      roles: [{
-          "id": 1,
-          "name": "admin",
-          "permissions": [
-            "read",
-            "write",
-            "delete",
-            "share",
-            "comment"
-          ]
-        },
-        {
-          "id": 2,
-          "name": "member",
-          "permissions": [
-            "read",
-            "write"
-          ]
-        }]
-    },
-    {
-      id: 3,
-      name: 'Folder 3',
-      path: './home/lukas/Folder 3',
-      owner: 'Lukas',
-      users: ['Lukas'],
-      files: [],
-      roles: [{
-          "id": 1,
-          "name": "admin",
-          "permissions": [
-            "read",
-            "write",
-            "delete",
-            "share",
-            "comment"
-          ]
-        }]
-    }
-  ]
-};
-function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
-  return (req, res, next) => {
-    // If your code expects req.user:
-    req.user = user;
 
-    // If your code expects req.session.user:
-    req.session = req.session || {};
-    req.session.user = user;
+const db = new MockDB(
+  ['Lukas', 'Jeff', 'Nadia', 'Laura'],
+  ['read', 'write', 'delete'],
+  ['Folder 1', 'Folder 2', 'Folder 3', 'Folder 4'],
+  ['admin', 'member']
+);
 
-    // If your code expects something else (example):
-    req.isAuthenticated = () => true;
+db.initialize();
 
-    next();
-  };
-}
+db.assignPermissionsToRole('admin', ['read', 'write', 'delete', 'share', 'comment']);
+db.assignPermissionsToRole('member', ['read', 'write']);
+
+db.setShareOwner('Folder 1', 'Lukas');
+db.setShareOwner('Folder 2', 'Lukas');
+db.setShareOwner('Folder 3', 'Lukas');
+db.setShareOwner('Folder 4', 'Jeff');
+
+db.assignRoleToShare('Folder 2', 'admin');
+db.assignRoleToShare('Folder 2', 'member');
+
+db.assignUserToShare('Jeff', 'Folder 1');
+db.assignUserToShare('Jeff', 'Folder 2', [2]);
+db.assignUserToShare('Laura', 'Folder 1', [2]);
+
+// if needed remove user here we remove jeff
+const folder2 = db.shares.find(s => s.name === 'Folder 2');
+folder2.users = folder2.users.filter(u => u !== 'Jeff');
+
+const mockAuthData = db.getData();
 
 describe('Roles Router - POST /create', () => {
   let app;
@@ -128,7 +50,7 @@ describe('Roles Router - POST /create', () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // <-- simulate logged-in user for all /roles routes
+    // simulate logged-in user for all /roles routes
     app.use('/roles', mockSignedIn({ id: 1, username: 'Lukas' }), rolesRouter);
 
     testDBPath = path.join(__dirname, '../db/auth.json');
@@ -147,6 +69,7 @@ describe('Roles Router - POST /create', () => {
       fs.unlinkSync(backupPath);
     }
   });
+
   // TEST 1 
   test('should create a role successfully with valid users and permissions', async () => {
     const roleData = {
@@ -286,7 +209,6 @@ describe('Roles Router - POST /create', () => {
 
   // TEST 7
   test('should return 404 if share does not exist', async () => {
-
     const modifiedData = JSON.parse(JSON.stringify(mockAuthData));
     modifiedData.shares = [];
     fs.writeFileSync(testDBPath, JSON.stringify(modifiedData, null, 2));
@@ -304,7 +226,7 @@ describe('Roles Router - POST /create', () => {
       .expect(404);
 
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain('Error creating role'); // changed error message
+    expect(response.body.message).toContain('Error creating role');
   });
 
   // TEST 8
@@ -396,7 +318,7 @@ describe('Roles Router - POST /assignRoleToUser', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully assign a role to a user', async () => {
     const roleData = {
       role: 'admin',
@@ -507,7 +429,7 @@ describe('Roles Router - POST /assignRoleToUser', () => {
     expect(response.body.message).toBe('Error assigning role');
     expect(response.body.error).toBe('Role not found');
   });
-});  
+});
 
 describe('Roles Router - POST /editRoleName', () => {
   let app;
@@ -537,7 +459,7 @@ describe('Roles Router - POST /editRoleName', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully edit a role name', async () => {
     const roleData = {
       role: 'admin',
@@ -603,7 +525,7 @@ describe('Roles Router - POST /editRoleName', () => {
     expect(response.body.message).toBe('Error editing role');
     expect(response.body.error).toBe('Role not found');
   });
-});  
+});
 
 
 describe('Roles Router - POST /removeRoleFromUser', () => {
@@ -634,7 +556,7 @@ describe('Roles Router - POST /removeRoleFromUser', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully remove a role from a user', async () => {
     const roleData = {
       roleId: 2,
@@ -722,7 +644,7 @@ describe('Roles Router - POST /removeRoleFromUser', () => {
     const oldRoles = mockAuthData.users.find(u => u.username === roleData.user).shares.find(s => s.id === 2).roles;
     expect(updatedRoles).toEqual(oldRoles);
   });
-});  
+});
 
 describe('Roles Router - POST /deleteRole', () => {
   let app;
@@ -752,7 +674,7 @@ describe('Roles Router - POST /deleteRole', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  // TEST 1 
+
   test('Should successfully delete a role from a share', async () => {
     const roleData = {
       roleId: 2,
@@ -820,4 +742,5 @@ describe('Roles Router - POST /deleteRole', () => {
     const oldRoles = mockAuthData.shares.find(s => s.id === roleData.shareId).roles;
     expect(updatedRoles).toEqual(oldRoles);
   });
-}); 
+});
+

@@ -9,7 +9,7 @@ export const renderRolesPage = async (req, res) => { // Make sure this is async
 
     const view = req.query.view || 'display';
 
-    res.render('../views/roles.ejs', {
+    res.render('roles', {
       user: req.session.user,
       allPermissions: permissions,
       allUsers: users,
