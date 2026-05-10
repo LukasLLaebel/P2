@@ -33,7 +33,7 @@ describe('Shares Router - POST /useradd', () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // <-- simulate logged-in user for all /roles routes
+    // simulate logged-in user for all /roles routes
     app.use('/shares', mockSignedIn({ id: 1, username: 'Lukas' }), sharesRouter);
 
     testDBPath = path.join(__dirname, '../db/auth.json');
@@ -165,7 +165,7 @@ describe('Shares Router - POST /userrem', () => {
       fs.unlinkSync(backupPath);
     }
   });
-  
+
   // TEST 15
   test('Should successfully remove a user from a share', async () => {
     const shareData = {

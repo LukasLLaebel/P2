@@ -11,8 +11,6 @@ export function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
   };
 }
 
-
-
 export class MockDB {
   constructor(customUsers, customPermissions, customShares, customRoles) {
     this.userNames = customUsers || ['Lukas', 'Jeff', 'Nadia'];
@@ -109,7 +107,7 @@ export class MockDB {
           roles: roleIds
         });
       } else {
-        existingShare.roles = roleIds; // update roles if already exists
+        existingShare.roles = roleIds;
       }
 
       if (!share.users.includes(user.username)) {
