@@ -30,6 +30,14 @@
   <main>
     <div class="item-wrapper">
       <h1 class="title">My Files</h1>
+      <div class="folder-search-wrapper">
+      <input
+      id="folderSearch"
+      class="folder-search-input"
+      type="search"
+      placeholder="Search folders..."
+      >
+      </div>
       <div class="folder-wrapper <%= (!userFolders || userFolders.length === 0) ? 'is-empty' : '' %>">
         <% if (userFolders && userFolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
@@ -58,6 +66,7 @@
       </div>
   </main>
   <script src="/js/addFolderBtn.js"></script>
+  <script type="module" src="/js/folder.buttons.js"></script>
 </body>
 
 </html>

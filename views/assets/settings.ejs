@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Settings</title>
+
+  <link href="/css/roles.css" rel="stylesheet">
+  <link href="/css/settings.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+  <header>
+    <h1>
+      <%= locals.user %>
+    </h1>
+
+    <a href="/settings" class="profile-link">
+      <div class="profile-pic">
+        <img src="./" alt="PP" onerror="
+          this.style.display = 'none';
+          this.nextElementSibling.style.display = 'inline-block';
+        ">
+        <i class="fa-solid fa-user" style="display: none"></i>
+      </div>
+    </a>
+  </header>
+
+  <aside>
+    <nav class="settings-nav">
+      <a href="/settings" class="active">Account</a>
+      <a href="#">Activity log</a>
+      <a href="#">Notifications</a>
+      <a href="#">Language</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section class="settings-page">
+      <h1 class="settings-title">Edit Profile</h1>
+
+      <div class="profile-setting-row">
+        <span>Name</span>
+        <button type="button">Users</button>
+      </div>
+
+      <div class="profile-setting-row">
+        <span>Username</span>
+        <button type="button">Users</button>
+      </div>
+
+      <div class="profile-setting-row">
+        <span>Email adress</span>
+        <button type="button">Users</button>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

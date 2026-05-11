@@ -151,6 +151,46 @@
     }
   }  
   createFiles();
+  loadFolderSearch();
+
+  function loadFolderSearch() {
+    const searchInput = document.getElementById("folderSearch");
+
+    if (!searchInput) {
+      console.error("Search input folder not found");
+      return;
+    } 
+
+    searchInput.addEventListener("input", async () => {
+      const searchText = searchInput.value.trim().toLowerCase();
+
+      try {
+        const filesArray = await loadFiles();
+
+        const filteredFiles = filesArray.filter(file =>
+          file.name.trim().toLowerCase().includes(searchText)
+        );
+
+        const matchingIds = filteredFiles.map(file => String(file.id));
+        const folderItems = document.querySelectorAll(".file-item");
+        
+        folderItems.forEach(item => {
+          const folderId = item.getAttribute("id");
+
+          if (searchText === "") {
+            item.style.display = "";
+          } else if (matchingIds.includes(folderId)) {
+            item.style.display = "";
+          } else {
+            item.style.display = "none";
+          }
+        });
+
+      } catch (error) {
+        console.error("Error searching folders:", error);
+      }
+    });
+  }
 
   document.addEventListener("click", async (e) => {
     const tag = e.target.closest("h2");
@@ -260,7 +300,6 @@
       popUp(id);
     }
   });
-
 
 
   
