@@ -1,5 +1,5 @@
 import express from "express";
-import { syncUserFolders, searchFolders } from "../services/users.service.js";
+import { syncUserFolders, getAllUsers, searchFolders } from "../services/users.service.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
 import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
 

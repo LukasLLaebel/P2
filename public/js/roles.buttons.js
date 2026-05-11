@@ -23,7 +23,7 @@ async function loadRolesButtons() {
 
   console.log("addUserPopup:", addUserPopup);
   console.log("editRolePopup:", editRolePopup);
-  console.log("leaveRolePopup:", leaveRolePopup);
+  console.log("deleteRolePopup:", deleteRolePopup);
 
   removeBtns.forEach((btn, index) => {
     btn.addEventListener("click", async () => {
@@ -234,9 +234,20 @@ async function loadRolesButtons() {
     });
   });
 
+
+  showUserBtns.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+      console.log("Show users clicked");
+
+      if (usersBox[index]) {
+        usersBox[index].classList.toggle("hidden");
+      }
+    });
+  });
+
   const closePopupButtons = document.querySelectorAll(".close-popup");
 
-  closePopupButtons.forEach((button) => {
+  closePopupButtons.forEach((button) =>{ 
     button.addEventListener("click", () => {
       button.closest(".popup-overlay").classList.add("hidden");
     });
