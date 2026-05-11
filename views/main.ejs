@@ -32,6 +32,9 @@
       </h1>
       <% if (userFolders && userFolders.length> 0) { %>
         <div class="overlay" style="display: none;"></div>
+        <div class="folder-search-wrapper">
+          <input id="folderSearch" class="folder-search-input" type="search" placeholder="Search folders...">
+        </div>
         <dialog id="user-modal">
           <div class="search-wrapper">
             <div class="search-box">
@@ -101,7 +104,8 @@
 
   <script src="/js/addFolderBtn.js"></script>
   <script type="module" src="/js/folder.buttons.js"></script>
-  <script>window.currentUser = <% - JSON.stringify(user || null) %>;</script>
+  <script>window.currentUser = <%- JSON.stringify(user || null) %>;</script>
+  <script>window.folders = <%- JSON.stringify(userFolders || null) %>;</script>
 
 </body>
 

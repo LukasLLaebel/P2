@@ -33,14 +33,14 @@ async function loadRolesButtons() {
       const user = btn.closest(".user").querySelector(".name").textContent;
       const shareId = Number(new URLSearchParams(document.location.search).get("folder"))
 
-      console.log("ShareID "+shareId)
-      console.log("User "+user)
+      console.log("ShareID " + shareId)
+      console.log("User " + user)
 
       const formData = {
         roleId: roleId,
         user: user
       };
-        
+
       try {
         const response = await fetch(`/roles/removeRoleFromUser/${shareId}`, {
           method: 'POST',
@@ -49,9 +49,9 @@ async function loadRolesButtons() {
           },
           body: JSON.stringify(formData)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           alert('Role removed successfully!');
         } else {
@@ -111,15 +111,15 @@ async function loadRolesButtons() {
       const user = document.getElementById("add-user-bar").value;
       const share = Number(new URLSearchParams(document.location.search).get("folder"))
 
-      console.log("ShareID "+share)
-      console.log("User "+user)
+      console.log("ShareID " + share)
+      console.log("User " + user)
 
       const formData = {
         role: role,
         user: user,
-        shareId: share 
+        shareId: share
       };
-        
+
       try {
         const response = await fetch('/roles/assignRoleToUser', {
           method: 'POST',
@@ -128,9 +128,9 @@ async function loadRolesButtons() {
           },
           body: JSON.stringify(formData)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           alert('Role assigned successfully!');
         } else {
@@ -151,14 +151,14 @@ async function loadRolesButtons() {
       const role = editRolePopupBtn.closest(".popup-overlay").getAttribute("data-role");
       const share = Number(new URLSearchParams(document.location.search).get("folder"))
 
-      console.log("ShareID "+share)
+      console.log("ShareID " + share)
 
       const formData = {
         role: role,
         shareId: share,
         newRoleName: document.getElementById("edit-role-name-bar").value
       };
-        
+
       try {
         const response = await fetch('/roles/editRoleName', {
           method: 'POST',
@@ -167,9 +167,9 @@ async function loadRolesButtons() {
           },
           body: JSON.stringify(formData)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           alert('Role edited successfully!');
         } else {
@@ -191,13 +191,13 @@ async function loadRolesButtons() {
       const role = Number(deleteRolePopupBtn.closest(".popup-overlay").getAttribute("data-role"));
       const share = Number(new URLSearchParams(document.location.search).get("folder"))
 
-      console.log("ShareID "+share)
+      console.log("ShareID " + share)
 
       const formData = {
         roleId: role,
         shareId: share
       };
-        
+
       try {
         const response = await fetch('/roles/deleteRole', {
           method: 'POST',
@@ -206,9 +206,9 @@ async function loadRolesButtons() {
           },
           body: JSON.stringify(formData)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           alert('Role deleted successfully!');
         } else {
@@ -234,20 +234,9 @@ async function loadRolesButtons() {
     });
   });
 
-
-  showUserBtns.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-      console.log("Show users clicked");
-
-      if (usersBox[index]) {
-        usersBox[index].classList.toggle("hidden");
-      }
-    });
-  });
-
   const closePopupButtons = document.querySelectorAll(".close-popup");
 
-  closePopupButtons.forEach((button) =>{ 
+  closePopupButtons.forEach((button) => {
     button.addEventListener("click", () => {
       button.closest(".popup-overlay").classList.add("hidden");
     });
@@ -311,7 +300,7 @@ async function loadUsers(id) {
 
   console.log(users);
   return users;
-  
+
 }
 
 async function createRoles(id) {
@@ -322,12 +311,12 @@ async function createRoles(id) {
     title.textContent = `${folder.name}`;
 
     const rolesArray = await loadRoles(id);
-    
+
     console.log("Roles Array:", rolesArray);
 
     const container = document.querySelector(".roles-wrapper");
     container.innerHTML = "";
-    
+
     for (const role of rolesArray) {
       const usersArray = await loadUsers(role.id);
 
@@ -344,11 +333,11 @@ async function createRoles(id) {
       btnWrapper.classList.add('buttons');
 
       const showUsersBtn = document.createElement('button');
-      showUsersBtn.classList.add('show-users-btn','users-wrapper');
+      showUsersBtn.classList.add('show-users-btn', 'users-wrapper');
       showUsersBtn.setAttribute("type", "button");
       const usersIcon = document.createElement('i');
-      usersIcon.classList.add('fa-solid','fa-users');
-      showUsersBtn.appendChild(usersIcon);  
+      usersIcon.classList.add('fa-solid', 'fa-users');
+      showUsersBtn.appendChild(usersIcon);
       const userIconText = document.createElement('h2');
       userIconText.textContent = usersArray.length;
       showUsersBtn.appendChild(userIconText);
@@ -357,21 +346,21 @@ async function createRoles(id) {
       addUserBtn.classList.add('add-user-btn');
       addUserBtn.setAttribute("type", "button");
       const addUsersIcon = document.createElement('i');
-      addUsersIcon.classList.add('fa-solid','fa-user-plus');
+      addUsersIcon.classList.add('fa-solid', 'fa-user-plus');
       addUserBtn.appendChild(addUsersIcon);
 
       const editBtn = document.createElement('button');
       editBtn.classList.add('edit-btn');
       editBtn.setAttribute("type", "button");
       const editIcon = document.createElement('i');
-      editIcon.classList.add('fa-solid','fa-pen-to-square');
+      editIcon.classList.add('fa-solid', 'fa-pen-to-square');
       editBtn.appendChild(editIcon);
 
       const deleteBtn = document.createElement('button');
       deleteBtn.classList.add('delete-btn');
       deleteBtn.setAttribute("type", "button");
       const deleteIcon = document.createElement('i');
-      deleteIcon.classList.add('fa-solid','fa-x');
+      deleteIcon.classList.add('fa-solid', 'fa-x');
       deleteBtn.appendChild(deleteIcon);
 
       usersArray.forEach(user => {
@@ -395,7 +384,7 @@ async function createRoles(id) {
   } catch (error) {
     console.error("Error loading files:", error);
   }
-}  
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   await createRoles(

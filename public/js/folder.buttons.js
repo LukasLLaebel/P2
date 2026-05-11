@@ -32,56 +32,7 @@ async function createUsers(id) {
       user.username.trim().toLowerCase().includes(search)
     );
 
-<<<<<<< cleanup
     usersArray = filteredUsers;
-=======
-      });
-    } catch (error) {
-      console.error("Error loading files:", error);
-    }
-  }  
-  createFiles();
-  loadFolderSearch();
-
-  function loadFolderSearch() {
-    const searchInput = document.getElementById("folderSearch");
-
-    if (!searchInput) {
-      console.error("Search input folder not found");
-      return;
-    } 
-
-    searchInput.addEventListener("input", async () => {
-      const searchText = searchInput.value.trim().toLowerCase();
-
-      try {
-        const filesArray = await loadFiles();
-
-        const filteredFiles = filesArray.filter(file =>
-          file.name.trim().toLowerCase().includes(searchText)
-        );
-
-        const matchingIds = filteredFiles.map(file => String(file.id));
-        const folderItems = document.querySelectorAll(".file-item");
-        
-        folderItems.forEach(item => {
-          const folderId = item.getAttribute("id");
-
-          if (searchText === "") {
-            item.style.display = "";
-          } else if (matchingIds.includes(folderId)) {
-            item.style.display = "";
-          } else {
-            item.style.display = "none";
-          }
-        });
-
-      } catch (error) {
-        console.error("Error searching folders:", error);
-      }
-    });
-  }
->>>>>>> main
 
 
     console.log("Users Array:", usersArray);
@@ -127,79 +78,52 @@ async function createUsers(id) {
   }
 }
 
-// async function loadFiles() {
-//   const res = await fetch("/shares/files");
-//   const files = await res.json();
-//
-//   console.log(files);
-//   return files;
-// }
 
-// async function createFiles() {
-//   try {
-//     const currentUser = window.currentUser;
-//     console.log(currentUser);
-//
-//     const filesArray = await loadFiles();
-//
-//     console.log("Files Array:", filesArray);
-//
-//     const container = document.getElementById("folderList");
-//     container.innerHTML = "";
-//
-//     filesArray.forEach(file => {
-//       //<a href="/files?filder=${file.id}"</a>
-//       const filesLink = document.createElement("a");
-//       filesLink.href = `/files?folder=${file.id}`;
-//
-//       const fileElement = document.createElement("div");
-//       fileElement.setAttribute("id", file.id);
-//       fileElement.classList.add('file-item');
-//       const fileName = document.createElement('h1');
-//       fileName.textContent = file.name;
-//
-//       const btnWrapper = document.createElement("div");
-//       btnWrapper.classList.add('btn-wrapper');
-//
-//       const ownerBtn = document.createElement('h2');
-//       ownerBtn.setAttribute("data-action", "owner");
-//       if (file.owner === currentUser.username) {
-//         ownerBtn.style.backgroundColor = "#BAC8B1";
-//         ownerBtn.textContent = "You";
-//       } else {
-//         ownerBtn.textContent = file.owner;
-//         ownerBtn.style.backgroundColor = "#7B9669";
-//       }
-//
-//       const usersBtn = document.createElement('h2');
-//       usersBtn.style.backgroundColor = "#6C8480";
-//       usersBtn.setAttribute("data-action", "colab-users");
-//       usersBtn.textContent = "Users";
-//
-//       const rolesBtn = document.createElement('h2');
-//       rolesBtn.style.backgroundColor = "#404E3B";
-//       rolesBtn.setAttribute("data-action", "show-roles");
-//       rolesBtn.textContent = "Roles";
-//
-//       //<a href="/roles?folder=${file.id}"</a>
-//       const rolesLink = document.createElement("a");
-//       rolesLink.href = `/roles?folder=${file.id}`;
-//
-//       filesLink.appendChild(fileName);
-//       fileElement.appendChild(filesLink);
-//       btnWrapper.appendChild(ownerBtn);
-//       btnWrapper.appendChild(usersBtn);
-//       rolesLink.appendChild(rolesBtn);
-//       btnWrapper.appendChild(rolesLink);
-//       fileElement.appendChild(btnWrapper);
-//       container.appendChild(fileElement);
-//
-//     });
-//   } catch (error) {
-//     console.error("Error loading files:", error);
-//   }
-// }
-// createFiles();
+function loadFolderSearch() {
+  const searchInput = document.getElementById("folderSearch");
+
+  if (!searchInput) {
+    console.error("Search input folder not found");
+    return;
+  }
+
+  searchInput.addEventListener("input", async () => {
+    const searchText = searchInput.value.trim().toLowerCase();
+
+    try {
+      const filesArray = await folders;
+
+      const filteredFiles = filesArray.filter(file =>
+        file.name.trim().toLowerCase().includes(searchText)
+      );
+
+      const matchingIds = filteredFiles.map(file => String(file.id));
+      const folderItems = document.querySelectorAll(".file-item");
+
+      folderItems.forEach(item => {
+        const folderId = item.getAttribute("id");
+
+        if (searchText === "") {
+          item.style.display = "";
+        } else if (matchingIds.includes(folderId)) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+    } catch (error) {
+      console.error("Error searching folders:", error);
+    }
+  });
+}
+
+
+
+loadFolderSearch();
+
+
+
 
 document.addEventListener("click", async (e) => {
   const tag = e.target.closest("h2");
@@ -208,7 +132,7 @@ document.addEventListener("click", async (e) => {
   const action = tag.dataset.action;
 
   if (action === "owner") {
-    alert("Jeff clicked!");
+    alert("Not working yet, coming soon!");
   }
 
   if (action === "colab-users") {
@@ -312,8 +236,5 @@ document.addEventListener("click", async (e) => {
 
 
 
-<<<<<<< cleanup
 
-=======
-  
->>>>>>> main
+

@@ -29,13 +29,8 @@
       <h1 class="title">All Files</h1>
       <div class="overlay" style="display: none;"></div>
       <div class="folder-search-wrapper">
-    <input
-      id="folderSearch"
-      class="folder-search-input"
-      type="search"
-      placeholder="Search folders..."
-    >
-    </div>
+        <input id="folderSearch" class="folder-search-input" type="search" placeholder="Search folders...">
+      </div>
       <dialog id="user-modal">
         <div class="search-wrapper">
           <div class="search-box">
@@ -97,7 +92,7 @@
   </main>
 
   <script type="module" src="/js/folder.buttons.js"></script>
-  <script>window.currentUser = <%- JSON.stringify(user || null) %>;</script>
+  <script>window.currentUser = <% - JSON.stringify(user || null) %>;</script>
 
 </body>
 
