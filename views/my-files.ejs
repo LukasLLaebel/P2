@@ -39,7 +39,7 @@
       >
       </div>
       <div class="folder-wrapper <%= (!userFolders || userFolders.length === 0) ? 'is-empty' : '' %>">
-        <% if (userFolders && userFolders.length> 0) { %>
+        <% if (userfolders && userfolders.length> 0) { %>
           <% userFolders.forEach((folder, index)=> { %>
             <div class="folder-<%= String(index + 1).padStart(2, '0') %>">
               <h1>
@@ -57,9 +57,9 @@
               </div>
             </div>
             <% }); %>
-            <div class="add-folder-btn create-folder-btn">
-              <h1>+ New Folder</h1>
-            </div>
+              <div class="add-folder-btn create-folder-btn">
+                <h1>+ New Folder</h1>
+              </div>
               <% } else { %>
                 <%- include("./assets/empty.folderpages.ejs") %>
                   <% } %>

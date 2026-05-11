@@ -65,36 +65,25 @@
         </div>
       </dialog>
       <div class="folder-wrapper" id="folderList">
+        <% (userFolders || []).forEach(folder=> { %>
+          <div class="file-item" id="<%= folder.id %>">
+            <a href="/files?folder=<%= folder.id %>">
+              <h1>
+                <%= folder.name %>
+              </h1>
+            </a>
 
-        <div class="folder-01">
-          <h1>Folder 1</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #7b9669" data-action="owner">
-              asdasdfghfdsasafghjfgfdaSFGHGJHFS...
-            </h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
+            <div class="btn-wrapper">
+              <h2 style="background-color:#7B9669" data-action="owner">
+                <%= folder.owner===currentUser ? "You" : folder.owner %>
+              </h2>
+              <h2 style="background-color:#6C8480" data-action="colab-users">Users</h2>
+              <a href="/roles?folder=<%= folder.id %>">
+                <h2 style="background-color:#404E3B" data-action="show-roles">Roles</h2>
+              </a>
+            </div>
           </div>
-        </div>
-        <div class="folder-02">
-          <h1>Folder 2</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
-        <div class="folder-03">
-          <h1>Folder 3</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
+          <% }) %>
       </div>
     </div>
     <% if (user) { %>
