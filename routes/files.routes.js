@@ -101,4 +101,39 @@ router.post('/create', requireAuth, async (req, res) => {
   }
 });
 
+// Handles download of files
+router.get("/download/:shareId/:fileName", requireAuth, async (req,res) => {
+  try {
+    const { shareId, fileName } = req.params;
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    const share = authData.shares.find(s => s.id === Number(shareId));
+    if (!share) {
+      return res.status(404).json({
+        success: false,
+        message: 'Folder not found'
+      });
+    }
+
+    const filePath = path.join(process.cwd(), 'shares', share.owner, share.name, fileName);
+
+    // Checks if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: 'File not found'
+      });
+    }
+
+    res.download(filePath, fileName);
+  } catch (error) {
+    console.error('Download error:', error);
+    res.status(500).json ({
+      succes: false,
+      message: 'Could not download file',
+      error: error.message
+    });
+  }
+});
+
 export default router;
