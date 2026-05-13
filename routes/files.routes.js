@@ -3,10 +3,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import multer from "multer";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const upload = multer({dest:"temp/"});
 
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
@@ -129,11 +131,64 @@ router.get("/download/:shareId/:fileName", requireAuth, async (req,res) => {
   } catch (error) {
     console.error('Download error:', error);
     res.status(500).json ({
-      succes: false,
+      success: false,
       message: 'Could not download file',
       error: error.message
     });
   }
+});
+
+// Handles upload of files
+router.post("/upload", requireAuth, upload.single("file"), async(req, res) => {
+  try {
+    const { shareId, oldFileName } = req.body;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json ({
+        success: false, 
+        message: 'No file uploaded'
+      }); 
+    }
+
+    const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
+
+    const share = authData.shares.find(s => s.id === Number(shareId));
+
+    if (!share) {
+      return res.status(404).json({
+        success: false,
+        message: 'Folder not found'
+      });
+    }
+    
+    const sharesPath = path.join(process.cwd(), 'shares');
+    const shareFolderPath = path.join(sharesPath, share.owner, share.name);
+    await fs.promises.mkdir(shareFolderPath, { recursive: true });
+    const finalFileName = oldFileName;
+    const finalPath = path.join(shareFolderPath, finalFileName);
+    await fs.promises.rename(file.path, finalPath);
+
+    if(!share.files) share.files = [];
+    if(!share.files.includes(finalFileName)) {
+      share.files.push(finalFileName);
+    }
+
+    fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
+
+    res.json({
+      success: true,
+      message: 'File uploaded successfully',
+      file: finalFileName
+    });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error uploading file',
+      error: error.message
+    });
+  }  
 });
 
 export default router;

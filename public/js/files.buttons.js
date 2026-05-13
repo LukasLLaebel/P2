@@ -62,6 +62,7 @@
   const folderId = new URLSearchParams(document.location.search).get("folder");
   createFiles(folderId).then(() => {
     DownloadBtn();
+    UploadBtn();
   });
 
   document.addEventListener("click", async (e) => {
