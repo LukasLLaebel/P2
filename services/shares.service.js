@@ -44,6 +44,7 @@ export const SharesService = {
     };
 
     user.shares.push(newShared);
+    share.users.push(username);
     ShareModel.saveAllData(data);
 
     return newShared;
