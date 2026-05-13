@@ -60,6 +60,7 @@ export const SharesService = {
     if (!user) throw new Error("User not found");
 
     user.shares = user.shares.filter(s => s.id !== shareId);
+    share.users = share.users.filter(u => u !== username);
     ShareModel.saveAllData(data);
 
     return share;
