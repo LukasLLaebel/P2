@@ -17,10 +17,14 @@ export const SharesService = {
 
   getFolderOwner: (shareId) => {
     const data = ShareModel.getAllData();
+
     const share = data.shares.find(s => s.id === shareId);
     if (!share) throw new Error("Share not found");
+
+    const owner = data.users.find(user => user.username === share.owner);
     if (!owner) throw new Error("Owner not found");
-    return data.users.find(user => user.username === share.owner);
+    
+    return owner;
   },
 
   addUserToShare: (username, shareId) => {
