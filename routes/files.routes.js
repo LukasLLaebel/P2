@@ -1,5 +1,8 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import { fileURLToPath } from "url";
+import path from 'path';
+import fs from 'fs';
 import multer from "multer";
 import * as FilesController from "../controllers/files.controller.js";
 
@@ -7,6 +10,8 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const upload = multer({dest:"temp/"});
+
+const DBFilePath = path.join(__dirname, '../db/auth.json');
 
 // Middleware can go here or directly on the routes
 router.use(express.urlencoded({ extended: true }));
