@@ -87,7 +87,8 @@ router.post('/create', requireAuth, async (req, res) => {
           userShare = {
             id: newShareId,
             name: folder.trim(),
-            owner: owner
+            owner: owner,
+            roles: []
           };
           user.shares.push(userShare);
         }

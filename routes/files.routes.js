@@ -1,46 +1,21 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import multer from "multer";
+import * as FilesController from "../controllers/files.controller.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const upload = multer({dest:"temp/"});
 
+// Middleware can go here or directly on the routes
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
-const DBFilePath = path.join(__dirname, '../db/auth.json');
+// Routes map cleanly to Controllers
+router.get("/getAllFiles/:id", requireAuth, FilesController.getFiles);
+router.get("/getFolder/:id", FilesController.getFolder);
 
-
-function getAllFilesFromFolder(req, res, next) {
-  const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
-  req.allFiles = authData.shares.map(
-    ({ name, id }) => ({ name, id })
-  )
-  console.log(req.allFiles);
-  next();
-  return;
-}
-
-router.get("/getAllFiles/:id", requireAuth, (req, res) => {
-  const id = Number(req.params.id);
-  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const files = authData.shares.find(share => share.id === id)?.files;
-
-  res.json(files);
-});
-
-router.get("/getFolder/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const authData = JSON.parse(fs.readFileSync(DBFilePath, "utf-8"));
-  const folder = authData.shares.find(share => share.id === id);
-
-  res.json(folder);
-});
 
 // Creates the new folder
 router.post('/create', requireAuth, async (req, res) => {

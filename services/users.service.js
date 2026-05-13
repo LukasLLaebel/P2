@@ -1,5 +1,12 @@
+import { ShareModel } from "../models/share.model.js";
+
 import fs from "fs";
 import path from "path";
+
+export const getAllUsers = async () => {
+  const data = ShareModel.getAllData();
+  return data.users.map(({ username }) => username);
+}
 
 export async function syncUserFolders(req, res, next) {
   try {
@@ -7,7 +14,7 @@ export async function syncUserFolders(req, res, next) {
 
     await fs.promises.mkdir(sharesPath, { recursive: true });
 
-    const usernames = req.allUsers;
+    const usernames = await getAllUsers();
 
     for (const username of usernames) {
       const userFolderPath = path.join(sharesPath, username);
@@ -19,4 +26,19 @@ export async function syncUserFolders(req, res, next) {
     console.error('Error syncing user folders:', error);
     res.status(500).json({ error: 'Failed to sync user folders' });
   }
+}
+export function searchFolders(folders, searchText) {
+  if (!folders || folders.length === 0) {
+    return [];
+  }
+
+  if (!searchText || searchText.trim() === "") {
+    return folders;
+  }
+
+  const query = searchText.toLowerCase().trim();
+
+  return folders.filter((folder) => {
+    return folder.name?.toLowerCase().includes(query);
+  });
 }
