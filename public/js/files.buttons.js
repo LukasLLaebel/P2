@@ -1,17 +1,18 @@
 
   async function loadFiles(id) {
     const res = await fetch(`/files/getAllFiles/${id}`);
-    const files = await res.json();
+    const data = await res.json();
 
-    console.log(files);
-    return files;
+    console.log(data);
+    return data.files;
   }
 
   async function createFiles(id) {
     try {
       const title = document.querySelector(".title");
       const res = await fetch(`/files/getFolder/${id}`);
-      const folder = await res.json();
+      const data = await res.json();
+      const folder = data.folder;
       title.textContent = `${folder.name}`;
 
       const filesArray = await loadFiles(id);
