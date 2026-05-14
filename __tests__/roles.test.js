@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rolesRouter from '../routes/roles.routes.js';
+import { getAllPermissions } from '../services/permissions.service.js';
 
 import { mockSignedIn, MockDB } from './utils.js';
 
@@ -745,3 +746,30 @@ describe('Roles Router - POST /deleteRole', () => {
   });
 });
 
+describe('Permissions Service - Specific Function', () => {
+  beforeEach(() => {
+    const testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+
+  test('getAllPermissions should successfully return all permissions', async () => {
+    const permissions = await getAllPermissions();
+
+    expect(permissions).toBeDefined();
+    
+    expect(permissions).toEqual(expect.arrayContaining(['read', 'write', 'delete']));
+  });
+});
