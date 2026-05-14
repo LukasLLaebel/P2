@@ -69,7 +69,7 @@ export function requirePermission(permission) {
             if (!hasPermission) {
                 return res.status(403).json({
                     success: false,
-                    message: "Requires permission: " + permission
+                    message: "Current role does not have required permission"
                 });
             }
 

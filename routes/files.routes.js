@@ -120,7 +120,7 @@ router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"
 });
 
 // Handles upload of files
-router.post("/upload", requireAuth, requirePermission("edit"), upload.single("file"), async(req, res) => {
+router.post("/upload", requireAuth, upload.single("file"), requirePermission("edit"), async(req, res) => {
   try {
     const { shareId, oldFileName } = req.body;
     const file = req.file;
