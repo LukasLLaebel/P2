@@ -49,6 +49,7 @@ function UploadBtn() {
                         alert('Error: ' + data.message);
                         return;
                       }
+                      alert("File uploaded succesfully");
 
                 } catch (error) {
                     console.error(error);

@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import { requirePermission } from "../middleware/permission.middleware.js";
 import { fileURLToPath } from "url";
 import path from 'path';
 import fs from 'fs';
@@ -84,7 +85,7 @@ router.post('/create', requireAuth, async (req, res) => {
 });
 
 // Handles download of files
-router.get("/download/:shareId/:fileName", requireAuth, async (req,res) => {
+router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"), async (req,res) => {
   try {
     const { shareId, fileName } = req.params;
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
@@ -119,7 +120,7 @@ router.get("/download/:shareId/:fileName", requireAuth, async (req,res) => {
 });
 
 // Handles upload of files
-router.post("/upload", requireAuth, upload.single("file"), async(req, res) => {
+router.post("/upload", requireAuth, requirePermission("edit"), upload.single("file"), async(req, res) => {
   try {
     const { shareId, oldFileName } = req.body;
     const file = req.file;
