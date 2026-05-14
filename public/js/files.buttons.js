@@ -34,17 +34,18 @@
 
         const ownerBtn = document.createElement('h2');
         ownerBtn.style.backgroundColor = "#7B9669";
-        ownerBtn.setAttribute("data-action", "owner");
+        ownerBtn.setAttribute("data-action", "edit");
         ownerBtn.textContent = "Edit";
 
         const usersBtn = document.createElement('h2');
         usersBtn.style.backgroundColor = "#6C8480";
-        usersBtn.setAttribute("data-action", "colab-users");
+        usersBtn.setAttribute("data-action", "download");
         usersBtn.textContent = "Download";
+        fileElement.setAttribute("data-file", file);
         
         const rolesBtn = document.createElement('h2');
         rolesBtn.style.backgroundColor = "#404E3B";
-        rolesBtn.setAttribute("data-action", "show-roles");
+        rolesBtn.setAttribute("data-action", "upload");
         rolesBtn.textContent = "Upload";
 
         fileElement.appendChild(fileName);
@@ -59,7 +60,11 @@
       console.error("Error loading files:", error);
     }
   }  
-  createFiles(new URLSearchParams(document.location.search).get("folder"));
+  const folderId = new URLSearchParams(document.location.search).get("folder");
+  createFiles(folderId).then(() => {
+    DownloadBtn();
+    UploadBtn();
+  });
 
   document.addEventListener("click", async (e) => {
     const tag = e.target.closest("h2");

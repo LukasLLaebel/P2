@@ -228,7 +228,7 @@ dialog {
   outline: none;
 }
 
-.add-folder-btn {
+.add-folder-file-btn {
   background-color: var(--jade-300);
   display: flex;
   align-items: center;
@@ -238,6 +238,6 @@ dialog {
   cursor: pointer;
 }
 
-.add-folder-btn h1 {
+.add-folder-file-btn h1 {
   color: #E6E6E6;
 }
