@@ -116,6 +116,14 @@ export class MockDB {
     }
   }
 
+  assignFileToShare(shareName, fileName) {
+    const share = this.shares.find(s => s.name === shareName);
+
+    if (fileName && share) {
+      share.files.push(fileName);
+    }
+  }
+  
   getData() {
     return {
       users: this.users,
