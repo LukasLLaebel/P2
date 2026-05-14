@@ -23,7 +23,7 @@ export const SharesService = {
 
     const owner = data.users.find(user => user.username === share.owner);
     if (!owner) throw new Error("Owner not found");
-    
+
     return owner;
   },
 
@@ -44,6 +44,7 @@ export const SharesService = {
     const newShared = {
       id: shareId,
       name: share.name,
+      owner: share.owner,
       roles: []
     };
 
