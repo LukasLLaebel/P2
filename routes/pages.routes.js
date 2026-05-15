@@ -58,10 +58,9 @@ router.get("/files", requireAuth, (req, res) => {
   res.render("files", { user: req.session.user });
 });
 
-// IMPORTANT: call the factory: getFoldersForUser()
 router.get("/folders/search", requireAuth, getFoldersForUser("all"), (req, res) => {
   const searchText = req.query.q;
-  const searchedFolders = searchFolders(req.userFolders, searchText);
+  const searchedFolders = searchFolders(req.userFolders, searchText, { maxDistanceRatio: 0.4 });
   res.json({ folders: searchedFolders });
 });
 
