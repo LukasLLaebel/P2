@@ -73,11 +73,10 @@ export const SharesService = {
 };
 
 
-/* Search function using 
- *
- *
+/* Fuzzy search for folders using Damerau–Levenshtein distance.
+ * Matches folder names against a search query, allowing small typos,
+ * transpositions, and partial matches, then returns results sorted by best match.
  */
-
 
 export function searchForFolders(folders, searchtext, options = {}) {
   if (!folders || folders.length === 0) return [];
