@@ -1,5 +1,5 @@
 import express from "express";
-import { syncUserFolders, searchFolders } from "../services/users.service.js";
+import { syncUserFolders } from "../services/users.service.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
 import { authenticateUser, requireAuth, logout } from "../middleware/auth.middleware.js";
 
@@ -56,12 +56,6 @@ router.get("/owned", requireAuth, syncUserFolders, getFoldersForUser("owned"),
 
 router.get("/files", requireAuth, (req, res) => {
   res.render("files", { user: req.session.user });
-});
-
-router.get("/folders/search", requireAuth, getFoldersForUser("all"), (req, res) => {
-  const searchText = req.query.q;
-  const searchedFolders = searchFolders(req.userFolders, searchText, { maxDistanceRatio: 0.4 });
-  res.json({ folders: searchedFolders });
 });
 
 router.post("/logout", (req, res) => {

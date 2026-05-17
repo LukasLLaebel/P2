@@ -109,31 +109,29 @@ function loadFolderSearch() {
       );
 
       if (!res.ok) {
-        console.error("Folder search request failed:", res.status, res.statusText);
+        console.error("Folder search request failed:", res.status);
         return;
       }
 
       const data = await res.json();
+
       const searchedFolders = data.folders || [];
       const matchingIds = searchedFolders.map((f) => String(f.id));
 
-      const folderItems = document.querySelectorAll(".file-item");
-      folderItems.forEach((item) => {
+      document.querySelectorAll(".file-item").forEach((item) => {
         const folderId = item.getAttribute("id");
 
-        if (matchingIds.includes(folderId)) {
-          item.style.display = "";
-        } else {
-          item.style.display = "none";
-        }
+        item.style.display = matchingIds.includes(folderId)
+          ? ""
+          : "none";
       });
+
     } catch (error) {
-      if (error && error.name === "AbortError") return;
-      console.error("Error searching folders:", error);
+      if (error.name === "AbortError") return;
+      console.error(error);
     }
   });
 }
-
 
 loadFolderSearch();
 
