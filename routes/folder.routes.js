@@ -54,14 +54,22 @@ router.post('/create', requireAuth, async (req, res) => {
     const owner = req.session?.user?.username;
     const users = [owner];
 
+    // Finds all permissions
+    const allPermissions = authData.permissions.map(p => p.name);
+
     // Creates new folder
     const newShare = {
       id: newShareId,
       name: folder.trim(),
-      path: `./home/${owner}/${folder.trim()}`,
+      path: `./shares/${owner}/${folder.trim()}`,
       owner: owner,
       users: [owner],
-      files: []
+      files: [],
+      roles: [{
+        id: 1, 
+        name: "owner", 
+        permissions: allPermissions
+      }]
     };
 
     authData.shares.push(newShare);
@@ -88,7 +96,7 @@ router.post('/create', requireAuth, async (req, res) => {
             id: newShareId,
             name: folder.trim(),
             owner: owner,
-            roles: []
+            roles: ["owner", 1]
           };
           user.shares.push(userShare);
         }

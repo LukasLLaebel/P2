@@ -294,8 +294,8 @@ function createUser(name, isActive = false) {
   return user;
 }
 
-async function loadUsers(id) {
-  const res = await fetch(`/roles/getUsersWithRole/${id}`);
+async function loadUsers(roleId, shareId) {
+  const res = await fetch(`/roles/getUsersWithRole/${shareId}/${roleId}`);
   const users = await res.json();
 
   console.log(users);
@@ -318,7 +318,7 @@ async function createRoles(id) {
     container.innerHTML = "";
 
     for (const role of rolesArray) {
-      const usersArray = await loadUsers(role.id);
+      const usersArray = await loadUsers(role.id, id);
 
       const roleElement = document.createElement("div");
       roleElement.classList.add('role-header');
