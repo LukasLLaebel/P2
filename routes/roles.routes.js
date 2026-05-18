@@ -13,7 +13,7 @@ router.get('/', requireAuth, rolesController.renderRolesPage);
 
 router.post('/create', requireAuth, validateRoleCreation, rolesController.createRole);
 router.get('/getRolesFromFolder/:id', requireAuth, rolesController.getRolesFromFolder);
-router.get('/getUsersWithRole/:id', requireAuth, rolesController.getUsersWithRole);
+router.get('/getUsersWithRole/:shareID/:roleID', requireAuth,rolesController.getUsersWithRole);
 router.post('/assignRoleToUser', requireAuth, rolesController.assignRoleToUser);
 router.post('/editRoleName', requireAuth, rolesController.editRoleName);
 router.post('/removeRoleFromUser/:id', requireAuth, rolesController.removeRoleFromUser);

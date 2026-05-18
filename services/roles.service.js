@@ -44,11 +44,13 @@ export const getRolesFromFolder = (shareId) => {
   return authData.shares.find(share => share.id === shareId)?.roles || [];
 };
 
-export const getUsersWithRole = (roleId) => {
+export const getUsersWithRole = (shareID, roleID) => {
   const authData = ShareModel.getAllData();
   return authData.users.filter(user =>
-    user.shares.some(share => share.roles.some(role => role === roleId))
+    user.shares.some(share => share.id === Number(shareID) && share.roles.some(role => role === Number(roleID)))
   );
+
+  console.log("RoleID:", roleId);
 };
 
 export const assignRoleToUser = (roleName, username, shareId) => {
