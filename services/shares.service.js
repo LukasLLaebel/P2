@@ -73,19 +73,23 @@ export const SharesService = {
 };
 
 
-/* Fuzzy search for folders using Damerau–Levenshtein distance.
- * Matches folder names against a search query, allowing small typos,
- * transpositions, and partial matches, then returns results sorted by best match.
+/*
+ * Fuzzy search for folders using normalized string matching plus an
+ * edit-distance score (Optimal String Alignment variant of Damerau–Levenshtein).
  *
- * 1 First it validates, 
- * 2 Then set option values,
- * 3 Then computes the allowed match distance and starts scoring folders, 
- *   giving exact substring matches a perfect score and skipping empty names,
- * 4 Then it runs bestDistancetoName  
- * 5 In there the edit distance is computed, returning the best score found.
- * 6 Then it calculates the best fuzzy match distance for each folder name, 
- *   keeps only those within the allowed threshold, 
- *   then sorts results from best match to worst and returns the matching folders.
+ * Behavior:
+ * - Normalizes both query and folder names (lowercase, remove punctuation, collapse spaces).
+ * - If the query is an exact substring of the name => perfect score (0).
+ * - Otherwise computes the best edit distance between the query and:
+ *   (a) the whole name, and
+ *   (b) sliding substrings (“windows”) of the name near the query length.
+ * - Keeps only matches whose best score is <= the allowed threshold.
+ * - Sorts by score ascending (best match first).
+ *
+ * Options:
+ * - allowTransposition (default: true): counts adjacent character swaps as one edit (e.g. "form" <-> "from").
+ * - maxDistance: absolute edit distance threshold. If set, overrides maxDistanceRatio.
+ * - maxDistanceRatio (default: 0.4): distance threshold relative to query length.
  */
 
 export function searchForFolders(folders, searchtext, options = {}) {
@@ -134,8 +138,11 @@ export function searchForFolders(folders, searchtext, options = {}) {
   return scored.map((x) => x.folder);
 }
 
-/* The normalize function standardizes folder 
- * names and search queries by converting to lowercase.
+/**
+ * Normalizes a string for fuzzy matching:
+ * - lowercase
+ * - replace non-alphanumeric runs with spaces
+ * - collapse whitespace
  */
 
 function normalize(s) {
@@ -148,8 +155,12 @@ function normalize(s) {
 }
 
 
-/* bestDistanceToName computes the edit distance between the query and the folder name, 
- * as well as sliding windows of the folder name to find better matches.
+/**
+ * Returns the smallest edit distance between the query and the folder name.
+ * In addition to comparing against the full name, it also compares the query
+ * against sliding substrings of the name (window lengths near the query length).
+ * This improves matching when the folder name contains the “best matching part”
+ * as only a segment of a longer name.
  */
 
 function bestDistanceToName(query, name, allowTransposition) {
@@ -176,9 +187,15 @@ function bestDistanceToName(query, name, allowTransposition) {
 
 
 
-/* Computes the Damerau–Levenshtein edit distance between two strings using dynamic programming, 
- * allowing insertions, deletions, substitutions, and optional adjacent character swaps, 
- * while optimizing memory by keeping only the last two DP rows.
+
+/**
+ * Computes the edit distance between strings a and b using dynamic programming.
+ * Operations:
+ * - insertion, deletion, substitution
+ * - optional adjacent transposition (Optimal String Alignment variant)
+ * Space optimization:
+ * - keeps only the current row, previous row, and the row before that
+ *   (required for transposition), rather than the full matrix.
  */
 
 function editDistance(a, b, allowTransposition) {
@@ -200,11 +217,11 @@ function editDistance(a, b, allowTransposition) {
     for (let j = 1; j <= n; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
 
-      const del = prevRow[j] + 1;
+      const deletion = prevRow[j] + 1;
       const insert = row[j - 1] + 1;
-      const replace = prevRow[j - 1] + cost;
+      const substitution = prevRow[j - 1] + cost;
 
-      let best = Math.min(del, insert, replace);
+      let best = Math.min(deletion, insert, substitution);
 
       if (
         allowTransposition &&
