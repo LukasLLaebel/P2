@@ -48,7 +48,7 @@ export const getRolesFromFolder = (req, res) => {
 };
 
 export const getUsersWithRole = (req, res) => {
-  const users = rolesService.getUsersWithRole(Number(req.params.id));
+  const users = rolesService.getUsersWithRole(Number(req.params.shareID), Number(req.params.roleID));
   res.json(users);
 };
 

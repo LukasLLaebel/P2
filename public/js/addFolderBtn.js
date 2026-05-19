@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const folderWrapper = document.querySelector("#folderList") || document.querySelector(".folder-wrapper");
       if (!folderWrapper) {
-        console.err("Folder wrapper not found (#folderList or .folder-wrapper).");
+        console.error("Folder wrapper not found (#folderList or .folder-wrapper).");
         return;
       }
       const emptyState = document.querySelector(".empty-state-container");
