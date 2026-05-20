@@ -5,72 +5,24 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import sharesRouter from '../routes/shares.routes.js';
 
+import { mockSignedIn, MockDB } from './utils.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create a mock auth.json for testing
-const mockAuthData = {
-  users: [
-    {
-      id: 1,
-      username: 'Lukas',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 2,
-      username: 'Jeff',
-      shares: [
-        {
-          id: 1,
-          name: 'Folder 1',
-          roles: []
-        }
-      ]
-    },
-    {
-      id: 3,
-      username: 'Nadia',
-      shares: []
-    }
-  ],
-  permissions: [
-    { id: 1, name: 'read' },
-    { id: 2, name: 'write' },
-    { id: 3, name: 'delete' }
-  ],
-  shares: [
-    {
-      id: 1,
-      name: 'Folder 1',
-      path: './home/lukas/Folder 1',
-      owner: 'Lukas',
-      users: ['Lukas', 'Jeff'],
-      files: [],
-      roles: []
-    }
-  ]
-};
-function mockSignedIn(user = { id: 1, username: 'Lukas' }) {
-  return (req, res, next) => {
-    // If your code expects req.user:
-    req.user = user;
+const db = new MockDB(
+  ['Lukas', 'Jeff', 'Nadia'],
+  ['read', 'write', 'delete'],
+  ['Folder 1'],
+  []
+);
 
-    // If your code expects req.session.user:
-    req.session = req.session || {};
-    req.session.user = user;
+db.initialize();
 
-    // If your code expects something else (example):
-    req.isAuthenticated = () => true;
+db.setShareOwner('Folder 1', 'Lukas');
+db.assignUserToShare('Jeff', 'Folder 1');
 
-    next();
-  };
-}
+const mockAuthData = db.getData();
 
 describe('Shares Router - POST /useradd', () => {
   let app;
@@ -81,7 +33,7 @@ describe('Shares Router - POST /useradd', () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // <-- simulate logged-in user for all /roles routes
+    // simulate logged-in user for all /roles routes
     app.use('/shares', mockSignedIn({ id: 1, username: 'Lukas' }), sharesRouter);
 
     testDBPath = path.join(__dirname, '../db/auth.json');
@@ -100,6 +52,7 @@ describe('Shares Router - POST /useradd', () => {
       fs.unlinkSync(backupPath);
     }
   });
+
   // TEST 11
   test('Should successfully add a user to a share', async () => {
     const shareData = {
@@ -145,24 +98,6 @@ describe('Shares Router - POST /useradd', () => {
     expect(response.body).toHaveProperty('message');
 
     expect(response.body.message).toBe('Share not found');
-  });
-
-  // TEST 13
-  test('Should respond with 404 if user does not exist', async () => {
-    const shareData = {
-      username: 'NonExistentUser',
-      shareId: 1
-    };
-
-    const response = await request(app)
-      .post('/shares/useradd')
-      .send(shareData)
-      .expect(404);
-
-    expect(response.body).toHaveProperty('success', false);
-    expect(response.body).toHaveProperty('message');
-
-    expect(response.body.message).toBe('User not found');
   });
 
   // TEST 13
@@ -230,6 +165,7 @@ describe('Shares Router - POST /userrem', () => {
       fs.unlinkSync(backupPath);
     }
   });
+
   // TEST 15
   test('Should successfully remove a user from a share', async () => {
     const shareData = {

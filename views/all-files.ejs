@@ -8,6 +8,7 @@
   <link href="/css/all-files.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="css/menu.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,11 +16,33 @@
     <h1>
       <%= user.username %>
     </h1>
-    <div class="profile-pic">
+
+  <button type="button" id="profileBtn" class="profile-pic">
       <img src="./" alt="PP"
-        onerror=" this.style.display = 'none'; this.nextElementSibling.style.display = 'inline-block';">
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
       <i class="fa-solid fa-user" style="display: none"></i>
-    </div>
+  </button>
+
+<div id="profileMenu" style="display:none;" class="profile-menu">
+
+  <button type="button" class="menu-item" id="settingsBtn">
+    <i class="fa-solid fa-user-gear"></i>
+    <span>Settings</span>
+  </button>
+
+  <button type="button" class="menu-item" id="supportBtn">
+    <i class="fa-solid fa-circle-question"></i>
+    <span>Support</span>
+  </button>
+
+  <form action="/logout" method="post" style="margin:0;">
+    <button type="submit" class="menu-item logout-btn">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Logout</span>
+    </button>
+  </form>
+</div>
+
   </header>
   <aside>
     <%- include("./assets/navbar.ejs") %>
@@ -29,13 +52,8 @@
       <h1 class="title">All Files</h1>
       <div class="overlay" style="display: none;"></div>
       <div class="folder-search-wrapper">
-    <input
-      id="folderSearch"
-      class="folder-search-input"
-      type="search"
-      placeholder="Search folders..."
-    >
-    </div>
+        <input id="folderSearch" class="folder-search-input" type="search" placeholder="Search folders...">
+      </div>
       <dialog id="user-modal">
         <div class="search-wrapper">
           <div class="search-box">
@@ -65,51 +83,48 @@
         </div>
       </dialog>
       <div class="folder-wrapper" id="folderList">
+        <% (userFolders || []).forEach(folder=> { %>
+          <div class="file-item" id="<%= folder.id %>">
+            <a href="/files?folder=<%= folder.id %>">
+              <h1>
+                <%= folder.name %>
+              </h1>
+            </a>
 
-        <div class="folder-01">
-          <h1>Folder 1</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #7b9669" data-action="owner">
-              asdasdfghfdsasafghjfgfdaSFGHGJHFS...
-            </h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
+            <div class="btn-wrapper">
+              <h2 style="background-color:#7B9669" data-action="owner">
+                <%= folder.owner===currentUser ? "You" : folder.owner %>
+              </h2>
+              <h2 style="background-color:#6C8480" data-action="colab-users">Users</h2>
+              <a href="/roles?folder=<%= folder.id %>">
+                <h2 style="background-color:#404E3B" data-action="show-roles">Roles</h2>
+              </a>
+            </div>
           </div>
-        </div>
-        <div class="folder-02">
-          <h1>Folder 2</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
-        <div class="folder-03">
-          <h1>Folder 3</h1>
-          <div class="btn-wrapper">
-            <h2 style="background-color: #404e3b" data-action="owner">You</h2>
-            <h2 style="background-color: #6c8480" data-action="colab-users">
-              Users
-            </h2>
-          </div>
-        </div>
+          <% }) %>
       </div>
     </div>
     <% if (user) { %>
-      <form action="/logout" method="post" style="display: inline; margin: 0;">
-        <button type="submit"
-          style="color: #ff6b6b; text-decoration: underline; background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
-          Logout
-        </button>
-      </form>
+
       <% } %>
   </main>
 
-
   <script type="module" src="/js/folder.buttons.js"></script>
+
+
+<script>
+  const btn = document.getElementById("profileBtn");
+  const menu = document.getElementById("profileMenu");
+
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      menu.style.display = (menu.style.display === "none") ? "block" : "none";
+    });
+  }
+</script>
+  
   <script>window.currentUser = <%- JSON.stringify(user || null) %>;</script>
+
 </body>
 
 </html>

@@ -9,7 +9,7 @@ export const renderRolesPage = async (req, res) => { // Make sure this is async
 
     const view = req.query.view || 'display';
 
-    res.render('../views/roles.ejs', {
+    res.render('roles', {
       user: req.session.user,
       allPermissions: permissions,
       allUsers: users,
@@ -58,7 +58,7 @@ export const assignRoleToUser = (req, res) => {
     rolesService.assignRoleToUser(role, user, shareId);
     res.json({ success: true, message: 'Role assigned successfully', role });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error assigning role', error: error.message });
+    res.status(error.message.includes("not found") ? 404 : 500).json({ success: false, message: 'Error assigning role', error: error.message });
   }
 };
 
@@ -68,7 +68,7 @@ export const editRoleName = (req, res) => {
     rolesService.editRoleName(role, newRoleName, shareId);
     res.json({ success: true, message: 'Role edited successfully', role });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error editing role', error: error.message });
+    res.status(error.message.includes("not found") ? 404 : 500).json({ success: false, message: 'Error editing role', error: error.message });
   }
 };
 

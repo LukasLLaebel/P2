@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link href="css/all-files.css" rel="stylesheet">
+  <link href="./css/empty.folderpages.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-yf5A4nTm5Z/..." crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="css/menu.css" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <h1>
+      <%= user.username %>
+    </h1>
+    <button type="button" id="profileBtn" class="profile-pic">
+      <img src="./" alt="PP" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+      <i class="fa-solid fa-user" style="display: none"></i>
+    </button>
+
+    <div id="profileMenu" style="display:none;" class="profile-menu">
+
+      <button type="button" class="menu-item" id="settingsBtn">
+        <i class="fa-solid fa-user-gear"></i>
+        <span>Settings</span>
+      </button>
+
+      <button type="button" class="menu-item" id="supportBtn">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>Support</span>
+      </button>
+
+      <form action="/logout" method="post" style="margin:0;">
+        <button type="submit" class="menu-item logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </button>
+      </form>
+    </div>
+  </header>
+  <aside>
+    <%- include("./assets/navbar.ejs") %>
+  </aside>
+  <main>
+    <div class="item-wrapper">
+      <h1 class="title">
+        <%= title %>
+      </h1>
+      <% if (userFolders && userFolders.length> 0) { %>
+        <div class="overlay" style="display: none;"></div>
+        <div class="folder-search-wrapper">
+          <input id="folderSearch" class="folder-search-input" type="search" placeholder="Search folders...">
+        </div>
+        <dialog id="user-modal">
+          <div class="search-wrapper">
+            <div class="search-box">
+              <input class="search-input" type="search" id="user-search" placeholder="Search users..." />
+              <div class="search-btn-wrapper">
+                <h2 class="search-btn" data-action="user-search">Search User</h2>
+              </div>
+            </div>
+            <div class="search-box">
+              <input class="search-input" type="search" id="user-add" placeholder="Add user..." />
+              <div class="search-btn-wrapper">
+                <h2 class="search-btn" data-action="user-add">Add User</h2>
+              </div>
+            </div>
+          </div>
+          <div class="user-wrapper" id="userList">
+            <div class="user-1" style="background-color: #BAC8B1;">
+              <div class="user-btn-wrapper">
+                <h2 style="background-color: #7B9669" data-action="owner">User1</h2>
+              </div>
+            </div>
+          </div>
+          <div class="btn-wrapper">
+            <h2 style="background-color: #7b9669" data-action="colab-users">
+              Close
+            </h2>
+          </div>
+        </dialog>
+        <div class="folder-wrapper" id="folderList">
+          <% (userFolders || []).forEach(folder=> { %>
+            <div class="file-item" id="<%= folder.id %>">
+              <a href="/files?folder=<%= folder.id %>">
+                <h1>
+                  <%= folder.name %>
+                </h1>
+              </a>
+
+              <div class="btn-wrapper">
+                <h2 style="background-color:#7B9669" data-action="owner">
+                  <%= folder.owner===currentUser ? "You" : folder.owner %>
+                </h2>
+                <h2 style="background-color:#6C8480" data-action="colab-users">Users</h2>
+                <a href="/roles?folder=<%= folder.id %>">
+                  <h2 style="background-color:#404E3B" data-action="show-roles">Roles</h2>
+                </a>
+              </div>
+            </div>
+            <% }); %>
+        </div>
+        <br>
+        <div class="add-folder-btn create-folder-btn">
+          <h1>+ New Folder</h1>
+        </div>
+        <% } else { %>
+          <%- include("./assets/empty.folderpages.ejs") %>
+            <% } %>
+    </div>
+  </main>
+
+  <script src="/js/addFolderBtn.js"></script>
+  <script>
+    const btn = document.getElementById("profileBtn");
+    const menu = document.getElementById("profileMenu");
+
+    if (btn && menu) {
+      btn.addEventListener("click", () => {
+        menu.style.display = (menu.style.display === "none") ? "block" : "none";
+      });
+    }
+  </script>
+  <script type="module" src="/js/folder.buttons.js"></script>
+  <script>window.currentUser = <%- JSON.stringify(user || null) %>;</script>
+  <script>window.folders = <%- JSON.stringify(userFolders || null) %>;</script>
+
+</body>
+
+</html>
