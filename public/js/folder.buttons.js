@@ -88,32 +88,47 @@ function loadFolderSearch() {
     return;
   }
 
+  let abortController = null;
+
   searchInput.addEventListener("input", async () => {
-    const searchText = searchInput.value.trim().toLowerCase();
+    const searchText = searchInput.value.trim();
+
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
 
     try {
-      const filesArray = await folders;
+      if (searchText === "") {
+        document.querySelectorAll(".file-item").forEach((item) => {
+          item.style.display = "";
+        });
+        return;
+      }
 
-      const filteredFiles = filesArray.filter(file =>
-        file.name.trim().toLowerCase().includes(searchText)
+      const res = await fetch(
+        `/folders/search?q=${encodeURIComponent(searchText)}`
       );
 
-      const matchingIds = filteredFiles.map(file => String(file.id));
-      const folderItems = document.querySelectorAll(".file-item");
+      if (!res.ok) {
+        console.error("Folder search request failed:", res.status, res.statusText);
+        return;
+      }
 
-      folderItems.forEach(item => {
+      const data = await res.json();
+      const searchedFolders = data.folders || [];
+      const matchingIds = searchedFolders.map((f) => String(f.id));
+
+      const folderItems = document.querySelectorAll(".file-item");
+      folderItems.forEach((item) => {
         const folderId = item.getAttribute("id");
 
-        if (searchText === "") {
-          item.style.display = "";
-        } else if (matchingIds.includes(folderId)) {
+        if (matchingIds.includes(folderId)) {
           item.style.display = "";
         } else {
           item.style.display = "none";
         }
       });
-
     } catch (error) {
+      if (error && error.name === "AbortError") return;
       console.error("Error searching folders:", error);
     }
   });
