@@ -10,20 +10,22 @@ export const SharesService = {
 
   getUsersByShareId: (shareId) => {
     const data = ShareModel.getAllData();
-    return data.users.filter(user =>
-      user.shares.some(share => share.id === shareId)
-    );
+
+    const users = data.users.filter(user => user.shares.some(share => share.id === shareId));
+    if (users.length === 0) throw new Error("This share has no users or does not exist");
+
+    return users;
   },
 
   getFolderOwner: (shareId) => {
     const data = ShareModel.getAllData();
-
+    
     const share = data.shares.find(s => s.id === shareId);
     if (!share) throw new Error("Share not found");
 
     const owner = data.users.find(user => user.username === share.owner);
     if (!owner) throw new Error("Owner not found");
-
+    
     return owner;
   },
 

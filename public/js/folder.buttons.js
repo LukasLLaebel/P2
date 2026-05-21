@@ -13,10 +13,10 @@ function closePopUp() {
 
 async function loadUsers(id) {
   const res = await fetch("/shares/usersFromFile/" + id);
-  const users = await res.json();
+  const data = await res.json();
 
-  console.log(users);
-  return users;
+  console.log(data);
+  return data.users;
 }
 
 async function createUsers(id) {
@@ -41,7 +41,8 @@ async function createUsers(id) {
     container.innerHTML = "";
 
     const res = await fetch("/shares/getFolderOwner/" + id);
-    const owner = await res.json();
+    const data = await res.json();
+    const owner = data.owner;
 
     usersArray.forEach(user => {
       const userElement = document.createElement("div");
@@ -233,8 +234,3 @@ document.addEventListener("click", async (e) => {
     popUp(id);
   }
 });
-
-
-
-
-
