@@ -27,6 +27,12 @@ export async function syncUserFolders(req, res, next) {
     res.status(500).json({ error: 'Failed to sync user folders' });
   }
 }
+
+
+
+
+
+/*
 export function searchFolders(folders, searchText) {
   if (!folders || folders.length === 0) {
     return [];
@@ -42,3 +48,5 @@ export function searchFolders(folders, searchText) {
     return folder.name?.toLowerCase().includes(query);
   });
 }
+
+*/

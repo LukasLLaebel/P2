@@ -1,4 +1,4 @@
-import { SharesService } from "../services/shares.service.js";
+import { SharesService, searchForFolders } from "../services/shares.service.js";
 
 export const getAllFiles = (req, res) => {
   try {
@@ -65,6 +65,25 @@ export const removeUser = (req, res) => {
     });
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 400;
+    res.status(status).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+export const searchFolders = (req, res) => {
+  try {
+    const searchText = req.query.q;
+
+    const searchedFolders = searchForFolders(req.userFolders, searchText, { maxDistanceRatio: 0.2 });
+
+    res.json({ folders: searchedFolders });
+
+  } catch (error) {
+    const status =
+      error.message.includes("not found") ? 404 : 400;
+
     res.status(status).json({
       success: false,
       message: error.message

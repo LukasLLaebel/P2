@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import * as SharesController from "../controllers/shares.controller.js";
+import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +27,10 @@ router.get('/', requireAuth, (req, res) => {
     currentView: view
   });
 });
+
+
+router.get("/search", requireAuth, getFoldersForUser("all"), SharesController.searchFolders);
+
 
 // Creates the new folder
 router.post('/create', requireAuth, async (req, res) => {
@@ -80,7 +86,7 @@ router.post('/create', requireAuth, async (req, res) => {
     const newFolderPath = path.join(userFolderPath, folder.trim());
     await fs.promises.mkdir(userFolderPath, { recursive: true });
     await fs.promises.mkdir(newFolderPath, { recursive: true });
-    
+
     // Adds folder to the user in auth.json
     if (users && Array.isArray(users)) {
       users.forEach(username => {
