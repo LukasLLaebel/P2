@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const db = new MockDB(
   ['Lukas', 'Jeff', 'Nadia'],
   ['read', 'write', 'delete'],
-  ['Folder 1'],
+  ['Folder 1', 'Folder 2'],
   []
 );
 
@@ -229,5 +229,202 @@ describe('Shares Router - POST /userrem', () => {
     expect(response.body).toHaveProperty('message');
 
     expect(response.body.message).toBe('User not found');
+  });
+});
+
+describe('Shares Router - GET /files', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/shares', mockSignedIn({ id: 1, username: 'Lukas' }), sharesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+
+  test('Should successfully get all shares', async () => {
+    const response = await request(app)
+      .get('/shares/files')
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('shares');
+    expect(Array.isArray(response.body.shares)).toBe(true);
+    expect(response.body.shares.length).toBe(1);
+    expect(response.body.shares).toEqual([{"id": 1, "name": "Folder 1"}]);
+  });
+
+  // TEST 16
+  test('Should respond with 404 if session user does not exist', async () => {
+    const invalidApp = express();
+    invalidApp.use(express.json());
+    invalidApp.use(express.urlencoded({ extended: true }));
+    invalidApp.use('/shares', mockSignedIn({ id: 69420, username: 'NonExistentUser' }), sharesRouter);
+
+    const response = await request(invalidApp)
+      .get('/shares/files')
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message');
+
+    expect(response.body.message).toBe('User not found');
+  });
+});
+
+describe('Shares Router - GET /usersFromFile', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/shares', mockSignedIn({ id: 1, username: 'Lukas' }), sharesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+
+  test('Should successfully get all users from share', async () => {
+    const response = await request(app)
+      .get('/shares/usersFromFile/1')
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('users');
+    expect(Array.isArray(response.body.users)).toBe(true);
+    expect(response.body.users.length).toBe(2);
+    expect(response.body.users).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ username: 'Lukas' }),
+        expect.objectContaining({ username: 'Jeff' }),
+      ])
+    );
+  });
+
+  // TEST 16
+  test('Should respond with 404 if share does not exist', async () => {
+
+    const response = await request(app)
+      .get('/shares/usersFromFile/69420')
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.error).toBe('This share has no users or does not exist');
+  });
+
+  test('Should respond with 404 if the share has no users', async () => {
+
+    const response = await request(app)
+      .get('/shares/usersFromFile/2')
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.error).toBe('This share has no users or does not exist');
+  });
+});
+
+describe('Shares Router - GET /getFolderOwner', () => {
+  let app;
+  let testDBPath;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // <-- simulate logged-in user for all /roles routes
+    app.use('/shares', mockSignedIn({ id: 1, username: 'Lukas' }), sharesRouter);
+
+    testDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(testDBPath)) fs.copyFileSync(testDBPath, backupPath);
+    fs.writeFileSync(testDBPath, JSON.stringify(mockAuthData, null, 2));
+  });
+
+  afterEach(() => {
+    const realDBPath = path.join(__dirname, '../db/auth.json');
+    const backupPath = path.join(__dirname, '../db/auth.backup.json');
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, realDBPath);
+      fs.unlinkSync(backupPath);
+    }
+  });
+
+  test('Should successfully get folder owner of a share', async () => {
+    const response = await request(app)
+      .get('/shares/getFolderOwner/1')
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('owner');
+    expect(response.body.owner).toEqual(expect.objectContaining({ username: 'Lukas', id: 1 }));
+  });
+
+  // TEST 16
+  test('Should respond with 404 if share does not exist', async () => {
+
+    const response = await request(app)
+      .get('/shares/getFolderOwner/69420')
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.error).toBe('Share not found');
+  });
+
+  test('Should respond with 404 if the share has no owner', async () => {
+
+    const response = await request(app)
+      .get('/shares/getFolderOwner/2')
+      .expect('Content-Type', /json/)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('error');
+
+    expect(response.body.error).toBe('Owner not found');
   });
 });

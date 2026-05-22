@@ -4,8 +4,8 @@ export const getAllFiles = (req, res) => {
   try {
     const username = req.session.user.username;
 
-    const files = SharesService.getAllShareFiles(username);
-    res.json(files);
+    const shares = SharesService.getAllShareFiles(username);
+    res.json({shares: shares});
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     res.status(status).json({ success: false, message: error.message });
@@ -16,9 +16,10 @@ export const getUsersFromFile = (req, res) => {
   try {
     const id = Number(req.params.id);
     const users = SharesService.getUsersByShareId(id);
-    res.json(users);
+    res.json({ users: users });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const status = error.message.includes("does not exist") ? 404 : 500;
+    res.status(status).json({ error: error.message });
   }
 };
 
@@ -26,9 +27,10 @@ export const getFolderOwner = (req, res) => {
   try {
     const id = Number(req.params.id);
     const owner = SharesService.getFolderOwner(id);
-    res.json(owner || null);
+    res.json({ owner: owner });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    const status = error.message.includes("not found") ? 404 : 500;
+    res.status(status).json({ error: error.message });
   }
 };
 

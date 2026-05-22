@@ -5,7 +5,7 @@ export const getFiles = (req, res) => {
   try {
     const id = Number(req.params.id);
     const files = FilesService.getFilesByFolderId(id);
-    res.json(files);
+    res.json({ files: files });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -15,7 +15,7 @@ export const getFolder = (req, res) => {
   try {
     const id = Number(req.params.id);
     const folder = FilesService.getFolderById(id);
-    res.json(folder);
+    res.json({ folder: folder });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

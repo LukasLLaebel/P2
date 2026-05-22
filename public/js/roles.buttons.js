@@ -307,7 +307,8 @@ async function createRoles(id) {
   try {
     const title = document.querySelector(".title");
     const res = await fetch(`/files/getFolder/${id}`);
-    const folder = await res.json();
+    const data = await res.json();
+    const folder = data.folder;
     title.textContent = `${folder.name}`;
 
     const rolesArray = await loadRoles(id);
