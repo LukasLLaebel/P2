@@ -5,6 +5,7 @@ import fs from "fs";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import * as SharesController from "../controllers/shares.controller.js";
 import { getFoldersForUser } from "../middleware/folders-polling.middleware.js";
+import { SharesService } from "../services/shares.service.js";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -53,9 +54,9 @@ router.post('/create', requireAuth, async (req, res) => {
     }
 
     // Generates new "shares" ID
-    const maxShareId = Math.max(...authData.shares.map(s => s.id), 0);
-    const newShareId = maxShareId + 1;
-
+    //const maxShareId = Math.max(...authData.shares.map(s => s.id), 0);
+    //const newShareId = maxShareId + 1;
+    const newShareId = SharesService.uuid();
     // Defines owner as current authenticated user
     const owner = req.session?.user?.username;
     const users = [owner];
@@ -72,8 +73,8 @@ router.post('/create', requireAuth, async (req, res) => {
       users: [owner],
       files: [],
       roles: [{
-        id: 1, 
-        name: "owner", 
+        id: 1,
+        name: "owner",
         permissions: allPermissions
       }]
     };

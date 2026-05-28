@@ -19,13 +19,13 @@ export const SharesService = {
 
   getFolderOwner: (shareId) => {
     const data = ShareModel.getAllData();
-    
+
     const share = data.shares.find(s => s.id === shareId);
     if (!share) throw new Error("Share not found");
 
     const owner = data.users.find(user => user.username === share.owner);
     if (!owner) throw new Error("Owner not found");
-    
+
     return owner;
   },
 
@@ -71,8 +71,34 @@ export const SharesService = {
     ShareModel.saveAllData(data);
 
     return share;
+  },
+  uuid: () => {
+    const dateHex = Date.now()
+      .toString(16)
+      .padStart(12, '0');
+
+    let dateIndex = 0;
+
+    let template = 'tttttttt-tttt-7xxx-yxxx-xxxxxxxxxxxx';
+
+    return template
+      .replace(/t/g, () => dateHex[dateIndex++])
+      .replace(/[xy]/g, (char) => genRandom(char));
   }
 };
+
+
+function genRandom(char) {
+  const random = Math.trunc(Math.random() * 16);
+  let randomness;
+  if (char === 'x') {
+    randomness = random;
+  } else {
+    // ganrentess : 8, 9, a, or b (Bitwise) 
+    randomness = (random & 0x3) | 0x8;
+  }
+  return randomness.toString(16);
+}
 
 
 /*
@@ -246,3 +272,4 @@ function editDistance(a, b, allowTransposition) {
 
   return prevRow[n];
 }
+

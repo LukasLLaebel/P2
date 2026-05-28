@@ -10,7 +10,7 @@ import * as FilesController from "../controllers/files.controller.js";
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const upload = multer({dest:"temp/"});
+const upload = multer({ dest: "temp/" });
 
 const DBFilePath = path.join(__dirname, '../db/auth.json');
 
@@ -28,7 +28,9 @@ router.post('/create', requireAuth, async (req, res) => {
   try {
     const { file, shareId } = req.body;
 
-    // Validates input name
+    console.log("req.body:", req.body);
+
+    // Validate input
     if (!file || file.trim() === "") {
       return res.status(400).json({
         success: false,
@@ -36,39 +38,53 @@ router.post('/create', requireAuth, async (req, res) => {
       });
     }
 
+    if (!shareId) {
+      return res.status(400).json({
+        success: false,
+        message: 'shareId is required'
+      });
+    }
+
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    //Locates selected share
-    const share = authData.shares.find(s => s.id === Number(shareId));
+    console.log("Looking for shareId:", shareId);
+
+    // FIX: robust comparison (string-safe + trimmed)
+    const share = authData.shares.find(
+      s => String(s.id).trim() === String(shareId).trim()
+    );
 
     if (!share) {
+      console.log("Available shares:", authData.shares.map(s => s.id));
+
       return res.status(404).json({
         success: false,
         message: 'Folder not found'
       });
     }
 
-    // Checks that "files" exists
-    if (!share.files) {
+    // Ensure files array exists
+    if (!Array.isArray(share.files)) {
       share.files = [];
     }
 
-    // Creates new file
-    const newFile = file.trim()
+    const newFile = file.trim();
     share.files.push(newFile);
 
-    //Adds file to filesystem
+    // Filesystem paths
     const sharesPath = path.join(process.cwd(), 'shares');
     const userFolderPath = path.join(sharesPath, share.owner);
     const shareFolderPath = path.join(userFolderPath, share.name);
-    await fs.promises.mkdir(userFolderPath, { recursive: true });
-    await fs.promises.mkdir(shareFolderPath, { recursive: true, force: true });
-    const newFilePath = path.join(shareFolderPath, file.trim());
+
+    await fs.promises.mkdir(shareFolderPath, { recursive: true });
+
+    const newFilePath = path.join(shareFolderPath, newFile);
     await fs.promises.writeFile(newFilePath, '');
 
+    // Save DB
     fs.writeFileSync(DBFilePath, JSON.stringify(authData, null, 2));
 
-    res.json({
+    return res.json({
       success: true,
       message: 'File created successfully',
       file: newFile
@@ -76,21 +92,21 @@ router.post('/create', requireAuth, async (req, res) => {
 
   } catch (error) {
     console.error('Error creating file:', error);
-    res.status(500).json({
+
+    return res.status(500).json({
       success: false,
       message: 'Error creating file',
       error: error.message
     });
   }
 });
-
 // Handles download of files
-router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"), async (req,res) => {
+router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"), async (req, res) => {
   try {
     const { shareId, fileName } = req.params;
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    const share = authData.shares.find(s => s.id === Number(shareId));
+    const share = authData.shares.find(s => s.id === shareId);
     if (!share) {
       return res.status(404).json({
         success: false,
@@ -111,7 +127,7 @@ router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"
     res.download(filePath, fileName);
   } catch (error) {
     console.error('Download error:', error);
-    res.status(500).json ({
+    res.status(500).json({
       success: false,
       message: 'Could not download file',
       error: error.message
@@ -120,21 +136,21 @@ router.get("/download/:shareId/:fileName", requireAuth, requirePermission("read"
 });
 
 // Handles upload of files
-router.post("/upload", requireAuth, upload.single("file"), requirePermission("edit"), async(req, res) => {
+router.post("/upload", requireAuth, upload.single("file"), requirePermission("edit"), async (req, res) => {
   try {
     const { shareId, oldFileName } = req.body;
     const file = req.file;
 
     if (!file) {
-      return res.status(400).json ({
-        success: false, 
+      return res.status(400).json({
+        success: false,
         message: 'No file uploaded'
-      }); 
+      });
     }
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    const share = authData.shares.find(s => s.id === Number(shareId));
+    const share = authData.shares.find(s => s.id === shareId);
 
     if (!share) {
       return res.status(404).json({
@@ -142,7 +158,7 @@ router.post("/upload", requireAuth, upload.single("file"), requirePermission("ed
         message: 'Folder not found'
       });
     }
-    
+
     const sharesPath = path.join(process.cwd(), 'shares');
     const shareFolderPath = path.join(sharesPath, share.owner, share.name);
     await fs.promises.mkdir(shareFolderPath, { recursive: true });
@@ -150,8 +166,8 @@ router.post("/upload", requireAuth, upload.single("file"), requirePermission("ed
     const finalPath = path.join(shareFolderPath, finalFileName);
     await fs.promises.rename(file.path, finalPath);
 
-    if(!share.files) share.files = [];
-    if(!share.files.includes(finalFileName)) {
+    if (!share.files) share.files = [];
+    if (!share.files.includes(finalFileName)) {
       share.files.push(finalFileName);
     }
 
@@ -169,7 +185,7 @@ router.post("/upload", requireAuth, upload.single("file"), requirePermission("ed
       message: 'Error uploading file',
       error: error.message
     });
-  }  
+  }
 });
 
 export default router;

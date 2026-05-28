@@ -1,0 +1,24 @@
+To build we use CMake
+make a build folder
+use cmake with ninja:
+```cmake .. -G Ninja```
+
+To compile we use ninja:
+```ninja```
+
+TO make Language Server Protocal clangd understand every header / libary we need to include this into our CMakeLists.txt
+```set(CMAKE_EXPORT_COMPILE_COMMANDS ON)```
+
+TO make sure the flag is know for clangd we use this: 
+``` export CLANGD_FLAGS="--compile-commands-dir=build" ```
+this is done after we have compiled. 
+
+
+
+github backup : RXWJC727SquDWkDWKR2frFsSk@1x%y
+
+github :
+TAWd5CG%$7EpN7pgHbDjcsm7^ZL1SZ
+
+aau mail : 
+gS6ZPW3P4vCAGpr44v9

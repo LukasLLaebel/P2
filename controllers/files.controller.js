@@ -3,7 +3,7 @@ import { FilesService } from "../services/files.service.js";
 // gets files from ID 
 export const getFiles = (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
     const files = FilesService.getFilesByFolderId(id);
     res.json({ files: files });
   } catch (error) {
@@ -13,7 +13,7 @@ export const getFiles = (req, res) => {
 
 export const getFolder = (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
     const folder = FilesService.getFolderById(id);
     res.json({ folder: folder });
   } catch (error) {

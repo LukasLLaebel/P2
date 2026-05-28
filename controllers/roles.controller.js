@@ -43,7 +43,7 @@ export const createRole = (req, res) => {
 };
 
 export const getRolesFromFolder = (req, res) => {
-  const roles = rolesService.getRolesFromFolder(Number(req.params.id));
+  const roles = rolesService.getRolesFromFolder(req.params.id);
   res.json(roles);
 };
 
@@ -75,7 +75,7 @@ export const editRoleName = (req, res) => {
 export const removeRoleFromUser = (req, res) => {
   try {
     const { roleId, user } = req.body;
-    rolesService.removeRoleFromUser(roleId, user, Number(req.params.id));
+    rolesService.removeRoleFromUser(roleId, user, req.params.id);
     res.json({ success: true, message: 'Role removed successfully', role: roleId });
   } catch (error) {
     res.status(error.message.includes("not found") ? 404 : 500).json({
@@ -87,7 +87,7 @@ export const removeRoleFromUser = (req, res) => {
 export const deleteRole = (req, res) => {
   try {
     const { roleId, shareId } = req.body;
-    rolesService.deleteRole(roleId, Number(shareId));
+    rolesService.deleteRole(roleId, shareId);
     res.json({ success: true, message: 'Role deleted successfully', role: roleId });
   } catch (error) {
     res.status(error.message.includes("not found") ? 404 : 500).json({
