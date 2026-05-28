@@ -47,16 +47,11 @@ router.post('/create', requireAuth, async (req, res) => {
 
     const authData = JSON.parse(fs.readFileSync(DBFilePath, 'utf-8'));
 
-    console.log("Looking for shareId:", shareId);
-
-    // FIX: robust comparison (string-safe + trimmed)
     const share = authData.shares.find(
       s => String(s.id).trim() === String(shareId).trim()
     );
 
     if (!share) {
-      console.log("Available shares:", authData.shares.map(s => s.id));
-
       return res.status(404).json({
         success: false,
         message: 'Folder not found'
